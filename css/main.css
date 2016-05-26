@@ -1,0 +1,71 @@
+/* http://paletton.com/#uid=13L0u0kbRt14+E48dwffUpTkImm */
+h1, h2, h3, h4, h5, h6 {
+  color: #464646;
+}
+a {
+  color: #324777;
+}
+.sidebar {
+  background: #A8B0C3;
+}
+.sidebar .pure-menu-link, .site-title {
+  color: #464646;
+}
+.footer>small, .footer>hr, .footer>small>a {
+  color: #9EABB3;
+}
+.footer hr {
+  color: #9EABB3;
+  background-color: #9EABB3;
+}
+
+/* layout */
+body {
+  min-width: 12em;
+}
+.sidebar {
+  text-align: center;
+}
+.footer hr {
+  margin: 0 3em;
+  border: none;
+  height: 1px;
+}
+.footer small {
+  display: inline-block;
+  margin: 0 3.7em;
+  padding: 2em 0;
+}
+.content article, .content section {
+  margin: 4em 3em;
+}
+@media (max-width: 47.99em) {
+  .sidebar {
+    border-bottom: 0.1em solid #000;
+  }
+  .pure-menu-item {
+    width: 30%;
+    display: inline-block;
+  }
+}
+@media (min-width: 48em) {
+  .content {
+    min-height: 36em;
+  }
+  .sidebar {
+    position: fixed;
+    top:0;
+    bottom:0;
+    border: 0;
+    border-right: 0.1em solid #000;
+  }
+  .footer, .content {
+    margin-left: 25%;
+  }
+  .sidebar .logo {
+    width: 6em;
+    margin: 1em;
+    margin-top: 3em;
+    display: inline-block;
+  }
+}
