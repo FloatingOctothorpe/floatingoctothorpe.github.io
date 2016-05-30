@@ -19,6 +19,15 @@ a {
   background-color: #9EABB3;
 }
 
+pre {
+  padding: 0.4em;
+  background-color: #EBEDF1;
+  border-radius: 0.4em;
+}
+p>code:after , p>code:before {
+  content: '"';
+}
+
 /* layout */
 body {
   min-width: 12em;
