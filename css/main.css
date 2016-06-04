@@ -28,6 +28,10 @@ p>code:after , p>code:before {
   content: '"';
 }
 
+.content dd {
+  margin-bottom: 0.7em;
+}
+
 /* layout */
 body {
   min-width: 12em;
