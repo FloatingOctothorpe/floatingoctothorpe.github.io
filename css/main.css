@@ -1,5 +1,5 @@
 /* http://paletton.com/#uid=13L0u0kbRt14+E48dwffUpTkImm */
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, kbd {
   color: #464646;
 }
 a {
@@ -30,6 +30,13 @@ p>code:after , p>code:before {
 
 .content dd {
   margin-bottom: 0.7em;
+}
+
+kbd {
+  border: 1px solid #464646;
+  border-radius: 0.3em;
+  padding: 0 0.2em;
+  box-shadow: 0.1em 0.1em 0.1em #A8B0C3;
 }
 
 /* layout */
