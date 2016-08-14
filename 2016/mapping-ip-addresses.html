@@ -109,7 +109,7 @@ do
 done | sort | uniq -c | awk 'BEGIN{print "country,value"} {print substr($0, index($0,$2))","$1}' &gt; country-data.csv
 
 # Remove "Republic of" prefix for OpenHeatMap
-sed -i '^/^Republic of //' country-data.csv
+sed -i 's/^Republic of //' country-data.csv
 </code></pre>
 
 <p>After being passed through <a href="http://www.openheatmap.com/">OpenHeatMap</a> the end result is the
