@@ -59,7 +59,7 @@ body {
 .content article, .content section {
   margin: 4em 3em;
 }
-@media (max-width: 47.99em) {
+@media screen and (max-width: 47.99em) {
   .sidebar {
     border-bottom: 0.1em solid #000;
   }
@@ -68,7 +68,7 @@ body {
     display: inline-block;
   }
 }
-@media (min-width: 48em) {
+@media screen and (min-width: 48em) {
   .content {
     min-height: 36em;
   }
@@ -87,5 +87,30 @@ body {
     margin: 1em;
     margin-top: 3em;
     display: inline-block;
+  }
+}
+
+/* print css */
+@media print {
+  .sidebar {
+    display: none;
+  }
+  .content {
+    display: block;
+  }
+  .content article, .content section {
+    margin: 0;
+  }
+  h2, h3 {
+    page-break-after: avoid;
+  }
+  blockquote, pre, ul, ol, img {
+    page-break-inside: avoid;
+  }
+  @page {
+    margin: 1cm;
+  }
+  footer a:after {
+    content:" ("attr(href) ")";
   }
 }
