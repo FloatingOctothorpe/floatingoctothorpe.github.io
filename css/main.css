@@ -39,6 +39,13 @@ kbd {
   box-shadow: 0.1em 0.1em 0.1em #A8B0C3;
 }
 
+blockquote {
+  border-left: 4px solid #EBEDF1;
+  font-style: italic;
+  margin: 2em 1em;
+  padding-left: 1em;
+}
+
 /* layout */
 body {
   min-width: 12em;
