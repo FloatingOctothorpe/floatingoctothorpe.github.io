@@ -1,0 +1,101 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+Generated with Graphviz (http://www.webgraphviz.com/)
+
+digraph "ATA states"{
+  rankdir=LR
+  nodesep=0.8
+  graph [fontname="helvetica"]
+  node [fontname="helvetica"]
+  edge [fontname="helvetica"]
+
+  SEC0 -> SEC1 [label="Power on"]
+  SEC1 -> SEC5 [label="Set Security (on/off)" dir="both"]
+  SEC3 -> SEC4 [label="Power on"]
+  SEC4 -> SEC5 [label="Unlock"]
+  SEC5 -> SEC6 [label="Freeze"]
+  SEC1 -> SEC2 [label="Freeze"]
+  {rank=same SEC1 SEC5}
+}
+
+-->
+<svg width="576pt" height="196pt" viewBox="0.00 0.00 576.00 196.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph1" class="graph" transform="scale(1 1) rotate(0) translate(4 192)">
+<title>ATA states</title>
+<polygon fill="white" stroke="white" points="-4,5 -4,-192 573,-192 573,5 -4,5"></polygon>
+<!-- SEC0 -->
+<g id="node1" class="node"><title>SEC0</title>
+<ellipse fill="none" stroke="black" cx="207" cy="-170" rx="36.0148" ry="18"></ellipse>
+<text text-anchor="middle" x="207" y="-165.8" font-family="Helvetica,sans-Serif" font-size="14.00">SEC0</text>
+</g>
+<!-- SEC1 -->
+<g id="node3" class="node"><title>SEC1</title>
+<ellipse fill="none" stroke="black" cx="377" cy="-170" rx="36.0148" ry="18"></ellipse>
+<text text-anchor="middle" x="377" y="-165.8" font-family="Helvetica,sans-Serif" font-size="14.00">SEC1</text>
+</g>
+<!-- SEC0&#45;&gt;SEC1 -->
+<g id="edge2" class="edge"><title>SEC0-&gt;SEC1</title>
+<path fill="none" stroke="black" d="M243.628,-170C268.994,-170 303.287,-170 330.613,-170"></path>
+<polygon fill="black" stroke="black" points="330.711,-173.5 340.711,-170 330.711,-166.5 330.711,-173.5"></polygon>
+<text text-anchor="middle" x="292" y="-174.2" font-family="Helvetica,sans-Serif" font-size="14.00">Power on</text>
+</g>
+<!-- SEC5 -->
+<g id="node5" class="node"><title>SEC5</title>
+<ellipse fill="none" stroke="black" cx="377" cy="-18" rx="36.0148" ry="18"></ellipse>
+<text text-anchor="middle" x="377" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">SEC5</text>
+</g>
+<!-- SEC1&#45;&gt;SEC5 -->
+<g id="edge4" class="edge"><title>SEC1-&gt;SEC5</title>
+<path fill="none" stroke="black" d="M377,-141.93C377,-114.656 377,-73.4699 377,-46.1646"></path>
+<polygon fill="black" stroke="black" points="373.5,-141.99 377,-151.99 380.5,-141.99 373.5,-141.99"></polygon>
+<polygon fill="black" stroke="black" points="380.5,-46.0333 377,-36.0333 373.5,-46.0333 380.5,-46.0333"></polygon>
+<text text-anchor="middle" x="362" y="-89.8" font-family="Helvetica,sans-Serif" font-size="14.00">Set Security (on/off)</text>
+</g>
+<!-- SEC2 -->
+<g id="node13" class="node"><title>SEC2</title>
+<ellipse fill="none" stroke="black" cx="531" cy="-170" rx="36.0148" ry="18"></ellipse>
+<text text-anchor="middle" x="531" y="-165.8" font-family="Helvetica,sans-Serif" font-size="14.00">SEC2</text>
+</g>
+<!-- SEC1&#45;&gt;SEC2 -->
+<g id="edge12" class="edge"><title>SEC1-&gt;SEC2</title>
+<path fill="none" stroke="black" d="M413.637,-170C434.791,-170 461.822,-170 484.506,-170"></path>
+<polygon fill="black" stroke="black" points="484.586,-173.5 494.586,-170 484.586,-166.5 484.586,-173.5"></polygon>
+<text text-anchor="middle" x="454" y="-174.2" font-family="Helvetica,sans-Serif" font-size="14.00">Freeze</text>
+</g>
+<!-- SEC6 -->
+<g id="node11" class="node"><title>SEC6</title>
+<ellipse fill="none" stroke="black" cx="531" cy="-18" rx="36.0148" ry="18"></ellipse>
+<text text-anchor="middle" x="531" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">SEC6</text>
+</g>
+<!-- SEC5&#45;&gt;SEC6 -->
+<g id="edge10" class="edge"><title>SEC5-&gt;SEC6</title>
+<path fill="none" stroke="black" d="M413.637,-18C434.791,-18 461.822,-18 484.506,-18"></path>
+<polygon fill="black" stroke="black" points="484.586,-21.5001 494.586,-18 484.586,-14.5001 484.586,-21.5001"></polygon>
+<text text-anchor="middle" x="454" y="-22.2" font-family="Helvetica,sans-Serif" font-size="14.00">Freeze</text>
+</g>
+<!-- SEC3 -->
+<g id="node6" class="node"><title>SEC3</title>
+<ellipse fill="none" stroke="black" cx="37" cy="-18" rx="36.0148" ry="18"></ellipse>
+<text text-anchor="middle" x="37" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">SEC3</text>
+</g>
+<!-- SEC4 -->
+<g id="node8" class="node"><title>SEC4</title>
+<ellipse fill="none" stroke="black" cx="207" cy="-18" rx="36.0148" ry="18"></ellipse>
+<text text-anchor="middle" x="207" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">SEC4</text>
+</g>
+<!-- SEC3&#45;&gt;SEC4 -->
+<g id="edge6" class="edge"><title>SEC3-&gt;SEC4</title>
+<path fill="none" stroke="black" d="M73.6285,-18C98.9944,-18 133.287,-18 160.613,-18"></path>
+<polygon fill="black" stroke="black" points="160.711,-21.5001 170.711,-18 160.711,-14.5001 160.711,-21.5001"></polygon>
+<text text-anchor="middle" x="122" y="-22.2" font-family="Helvetica,sans-Serif" font-size="14.00">Power on</text>
+</g>
+<!-- SEC4&#45;&gt;SEC5 -->
+<g id="edge8" class="edge"><title>SEC4-&gt;SEC5</title>
+<path fill="none" stroke="black" d="M243.628,-18C268.994,-18 303.287,-18 330.613,-18"></path>
+<polygon fill="black" stroke="black" points="330.711,-21.5001 340.711,-18 330.711,-14.5001 330.711,-21.5001"></polygon>
+<text text-anchor="middle" x="292" y="-22.2" font-family="Helvetica,sans-Serif" font-size="14.00">Unlock</text>
+</g>
+</g>
+</svg>
