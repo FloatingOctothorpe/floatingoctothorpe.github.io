@@ -86,14 +86,14 @@ about a drive, including if security features are supported and/or enabled:</p>
 <pre><code>$ hdparm -I /dev/sde
 ...
 Security:
-    Master password revision code = 65534
+  Master password revision code = 65534
         supported
-    not enabled
-    not locked
-    not frozen
-    not expired: security count
+  not   enabled
+  not   locked
+  not   frozen
+  not   expired: security count
         supported: enhanced erase
-    more than 508min for SECURITY ERASE UNIT. more than 508min for ENHANCED SECURITY ERASE UNIT.
+  more than 508min for SECURITY ERASE UNIT. more than 508min for ENHANCED SECURITY ERASE UNIT.
 </code></pre>
 
 <p>Before going any further with <code>hdparm</code>, it's worth highlighting the warning
@@ -145,7 +145,7 @@ fdisk: cannot open /dev/sde: Input/output error
 (<code>SEC5</code>):</p>
 
 <pre><code>$ hdparm -I /dev/sde | grep locked
-    not locked
+  not   locked
 </code></pre>
 
 <p>Security can then be disabled on the drive using the <code>--security-disable</code>
