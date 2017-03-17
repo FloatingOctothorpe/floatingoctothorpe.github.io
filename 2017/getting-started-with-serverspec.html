@@ -143,13 +143,6 @@ Port "80"
 ...
 </code></pre>
 
-<p>By default the rake task will try to run tests for all hosts in the spec
-directory, however you can limit the task to a single host using the
-<code>TARGET_HOST</code> variable:</p>
-
-<pre><code>$ rake spec TARGET_HOST=remote.example.com
-</code></pre>
-
 <p>RSpec will look in <code>.rspec</code> for options, however these can be overridden using
 the <code>SPEC_OPTS</code> variable. For example if you want to use the progress
 formatter:</p>
