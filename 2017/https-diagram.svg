@@ -1,0 +1,89 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+Generated with Graphviz (http://www.webgraphviz.com/)
+
+digraph "HTTPS diagram"{
+  rankdir=LR
+  nodesep=1.8
+  ranksep=2
+  graph [fontname="helvetica"]
+  node [fontname="helvetica", shape="box", style="rounded"]
+  edge [fontname="helvetica"]
+
+  subgraph cluster_0 {
+    label = "client"
+    style="filled,rounded"
+    color=lightgrey
+    node [style="filled", color="grey"]
+    curl
+  }
+  subgraph cluster_1 {
+    label = "server"
+    style="filled,rounded"
+    color=lightblue
+    node [style="filled", color="white"]
+    apache [label="Apache\n(httpd)"]
+  }
+
+  curl -> apache [label="HTTPS\n(tcp/443)"]
+}
+
+-->
+<svg width="358pt" height="107pt" viewBox="0.00 0.00 358.00 107.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph1" class="graph" transform="scale(1 1) rotate(0) translate(4 103)">
+<title>HTTPS diagram</title>
+<polygon fill="white" stroke="white" points="-4,5 -4,-103 355,-103 355,5 -4,5"></polygon>
+<g id="graph2" class="cluster"><title>cluster_0</title>
+<polygon fill="lightgrey" stroke="lightgrey" points="20,-11 66,-11 78,-23 78,-76 66,-88 20,-88 8,-76 8,-23 20,-11"></polygon>
+<path fill="lightgrey" stroke="lightgrey" d="M66,-11C72,-11 78,-17 78,-23"></path>
+<path fill="lightgrey" stroke="lightgrey" d="M78,-76C78,-82 72,-88 66,-88"></path>
+<path fill="lightgrey" stroke="lightgrey" d="M20,-88C14,-88 8,-82 8,-76"></path>
+<path fill="lightgrey" stroke="lightgrey" d="M8,-23C8,-17 14,-11 20,-11"></path>
+<polyline fill="none" stroke="lightgrey" points="20,-11 66,-11 "></polyline>
+<path fill="none" stroke="lightgrey" d="M66,-11C72,-11 78,-17 78,-23"></path>
+<polyline fill="none" stroke="lightgrey" points="78,-23 78,-76 "></polyline>
+<path fill="none" stroke="lightgrey" d="M78,-76C78,-82 72,-88 66,-88"></path>
+<polyline fill="none" stroke="lightgrey" points="66,-88 20,-88 "></polyline>
+<path fill="none" stroke="lightgrey" d="M20,-88C14,-88 8,-82 8,-76"></path>
+<polyline fill="none" stroke="lightgrey" points="8,-76 8,-23 "></polyline>
+<path fill="none" stroke="lightgrey" d="M8,-23C8,-17 14,-11 20,-11"></path>
+<text text-anchor="middle" x="43" y="-71.4" font-family="Helvetica,sans-Serif" font-size="14.00">client</text>
+</g>
+<g id="graph3" class="cluster"><title>cluster_1</title>
+<polygon fill="lightblue" stroke="lightblue" points="274,-8 330,-8 342,-20 342,-79 330,-91 274,-91 262,-79 262,-20 274,-8"></polygon>
+<path fill="lightblue" stroke="lightblue" d="M330,-8C336,-8 342,-14 342,-20"></path>
+<path fill="lightblue" stroke="lightblue" d="M342,-79C342,-85 336,-91 330,-91"></path>
+<path fill="lightblue" stroke="lightblue" d="M274,-91C268,-91 262,-85 262,-79"></path>
+<path fill="lightblue" stroke="lightblue" d="M262,-20C262,-14 268,-8 274,-8"></path>
+<polyline fill="none" stroke="lightblue" points="274,-8 330,-8 "></polyline>
+<path fill="none" stroke="lightblue" d="M330,-8C336,-8 342,-14 342,-20"></path>
+<polyline fill="none" stroke="lightblue" points="342,-20 342,-79 "></polyline>
+<path fill="none" stroke="lightblue" d="M342,-79C342,-85 336,-91 330,-91"></path>
+<polyline fill="none" stroke="lightblue" points="330,-91 274,-91 "></polyline>
+<path fill="none" stroke="lightblue" d="M274,-91C268,-91 262,-85 262,-79"></path>
+<polyline fill="none" stroke="lightblue" points="262,-79 262,-20 "></polyline>
+<path fill="none" stroke="lightblue" d="M262,-20C262,-14 268,-8 274,-8"></path>
+<text text-anchor="middle" x="302" y="-74.4" font-family="Helvetica,sans-Serif" font-size="14.00">server</text>
+</g>
+<!-- curl -->
+<g id="node2" class="node"><title>curl</title>
+<polygon fill="grey" stroke="grey" points="70,-55 16,-55 16,-19 70,-19 70,-55"></polygon>
+<text text-anchor="middle" x="43" y="-32.8" font-family="Helvetica,sans-Serif" font-size="14.00">curl</text>
+</g>
+<!-- apache -->
+<g id="node4" class="node"><title>apache</title>
+<polygon fill="white" stroke="white" points="333.969,-57.6019 270.031,-57.6019 270.031,-16.3981 333.969,-16.3981 333.969,-57.6019"></polygon>
+<text text-anchor="middle" x="302" y="-41.2" font-family="Helvetica,sans-Serif" font-size="14.00">Apache</text>
+<text text-anchor="middle" x="302" y="-24.4" font-family="Helvetica,sans-Serif" font-size="14.00">(httpd)</text>
+</g>
+<!-- curl&#45;&gt;apache -->
+<g id="edge4" class="edge"><title>curl-&gt;apache</title>
+<path fill="none" stroke="black" d="M70.0568,-37C114.8,-37 206.568,-37 259.97,-37"></path>
+<polygon fill="black" stroke="black" points="260.114,-40.5001 270.114,-37 260.114,-33.5001 260.114,-40.5001"></polygon>
+<text text-anchor="middle" x="170" y="-58" font-family="Helvetica,sans-Serif" font-size="14.00">HTTPS</text>
+<text text-anchor="middle" x="170" y="-41.2" font-family="Helvetica,sans-Serif" font-size="14.00">(tcp/443)</text>
+</g>
+</g>
+</svg>
