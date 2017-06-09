@@ -1,0 +1,162 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+Generated with Graphviz (http://www.webgraphviz.com/)
+
+digraph "HAProxy TLS passthrough"{
+  rankdir=LR
+  nodesep=1.8
+  ranksep=1.8
+  graph [fontname="helvetica"]
+  node [fontname="helvetica", shape="box", style="rounded"]
+  edge [fontname="helvetica"]
+
+  subgraph cluster_0 {
+    label = "client"
+    style="filled,rounded"
+    color="lightgrey"
+    node [style="filled", color="grey"]
+    curl
+  }
+  subgraph cluster_1 {
+    label = "Load balancer"
+    style="filled,rounded"
+    color="lightgreen"
+    node [style="filled", color="white"]
+    haproxy [label="HAProxy"]
+  }
+
+  subgraph cluster_2 {
+    label = "Backend 1"
+    style="filled,rounded"
+    color="lightblue"
+    node [style="filled", color="white"]
+    web_service_1[label="Web service"]
+  }
+  subgraph cluster_3 {
+    label = "Backend 2"
+    style="filled,rounded"
+    color="lightblue"
+    node [style="filled", color="white"]
+    web_service_2[label="Web service"]
+  }
+
+  curl -> haproxy [label="tcp/443"]
+  haproxy -> web_service_1 [label="https check" style="invis"]
+  haproxy -> web_service_1 [label="tcp/8443"]
+  haproxy -> web_service_2 [label="tcp/8443"]
+  haproxy -> web_service_2 [label="https check" style="invis"]
+}
+
+-->
+<svg width="654pt" height="336pt" viewBox="0.00 0.00 654.00 336.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph1" class="graph" transform="scale(1 1) rotate(0) translate(4 332)">
+<title>HAProxy TLS passthrough</title>
+<polygon fill="white" stroke="white" points="-4,5 -4,-332 651,-332 651,5 -4,5"></polygon>
+<g id="graph2" class="cluster"><title>cluster_0</title>
+<polygon fill="lightgrey" stroke="lightgrey" points="20,-126 66,-126 78,-138 78,-191 66,-203 20,-203 8,-191 8,-138 20,-126"></polygon>
+<path fill="lightgrey" stroke="lightgrey" d="M66,-126C72,-126 78,-132 78,-138"></path>
+<path fill="lightgrey" stroke="lightgrey" d="M78,-191C78,-197 72,-203 66,-203"></path>
+<path fill="lightgrey" stroke="lightgrey" d="M20,-203C14,-203 8,-197 8,-191"></path>
+<path fill="lightgrey" stroke="lightgrey" d="M8,-138C8,-132 14,-126 20,-126"></path>
+<polyline fill="none" stroke="lightgrey" points="20,-126 66,-126 "></polyline>
+<path fill="none" stroke="lightgrey" d="M66,-126C72,-126 78,-132 78,-138"></path>
+<polyline fill="none" stroke="lightgrey" points="78,-138 78,-191 "></polyline>
+<path fill="none" stroke="lightgrey" d="M78,-191C78,-197 72,-203 66,-203"></path>
+<polyline fill="none" stroke="lightgrey" points="66,-203 20,-203 "></polyline>
+<path fill="none" stroke="lightgrey" d="M20,-203C14,-203 8,-197 8,-191"></path>
+<polyline fill="none" stroke="lightgrey" points="8,-191 8,-138 "></polyline>
+<path fill="none" stroke="lightgrey" d="M8,-138C8,-132 14,-126 20,-126"></path>
+<text text-anchor="middle" x="43" y="-186.4" font-family="Helvetica,sans-Serif" font-size="14.00">client</text>
+</g>
+<g id="graph3" class="cluster"><title>cluster_1</title>
+<polygon fill="lightgreen" stroke="lightgreen" points="250,-126 330,-126 342,-138 342,-191 330,-203 250,-203 238,-191 238,-138 250,-126"></polygon>
+<path fill="lightgreen" stroke="lightgreen" d="M330,-126C336,-126 342,-132 342,-138"></path>
+<path fill="lightgreen" stroke="lightgreen" d="M342,-191C342,-197 336,-203 330,-203"></path>
+<path fill="lightgreen" stroke="lightgreen" d="M250,-203C244,-203 238,-197 238,-191"></path>
+<path fill="lightgreen" stroke="lightgreen" d="M238,-138C238,-132 244,-126 250,-126"></path>
+<polyline fill="none" stroke="lightgreen" points="250,-126 330,-126 "></polyline>
+<path fill="none" stroke="lightgreen" d="M330,-126C336,-126 342,-132 342,-138"></path>
+<polyline fill="none" stroke="lightgreen" points="342,-138 342,-191 "></polyline>
+<path fill="none" stroke="lightgreen" d="M342,-191C342,-197 336,-203 330,-203"></path>
+<polyline fill="none" stroke="lightgreen" points="330,-203 250,-203 "></polyline>
+<path fill="none" stroke="lightgreen" d="M250,-203C244,-203 238,-197 238,-191"></path>
+<polyline fill="none" stroke="lightgreen" points="238,-191 238,-138 "></polyline>
+<path fill="none" stroke="lightgreen" d="M238,-138C238,-132 244,-126 250,-126"></path>
+<text text-anchor="middle" x="290" y="-186.4" font-family="Helvetica,sans-Serif" font-size="14.00">Load balancer</text>
+</g>
+<g id="graph4" class="cluster"><title>cluster_2</title>
+<polygon fill="lightblue" stroke="lightblue" points="540,-243 626,-243 638,-255 638,-308 626,-320 540,-320 528,-308 528,-255 540,-243"></polygon>
+<path fill="lightblue" stroke="lightblue" d="M626,-243C632,-243 638,-249 638,-255"></path>
+<path fill="lightblue" stroke="lightblue" d="M638,-308C638,-314 632,-320 626,-320"></path>
+<path fill="lightblue" stroke="lightblue" d="M540,-320C534,-320 528,-314 528,-308"></path>
+<path fill="lightblue" stroke="lightblue" d="M528,-255C528,-249 534,-243 540,-243"></path>
+<polyline fill="none" stroke="lightblue" points="540,-243 626,-243 "></polyline>
+<path fill="none" stroke="lightblue" d="M626,-243C632,-243 638,-249 638,-255"></path>
+<polyline fill="none" stroke="lightblue" points="638,-255 638,-308 "></polyline>
+<path fill="none" stroke="lightblue" d="M638,-308C638,-314 632,-320 626,-320"></path>
+<polyline fill="none" stroke="lightblue" points="626,-320 540,-320 "></polyline>
+<path fill="none" stroke="lightblue" d="M540,-320C534,-320 528,-314 528,-308"></path>
+<polyline fill="none" stroke="lightblue" points="528,-308 528,-255 "></polyline>
+<path fill="none" stroke="lightblue" d="M528,-255C528,-249 534,-243 540,-243"></path>
+<text text-anchor="middle" x="583" y="-303.4" font-family="Helvetica,sans-Serif" font-size="14.00">Backend 1</text>
+</g>
+<g id="graph5" class="cluster"><title>cluster_3</title>
+<polygon fill="lightblue" stroke="lightblue" points="540,-8 626,-8 638,-20 638,-73 626,-85 540,-85 528,-73 528,-20 540,-8"></polygon>
+<path fill="lightblue" stroke="lightblue" d="M626,-8C632,-8 638,-14 638,-20"></path>
+<path fill="lightblue" stroke="lightblue" d="M638,-73C638,-79 632,-85 626,-85"></path>
+<path fill="lightblue" stroke="lightblue" d="M540,-85C534,-85 528,-79 528,-73"></path>
+<path fill="lightblue" stroke="lightblue" d="M528,-20C528,-14 534,-8 540,-8"></path>
+<polyline fill="none" stroke="lightblue" points="540,-8 626,-8 "></polyline>
+<path fill="none" stroke="lightblue" d="M626,-8C632,-8 638,-14 638,-20"></path>
+<polyline fill="none" stroke="lightblue" points="638,-20 638,-73 "></polyline>
+<path fill="none" stroke="lightblue" d="M638,-73C638,-79 632,-85 626,-85"></path>
+<polyline fill="none" stroke="lightblue" points="626,-85 540,-85 "></polyline>
+<path fill="none" stroke="lightblue" d="M540,-85C534,-85 528,-79 528,-73"></path>
+<polyline fill="none" stroke="lightblue" points="528,-73 528,-20 "></polyline>
+<path fill="none" stroke="lightblue" d="M528,-20C528,-14 534,-8 540,-8"></path>
+<text text-anchor="middle" x="583" y="-68.4" font-family="Helvetica,sans-Serif" font-size="14.00">Backend 2</text>
+</g>
+<!-- curl -->
+<g id="node2" class="node"><title>curl</title>
+<polygon fill="grey" stroke="grey" points="70,-170 16,-170 16,-134 70,-134 70,-170"></polygon>
+<text text-anchor="middle" x="43" y="-147.8" font-family="Helvetica,sans-Serif" font-size="14.00">curl</text>
+</g>
+<!-- haproxy -->
+<g id="node4" class="node"><title>haproxy</title>
+<polygon fill="white" stroke="white" points="325.723,-170 254.277,-170 254.277,-134 325.723,-134 325.723,-170"></polygon>
+<text text-anchor="middle" x="290" y="-147.8" font-family="Helvetica,sans-Serif" font-size="14.00">HAProxy</text>
+</g>
+<!-- curl&#45;&gt;haproxy -->
+<g id="edge6" class="edge"><title>curl-&gt;haproxy</title>
+<path fill="none" stroke="black" d="M70.2193,-152C111.795,-152 193.342,-152 244.283,-152"></path>
+<polygon fill="black" stroke="black" points="244.352,-155.5 254.352,-152 244.352,-148.5 244.352,-155.5"></polygon>
+<text text-anchor="middle" x="158" y="-156.2" font-family="Helvetica,sans-Serif" font-size="14.00">tcp/443</text>
+</g>
+<!-- web_service_1 -->
+<g id="node6" class="node"><title>web_service_1</title>
+<polygon fill="white" stroke="white" points="629.503,-287 536.497,-287 536.497,-251 629.503,-251 629.503,-287"></polygon>
+<text text-anchor="middle" x="583" y="-264.8" font-family="Helvetica,sans-Serif" font-size="14.00">Web service</text>
+</g>
+<!-- haproxy&#45;&gt;web_service_1 -->
+<!-- haproxy&#45;&gt;web_service_1 -->
+<g id="edge10" class="edge"><title>haproxy-&gt;web_service_1</title>
+<path fill="none" stroke="black" d="M325.667,-164.862C362.031,-178.463 420.77,-200.739 471,-221.2 490.948,-229.326 512.746,-238.621 531.704,-246.841"></path>
+<polygon fill="black" stroke="black" points="530.48,-250.125 541.046,-250.904 533.272,-243.706 530.48,-250.125"></polygon>
+<text text-anchor="middle" x="435" y="-226.2" font-family="Helvetica,sans-Serif" font-size="14.00">tcp/8443</text>
+</g>
+<!-- web_service_2 -->
+<g id="node8" class="node"><title>web_service_2</title>
+<polygon fill="white" stroke="white" points="629.503,-52 536.497,-52 536.497,-16 629.503,-16 629.503,-52"></polygon>
+<text text-anchor="middle" x="583" y="-29.8" font-family="Helvetica,sans-Serif" font-size="14.00">Web service</text>
+</g>
+<!-- haproxy&#45;&gt;web_service_2 -->
+<g id="edge12" class="edge"><title>haproxy-&gt;web_service_2</title>
+<path fill="none" stroke="black" d="M325.812,-137.884C375.829,-117.602 468.493,-80.0269 527.599,-56.0594"></path>
+<polygon fill="black" stroke="black" points="529.194,-59.1898 537.145,-52.1885 526.563,-52.7028 529.194,-59.1898"></polygon>
+<text text-anchor="middle" x="435" y="-112.2" font-family="Helvetica,sans-Serif" font-size="14.00">tcp/8443</text>
+</g>
+<!-- haproxy&#45;&gt;web_service_2 -->
+</g>
+</svg>
