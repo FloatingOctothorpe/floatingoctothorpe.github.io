@@ -24,7 +24,7 @@ pre {
   background-color: #EBEDF1;
   border-radius: 0.4em;
 }
-p>code:after , p>code:before {
+p>code:after , p>code:before, li>code:after , li>code:before {
   content: '"';
 }
 
