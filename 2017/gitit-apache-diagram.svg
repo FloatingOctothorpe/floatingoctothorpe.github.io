@@ -1,0 +1,102 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+Generated with Graphviz (http://www.webgraphviz.com/)
+
+digraph "Gitit and Apache diagram"{
+  rankdir=LR
+
+  graph [fontname="helvetica"]
+  node [fontname="helvetica", shape="box", style="rounded", fontsize="12"]
+  edge [fontname="helvetica", fontsize=12]
+
+  subgraph cluster_0 {
+    label = "client"
+    style = "filled,rounded"
+    color = "lightgrey"
+    node [style="filled", color="grey"]
+    browser
+  }
+  subgraph cluster_1 {
+    label = "server"
+    style = "filled,rounded"
+    color = "lightblue"
+    node [style="filled", color="white"]
+    apache [label="Apache\n(httpd)"]
+    gitit [label="Gitit"]
+  }
+
+  browser-> apache [label="http/https\n(tcp/80 or tcp/443)"]
+  apache-> gitit[label="http\n(tcp/5001)"]
+}
+
+-->
+<svg width="436pt" height="112pt" viewBox="0.00 0.00 436.00 112.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph1" class="graph" transform="scale(1 1) rotate(0) translate(4 108)">
+<title>Gitit and Apache diagram</title>
+<polygon fill="white" stroke="white" points="-4,5 -4,-108 433,-108 433,5 -4,5"></polygon>
+<g id="graph2" class="cluster"><title>cluster_0</title>
+<polygon fill="lightgrey" stroke="lightgrey" points="20,-8 72,-8 84,-20 84,-73 72,-85 20,-85 8,-73 8,-20 20,-8"></polygon>
+<path fill="lightgrey" stroke="lightgrey" d="M72,-8C78,-8 84,-14 84,-20"></path>
+<path fill="lightgrey" stroke="lightgrey" d="M84,-73C84,-79 78,-85 72,-85"></path>
+<path fill="lightgrey" stroke="lightgrey" d="M20,-85C14,-85 8,-79 8,-73"></path>
+<path fill="lightgrey" stroke="lightgrey" d="M8,-20C8,-14 14,-8 20,-8"></path>
+<polyline fill="none" stroke="lightgrey" points="20,-8 72,-8 "></polyline>
+<path fill="none" stroke="lightgrey" d="M72,-8C78,-8 84,-14 84,-20"></path>
+<polyline fill="none" stroke="lightgrey" points="84,-20 84,-73 "></polyline>
+<path fill="none" stroke="lightgrey" d="M84,-73C84,-79 78,-85 72,-85"></path>
+<polyline fill="none" stroke="lightgrey" points="72,-85 20,-85 "></polyline>
+<path fill="none" stroke="lightgrey" d="M20,-85C14,-85 8,-79 8,-73"></path>
+<polyline fill="none" stroke="lightgrey" points="8,-73 8,-20 "></polyline>
+<path fill="none" stroke="lightgrey" d="M8,-20C8,-14 14,-8 20,-8"></path>
+<text text-anchor="middle" x="46" y="-68.4" font-family="Helvetica,sans-Serif" font-size="14.00">client</text>
+</g>
+<g id="graph3" class="cluster"><title>cluster_1</title>
+<polygon fill="lightblue" stroke="lightblue" points="214,-8 408,-8 420,-20 420,-84 408,-96 214,-96 202,-84 202,-20 214,-8"></polygon>
+<path fill="lightblue" stroke="lightblue" d="M408,-8C414,-8 420,-14 420,-20"></path>
+<path fill="lightblue" stroke="lightblue" d="M420,-84C420,-90 414,-96 408,-96"></path>
+<path fill="lightblue" stroke="lightblue" d="M214,-96C208,-96 202,-90 202,-84"></path>
+<path fill="lightblue" stroke="lightblue" d="M202,-20C202,-14 208,-8 214,-8"></path>
+<polyline fill="none" stroke="lightblue" points="214,-8 408,-8 "></polyline>
+<path fill="none" stroke="lightblue" d="M408,-8C414,-8 420,-14 420,-20"></path>
+<polyline fill="none" stroke="lightblue" points="420,-20 420,-84 "></polyline>
+<path fill="none" stroke="lightblue" d="M420,-84C420,-90 414,-96 408,-96"></path>
+<polyline fill="none" stroke="lightblue" points="408,-96 214,-96 "></polyline>
+<path fill="none" stroke="lightblue" d="M214,-96C208,-96 202,-90 202,-84"></path>
+<polyline fill="none" stroke="lightblue" points="202,-84 202,-20 "></polyline>
+<path fill="none" stroke="lightblue" d="M202,-20C202,-14 208,-8 214,-8"></path>
+<text text-anchor="middle" x="311" y="-79.4" font-family="Helvetica,sans-Serif" font-size="14.00">server</text>
+</g>
+<!-- browser -->
+<g id="node2" class="node"><title>browser</title>
+<polygon fill="grey" stroke="grey" points="75.1658,-52 16.8342,-52 16.8342,-16 75.1658,-16 75.1658,-52"></polygon>
+<text text-anchor="middle" x="46" y="-30.4" font-family="Helvetica,sans-Serif" font-size="12.00">browser</text>
+</g>
+<!-- apache -->
+<g id="node4" class="node"><title>apache</title>
+<polygon fill="white" stroke="white" points="267.187,-52.3005 210.813,-52.3005 210.813,-15.6995 267.187,-15.6995 267.187,-52.3005"></polygon>
+<text text-anchor="middle" x="239" y="-37.6" font-family="Helvetica,sans-Serif" font-size="12.00">Apache</text>
+<text text-anchor="middle" x="239" y="-23.2" font-family="Helvetica,sans-Serif" font-size="12.00">(httpd)</text>
+</g>
+<!-- browser&#45;&gt;apache -->
+<g id="edge4" class="edge"><title>browser-&gt;apache</title>
+<path fill="none" stroke="black" d="M75.1827,-34C108.333,-34 163.503,-34 200.308,-34"></path>
+<polygon fill="black" stroke="black" points="200.631,-37.5001 210.631,-34 200.631,-30.5001 200.631,-37.5001"></polygon>
+<text text-anchor="middle" x="143" y="-52" font-family="Helvetica,sans-Serif" font-size="12.00">http/https</text>
+<text text-anchor="middle" x="143" y="-37.6" font-family="Helvetica,sans-Serif" font-size="12.00">(tcp/80 or tcp/443)</text>
+</g>
+<!-- gitit -->
+<g id="node5" class="node"><title>gitit</title>
+<polygon fill="white" stroke="white" points="412,-52 358,-52 358,-16 412,-16 412,-52"></polygon>
+<text text-anchor="middle" x="385" y="-30.4" font-family="Helvetica,sans-Serif" font-size="12.00">Gitit</text>
+</g>
+<!-- apache&#45;&gt;gitit -->
+<g id="edge6" class="edge"><title>apache-&gt;gitit</title>
+<path fill="none" stroke="black" d="M267.424,-34C290.13,-34 322.587,-34 347.49,-34"></path>
+<polygon fill="black" stroke="black" points="347.65,-37.5001 357.65,-34 347.65,-30.5001 347.65,-37.5001"></polygon>
+<text text-anchor="middle" x="313" y="-52" font-family="Helvetica,sans-Serif" font-size="12.00">http</text>
+<text text-anchor="middle" x="313" y="-37.6" font-family="Helvetica,sans-Serif" font-size="12.00">(tcp/5001)</text>
+</g>
+</g>
+</svg>
