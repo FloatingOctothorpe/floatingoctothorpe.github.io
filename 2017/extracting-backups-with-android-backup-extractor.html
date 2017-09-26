@@ -71,7 +71,7 @@ line is <code>none</code> and not <code>AES-256</code> the following steps shoul
 </code></pre>
 
 <p><strong>Note</strong>: if you don't have <code>openssl</code> installed, or if it was not compiled
-with <code>zlib</code> support, <a href="http://man7.org/linux/man-pages/man1/gzip.1.html">gzip</a> can be used instead:</p>
+with <code>zlib</code> support, <a href="https://www.gnu.org/software/gzip/manual/gzip.html">gzip</a> can be used instead:</p>
 
 <pre><code>printf "\x1f\x8b\x08\x00\x00\x00\x00\x00" | cat - data | gzip -dc &gt; data.tar
 </code></pre>
