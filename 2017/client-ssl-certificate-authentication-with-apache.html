@@ -186,7 +186,7 @@ root CA, so <code>1</code> is fine.</p>
 
 <p>Finally restart Apache using <code>systemctl</code> to load the new configuration:</p>
 
-<pre><code>systemctl start httpd.service
+<pre><code>systemctl restart httpd.service
 </code></pre>
 
 <p>If everything goes well, the previous <code>curl</code> command should now only work if a
