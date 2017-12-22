@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <title>CSS custom properties example</title>
+
+  <meta charset="utf-8" />
+  <meta name="Author" content="Floating Octothorpe" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <style>
+    :root {
+      --accent-hue: 200;
+      --accent-color: hsla(var(--accent-hue), 50%, 45%, 1);
+      font-family: Helvetica;
+    }
+    h1, h2 {
+      color: var(--accent-color, blue);
+    }
+    a {
+      color: var(--accent-color, blue);
+    }
+    blockquote {
+      border-left: 5px solid var(--accent-color, blue);
+      padding: 1em;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>Heading</h1>
+  <label>
+    <strong>Accent Hue</strong>:
+    <input id="hue_slider" type="range" min="0" max="360" />
+  </label>
+  <noscript>
+    <p>
+      <strong>Note</strong>: JavaScript needs to be enables for the slider
+      above to dynamically update the hue.
+    </p>
+  </noscript>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor <a href="#">incididunt</a> ut labore et dolore magna aliqua. Ut enim
+    ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+    ex ea commodo consequat.
+  </p>
+  <blockquote>
+    A "Hello, World!" program is a computer program that outputs or displays "Hello, World!" to a user.
+  </blockquote>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+    veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+    commodo consequat.
+  </p>
+  <h2>Subheading</h2>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+    veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+    commodo consequat.
+  </p>
+  <script>
+    function hue_update(event) {
+      "use strict";
+      var new_hue = event.target.value;
+      document.documentElement.style.setProperty("--accent-hue", new_hue);
+    }
+
+    window.top.addEventListener("load", function () {
+      "use strict";
+      var slider, style;
+      slider = document.getElementById("hue_slider");
+      style = getComputedStyle(document.documentElement);
+      slider.value = parseInt(style.getPropertyValue("--accent-hue"));
+      slider.onchange = hue_update;
+    }, false);
+  </script>
+</body>
+</html>
