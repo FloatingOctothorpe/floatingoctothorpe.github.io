@@ -44,66 +44,59 @@ however manually checking code can be a pain; this is where static analysis
 tools come in. One of the first lint tools I remember using when working with
 JavaScript was <a href="http://www.jslint.com/">JSLint</a>, however this post is going to look at a
 slightly more recent tool called <a href="https://eslint.org/">ESLint</a>.</p>
-
 <h2>Getting started</h2>
-
 <p>ESLint provide an <a href="https://eslint.org/demo/">interactive demo</a> which can be used to try out
 the tool in a web browser. This is great for getting started, however if you
 use ESLint regularly you will probably want to install it.</p>
-
 <h3>Installing on CentOS</h3>
-
 <p>ESLint can be installed on CentOS with the following steps:</p>
-
 <ol>
-<li><p>Enable <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a> on the host:</p>
-
+<li>
+<p>Enable <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a> on the host:</p>
 <pre><code>yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-</code></pre></li>
-<li><p>Install the node package manager (<code>npm</code>):</p>
-
+</code></pre>
+</li>
+<li>
+<p>Install the node package manager (<code>npm</code>):</p>
 <pre><code>yum install npm
-</code></pre></li>
-<li><p>Finally install ESLint using <code>npm</code>:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Finally install ESLint using <code>npm</code>:</p>
 <pre><code>npm install --global eslint
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
-
 <p><strong>Note</strong>: the <code>--global</code> option is not required, however it will add the
 <code>eslint</code> command to <code>/usr/bin/</code>.</p>
-
 <h3>Installing on Windows under Cygwin</h3>
-
 <p>The setup process on Windows is very similar to CentOS:</p>
-
 <ol>
-<li><p>First download a copy of NodeJS from <a href="https://nodejs.org/">nodejs.org</a>:</p>
-
+<li>
+<p>First download a copy of NodeJS from <a href="https://nodejs.org/">nodejs.org</a>:</p>
 <pre><code>curl -O https://nodejs.org/dist/v8.9.4/node-v8.9.4-win-x64.zip
-</code></pre></li>
-<li><p>Extract the archive and <code>cd</code> into the directory:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Extract the archive and <code>cd</code> into the directory:</p>
 <pre><code>unzip node-v8.9.4-win-x64.zip
 cd node-v8.9.4-win-x64
-</code></pre></li>
-<li><p>Install ESLint using the <code>npm</code> command:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Install ESLint using the <code>npm</code> command:</p>
 <pre><code>./npm install --global eslint
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
-
 <p><strong>Note</strong>: in the example above the <code>eslint</code> command will be installed under the
 <code>node-v8.9.4-win-x64</code> directory. The installation directory is OS dependant and
 controlled by the <code>prefix</code> config. You can run <code>npm prefix</code> to verify the
 current prefix directory. For more information refer to the <a href="https://docs.npmjs.com/files/folders#prefix-configuration">npm
 docs</a>.</p>
-
 <h2>Generating config</h2>
-
 <p>Once ESLint is install you will want to set up some configuration. There are a
 few ways you can do this, one of the easiest is by running <code>eslint --init</code>:</p>
-
 <pre><code>$ eslint --init
 ? How would you like to configure ESLint? Answer questions about your style
 ? Are you using ECMAScript 6 features? Yes
@@ -118,9 +111,7 @@ few ways you can do this, one of the easiest is by running <code>eslint --init</
 ? What format do you want your config file to be in? JSON
 Successfully created .eslintrc.json file in /home/user/example
 </code></pre>
-
 <p>The generated configuration file will look something like the following:</p>
-
 <pre><code>{
     "env": {
         "browser": true,
@@ -147,18 +138,14 @@ Successfully created .eslintrc.json file in /home/user/example
     }
 }
 </code></pre>
-
 <p>From here you can customised the generated configuration and copy it to your
 home directory if you want it to be used globally. The <a href="https://eslint.org/docs/rules/">ESLint rules
 documentation</a> does a good job of explaining how to
 configure each rule.</p>
-
 <h3>Embedding config</h3>
-
 <p>It's also possible to embed configuration in JavaScript, this is often useful
 if you use third party modules. For example if you use <a href="https://github.com/axios/axios">axios</a>,
 you might want to declare it as a global variable:</p>
-
 <pre><code>/* global axios */
 axios.get('https://example.com/')
   .then(function (response) {
@@ -168,19 +155,14 @@ axios.get('https://example.com/')
     console.log(error);
   });
 </code></pre>
-
 <p>This will prevent the <a href="https://eslint.org/docs/rules/no-undef">no-undef</a> rule producing warnings
 similar to the following:</p>
-
 <pre><code>1:1  error  'axios' is not defined                        no-undef
 </code></pre>
-
 <h2>Running ESLint</h2>
-
 <p>Once you've configured ESLint, all that's left to do is start running it
 against your JavaScript. The first time you run ESLint, there is a good chance
 you will have quite a few errors:</p>
-
 <pre><code>$ eslint wibble.js
 
 /home/user/example/example.js
@@ -197,7 +179,6 @@ x 8 problems (8 errors, 0 warnings)
   6 errors, 0 warnings potentially fixable with the `--fix` option.
     $ eslint example.js
 </code></pre>
-
 <p>From here you should either update your code, or ESLint configuration until no
 errors are returned. If you're confused about any of the errors, the <a href="https://eslint.org/docs/rules/">ESLint
 rules documentation</a> is a great place to refer to.</p>
@@ -206,9 +187,9 @@ rules documentation</a> is a great place to refer to.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

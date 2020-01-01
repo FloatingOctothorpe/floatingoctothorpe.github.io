@@ -43,128 +43,90 @@
 have used screen sharing software, however this isn't ideal because it's
 bandwidth heavy. In the end I used <a href="https://www.gnu.org/software/screen/">GNU Screen</a> and
 <a href="https://www.openssh.com/">OpenSSH</a> which worked surprisingly well.</p>
-
 <h2>Software installation</h2>
-
 <p>Screen is packaged for most Linux distributions. For <a href="https://www.centos.org/">CentOS</a>, it
 was just a case of installing Screen with the package manager:</p>
-
 <pre><code>$ sudo yum install screen
 </code></pre>
-
 <p><strong>Note</strong>: OpenSSH was already installed and running, so no additional setup was
 required.</p>
-
 <h2>Using a shared account</h2>
-
 <p>The easiest way to share a screen session is with a shared account. This
 obviously assumes you're happy with the other person having full access to the
 account. The first thing to do is set up key based authentication to allow the
 remote user to log in:</p>
-
 <pre><code>[bob@example ~]$ [ -d .ssh ] || install --directory .ssh --mode 0700
 [bob@example ~]$ vim .ssh/authorized_keys
 [bob@example ~]$ chmod 600 .ssh/authorized_keys
 [bob@example ~]$ cat .ssh/authorized_keys
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDP2Klt8QCrBBy0VWDk4Pp8J25TjRLEUp+bf87u1gH8nz/TOB2VAjgQL+cAmV9t37fzadm9qZVm1gGS4K2awAVwWkl+/X5nV2NoshADcYUTR3JcaVQaWeATBgd2zoBpwoKg63wTHvF4eLP6UDKoWiBFO7yqsytx+hxYlqalWzOqergowiSXN57J1C31G0hSfQFY5S+Ed4oum7K1vrL2SFsmIYqvqZ2QufRuM1KZUR13wWV2LSQqt2kU3AicOM8YIWRwcKAggqAn5PxapNLTBgNWuZ/YeC/zA79IfIq8PDjvWsrG/6hLfmkfyC1QrgLsNtoX4FsbRxEX7HTGXuqXVuhP alice
 </code></pre>
-
 <p>At this point the remote user should be able to connect into the shared
 account:</p>
-
 <pre><code>[alice@example ~]$ ssh bob@example
 Last login: Wed Nov 23 21:05:21 2016 from localhost
 [bob@example ~]$
 </code></pre>
-
 <p>Once the remote user can connect successfully, start a named screen session:</p>
-
 <pre><code>[bob@example ~]$ screen -S shared
 </code></pre>
-
 <p>In the screen session press the command key sequence ( <kbd>ctrl</kbd> +
 <kbd>a</kbd> ), then type <code>:multiuser on</code> to enable multiuser mode. At this
 point the remote user should be able to connect and join the screen session:</p>
-
 <pre><code>[alice@example ~]$ ssh -t bob@example screen -x bob/shared
 </code></pre>
-
 <p><strong>Note</strong>: the <code>-t</code> option is required to ensure a <code>tty</code> is allocated. If you
 miss this option you will get the following error message from screen:
 <code>Must be connected to a terminal</code>.</p>
-
 <h2>Using different user accounts</h2>
-
 <p>It's also possible to use a different user account, however it requires a
 little work under CentOS. The first thing to do is start a named screen
 session:</p>
-
 <pre><code>[bob@example ~]$ screen -S shared
 </code></pre>
-
 <p>Once your screen session is up, enable multiuser mode:</p>
-
 <pre><code>ctrl + a
 :multiuser on
 </code></pre>
-
 <p>And whitelist the second user:</p>
-
 <pre><code>ctrl + a
 :acladd alicce
 </code></pre>
-
 <p>At this point if the second user tries to connect, they will get the following
 error message:</p>
-
 <pre><code>[alice@example ~]$ screen -x bob/shared
 Must run suid root for multiuser support.
 </code></pre>
-
 <p>On CentOS, the screen <a href="https://en.wikipedia.org/wiki/Setuid">setuid bit</a> has been disabled for a long
 time:</p>
-
 <pre><code>$ rpm -q --changelog screen|grep -B1 setuid
 * Wed Apr 07 1999 Erik Troan &lt;ewt@redhat.com&gt;
 - patched in utempter support, turned off setuid bit
 </code></pre>
-
 <p>To re-enable multiuser support, run the following as root:</p>
-
 <pre><code>chmod u+s /usr/bin/screen
 chmod 755 /var/run/screen
 sed 's/775/755/' /usr/lib/tmpfiles.d/screen.conf &gt; /etc/tmpfiles.d/screen.conf
 </code></pre>
-
 <p><strong>Note</strong>: the <a href="https://www.freedesktop.org/software/systemd/man/tmpfiles.d.html">tmpfiles.d</a> config needs to be modified to make
 the permissions change to <code>/var/run/screen</code> persistent.</p>
-
 <p>The second user should now be able to join the screen session:</p>
-
 <pre><code>[alice@example ~]$ screen -x bob/shared
 </code></pre>
-
 <p>Although this method works, it's not ideal for a couple of reasons:</p>
-
 <ol>
 <li>The permissions changes will be reverted by the package manager when screen
-is updated.</li>
+    is updated.</li>
 <li>Arguably, having the setuid bit set is a security risk.</li>
 </ol>
-
 <h2>Stop barking at me</h2>
-
 <p>If you regularly hit <kbd>tab</kbd>, you might notice the following message:</p>
-
 <pre><code>Wuff  ----  Wuff!!
 </code></pre>
-
 <p>Weirdly enough this is the default visual bell message in screen. You can
 switch to using an audible bell by pressing <kbd>ctrl</kbd> + <kbd>a</kbd>,
 followed by <kbd>ctrl</kbd> + <kbd>g</kbd>.</p>
-
 <p>Alternatively you can redefine the bell message to effectively hide it:</p>
-
 <pre><code>ctrl + a
 :vbell_msg ""
 </code></pre>
@@ -173,9 +135,9 @@ followed by <kbd>ctrl</kbd> + <kbd>g</kbd>.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

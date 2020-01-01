@@ -42,44 +42,31 @@
 <p>This post is going to go over generating statistics from a <a href="https://git-scm.com/">Git</a>
 repository. All of the examples in the post were run against the <a href="https://github.com/git/git">Git
 repository for Git</a>.</p>
-
 <h2>Total repository commits</h2>
-
 <p>Counting the total number of commits in a repository is just a case of using
 <a href="https://git-scm.com/docs/git-log">git log</a> and <a href="http://man7.org/linux/man-pages/man1/wc.1.html">wc</a>:</p>
-
 <pre><code>$ git log --all --format=oneline|wc -l
 46680
 </code></pre>
-
 <p>Alternatively you can also use <a href="https://git-scm.com/docs/git-rev-list">git rev-list</a>:</p>
-
 <pre><code>$ git rev-list --all | wc -l
 46680
 </code></pre>
-
 <h2>Total contributors</h2>
-
 <p><code>git log</code> can also be used to list contributors:</p>
-
 <pre><code>$ git log --all --format='%aN' | sort -u
 A Large Angry SCM
 Aaron Crane
 Aaron Schrab
 ...
 </code></pre>
-
 <p>At the time of writing there are currently 1437:</p>
-
 <pre><code>$ git log --all --format='%aN' | sort -u | wc -l
 1437
 </code></pre>
-
 <h2>Top committers</h2>
-
 <p>Working out the top committers is also relatively straight forward. You can use
 <code>git log</code> with a format string:</p>
-
 <pre><code>$ git log --all --format='%aN' | sort | uniq -c | sort -nr | head -n 5
   18794 Junio C Hamano
    2341 Jeff King
@@ -87,9 +74,7 @@ Aaron Schrab
    1112 Linus Torvalds
    1008 Nguy?n Thái Ng?c Duy
 </code></pre>
-
 <p>Alternatively <a href="https://git-scm.com/docs/git-shortlog">git shortlog</a> can also be used:</p>
-
 <pre><code>$ git shortlog --all -sn | head -n 5
  18794  Junio C Hamano
   2341  Jeff King
@@ -97,11 +82,9 @@ Aaron Schrab
   1112  Linus Torvalds
   1008  Nguy?n Thái Ng?c Duy
 </code></pre>
-
 <p><strong>Note</strong>: In both the examples given above the <code>.mailmap</code> file is read to cope
 with alternative names and/or email addresses. Using <code>%an</code> instead of <code>%aN</code> to
 ignore <code>.mailmap</code> will produce slightly different results:</p>
-
 <pre><code>$ git log --all --format='%an' | sort | uniq -c | sort -nr | head
   18790 Junio C Hamano
    2341 Jeff King
@@ -109,21 +92,15 @@ ignore <code>.mailmap</code> will produce slightly different results:</p>
    1112 Linus Torvalds
     993 Nguy?n Thái Ng?c Duy
 </code></pre>
-
 <h3>Top committers on a file</h3>
-
 <p>A very similar command can be used to calculate commit totals for a single
 file:</p>
-
 <pre><code>$ git log --all --format='%aN' README.md | sort | uniq -c | sort -nr | head
       6 Matthieu Moy
       1 Benjamin Dopplinger
 </code></pre>
-
 <h3>Top committers this year</h3>
-
 <p>The <code>--since</code> option can be used to limit commits to a time period:</p>
-
 <pre><code>$ git log --all --format='%aN' --since='2016-01-01' | sort \
 | uniq -c | sort -nr | head -n5
    1492 Junio C Hamano
@@ -132,12 +109,9 @@ file:</p>
     166 Nguy?n Thái Ng?c Duy
     107 Vasco Almeida
 </code></pre>
-
 <h2>Commits over time</h2>
-
 <p>It's often interesting to know how active a codebase is. The following command
 shows total commits by year:</p>
-
 <pre><code>$ git log --all --format='%cd' --date='format:%Y' | sort | uniq -c \
 | awk 'BEGIN{print "year","commits"}{print $ 2, " ", $1}'
 year commits
@@ -154,10 +128,8 @@ year commits
 2015   3289
 2016   3516
 </code></pre>
-
 <p>A similar command can also be used to look at which hour of the day most
 commits are made:</p>
-
 <pre><code>$ git log --all --format='%cd' --date='format:%H' | sort |uniq -c \
 | awk 'BEGIN{print "hour","commits"}{print $2, " ", $1}'
 hour commits
@@ -186,18 +158,13 @@ hour commits
 22   2577
 23   2472
 </code></pre>
-
 <h2>File level statistics</h2>
-
 <p>Looking at commits is fairly straightforward, however it's often more
 interesting to look at file based statistics. The <a href="https://git-scm.com/docs/git-blame">git blame</a>
 command is a great tool for doing this.</p>
-
 <h3>Lines per author</h3>
-
 <p>The following command will find the top five authors, based on the number of
 lines attributed to them in the <code>HEAD</code> revision of the repository:</p>
-
 <pre><code>$ git ls-tree -r  --name-only HEAD \
 | xargs -d "\n" -n 1 git blame --line-porcelain \
 | sed -n 's/^author / /p' | sort | uniq -c | sort -rn \
@@ -208,15 +175,11 @@ lines attributed to them in the <code>HEAD</code> revision of the repository:</p
   23174 Shawn O. Pearce
   22671 Nguy?n Thái Ng?c Duy
 </code></pre>
-
 <p><strong>Note</strong>: at the time of writing there are currently 840583 lines, split across
 3000 files in the Git repository. As a result the command above took just over
 15 minutes to run.</p>
-
 <h3>Lines per author for a file</h3>
-
 <p>Looking at attribution for a single file is slightly easier:</p>
-
 <pre><code>$ git blame --line-porcelain README.md \
 | sed -n 's/^author //p' | sort | uniq -c | sort -r
      32 Matthieu Moy
@@ -226,12 +189,9 @@ lines attributed to them in the <code>HEAD</code> revision of the repository:</p
       4 Christian Couder
       2 Stefano Lattarini
 </code></pre>
-
 <h2>Changes by author</h2>
-
 <p>It's also possible to sort authors by the number of lines they've changed. The
 following command does this:</p>
-
 <pre><code>$ git log --all --format='%aN'|sort -u| xargs -d "\n" -n 1 -I {} \
 bash -c 'echo "$(git log --format='' --author="{}" --numstat|awk "{total += (\$1  + \$2)}END{print total}") {}"' \
 | sort -rn | head -n 5
@@ -242,28 +202,23 @@ bash -c 'echo "$(git log --format='' --author="{}" --numstat|awk "{total += (\$1
 78303 Peter Krefting
 78085 Shawn O. Pearce
 </code></pre>
-
 <p><strong>Note</strong>: This is another slow command, it took about twelve minutes to run.</p>
-
 <h2>A word of warning</h2>
-
 <p>It's nice how easy it is to pull statistics from Git. However it's important to
 remember lines of code/number of commits is often a very poor metric to judge
 quality.</p>
-
 <p>As always with statistics, this quote is relevant:</p>
-
 <blockquote>
-  <p>There are three kinds of lies: lies, damned lies, and statistics.</p>
+<p>There are three kinds of lies: lies, damned lies, and statistics.</p>
 </blockquote>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -42,105 +42,78 @@
 <p>In <a href="/2018/getting-started-with-bup.html">last weeks post</a> I quickly when through setting up
 <a href="https://bup.github.io/">Bup</a>. Internally Bup stores backup data in a Git repository,
 this is why <code>bup init</code> references Git:</p>
-
 <pre><code>$ bup -d /var/bup init
 Initialized empty Git repository in /var/bup/
 </code></pre>
-
 <p>One of the nice things about this is you can use Git commands directly on the
 Bup repo. There are a few caveats to this, if you want to learn more I would
 recommend having a read of the <a href="https://raw.githubusercontent.com/bup/bup/master/DESIGN">Bup design readme</a>.</p>
-
 <h2>Listing backups</h2>
-
 <p>To list the name of available backups, you would normally run <code>bup ls</code>:</p>
-
 <pre><code>$ bup -d /var/bup ls
 etc-backup
 </code></pre>
-
 <p>Internally each name is a branch in the repository, consequently you can also
 use <a href="https://git-scm.com/docs/git-branch">git branch</a> to get the same output:</p>
-
 <pre><code>$ git --git-dir=/var/bup branch
   etc-backup
 </code></pre>
-
 <p>Each named backup will have one or more points in time which can be displayed
 with <code>bup ls</code>:</p>
-
 <pre><code>$ bup -d /var/bup ls etc-backup
 2018-08-03-180408@  2018-08-03-182654@  2018-08-03-182852@  latest@
 </code></pre>
-
 <p>Each point in time is stored as a commit, therefore <a href="https://git-scm.com/docs/git-log">git log</a>
 can also be used to list them:</p>
-
 <pre><code>$ git --git-dir=/var/bup log etc-backup --format='%h: %ci'
 84f04f8: 2018-08-03 17:28:52 +0000
 7ddec50: 2018-08-03 17:26:54 +0000
 0e9d160: 2018-08-03 17:04:08 +0000
 </code></pre>
-
 <h2>Comparing backups</h2>
-
 <p>Once you can list the commit hashes for each backup, <a href="https://git-scm.com/docs/git-diff">git diff</a>
 can be used two compare two backups:</p>
-
 <pre><code>$ git --git-dir /var/bup diff --stat 84f04f8 7ddec50
 etc/.bupm   | Bin 4005 -&gt; 3955 bytes
 etc/example |   1 -
 2 files changed, 1 deletion(-)
 </code></pre>
-
 <h2>Restoring files with Git</h2>
-
 <p><a href="https://git-scm.com/docs/git-show">git show</a> can be used to copy an individual file from a Bup
 repository:</p>
-
 <pre><code>$ git --git-dir=/var/bup show etc-backup:etc/hostname &gt; /tmp/hostname
 $ cat /tmp/hostname
 bup.example.com
 </code></pre>
-
 <p><strong>Note</strong>: restoring a file using <code>git show</code> will not restore any of the
 metadata associated with the file!</p>
-
 <p>As well as restoring individual files, it's also possible to use <a href="https://git-scm.com/docs/git-clone">git
 clone</a> to restore an entire backup:</p>
-
 <pre><code>$ git clone --branch etc-backup /var/bup /tmp/bup-etc-backup
 Cloning into '/tmp/bup-etc-backup'...
 done.
 </code></pre>
-
 <p>The command above will create a working directory in <code>/tmp/bup-etc-backup</code> and
 checkout the <code>etc-backup</code> branch into the working directory. Like using
 <code>git show</code>, restoring files by cloning a Bup repo will not restore file
 metadata, however you will probably notice the <code>.bupm</code> metadata files in the
 working directory:</p>
-
 <pre><code>$ find /tmp/bup-etc-backup/etc/X11/
 /tmp/bup-etc-backup/etc/X11/
 /tmp/bup-etc-backup/etc/X11/.bupm
 /tmp/bup-etc-backup/etc/X11/xkb
 /tmp/bup-etc-backup/etc/X11/xkb/.bupm
 </code></pre>
-
 <p>It's also worth noting that cloning a Bup repo is not very space efficient.
 This shouldn't be a problem for small repos, however it's worth keeping in mind
 if you're working with large Bup repos:</p>
-
 <pre><code>$ du -sh /var/bup/
 1016K   /var/bup/
 $ du -sh /tmp/bup-etc-backup/
 5.1M    /tmp/bup-etc-backup/
 </code></pre>
-
 <h2>Pushing to a remote repository</h2>
-
 <p>It's also possible to push backups to a remote Bup repository:</p>
-
 <pre><code>$ ssh remotehost bup -d /var/bup-remote init
 Initialized empty Git repository in /var/bup-remote/
 $ git --git-dir=/var/bup remote add bup-remote ssh://remotehost/var/bup-remote
@@ -152,16 +125,15 @@ Total 1175 (delta 3), reused 1172 (delta 0)
 To ssh://remotehost/var/bup-remote
  * [new branch]      etc-backup -&gt; etc-backup
 </code></pre>
-
 <p>This is great if you want to copy backups via SSH to a remote host.</p>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

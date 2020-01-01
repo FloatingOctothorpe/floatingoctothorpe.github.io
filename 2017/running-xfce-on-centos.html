@@ -43,78 +43,53 @@
 default, CentOS ships with <a href="https://www.gnome.org/gnome-3/">GNOME 3</a> as the primary desktop
 environment. However I tend to prefer lightweight alternatives like
 <a href="https://xfce.org/">Xfce</a>.</p>
-
 <h2>Installing Xfce</h2>
-
 <p>I started out with a minimal CentOS install that only used the <code>@core</code> package
 group. This system was installed using the kickstart script from a <a href="/2016/kickstarting-a-centos-vm.html">previous
 post</a>.</p>
-
 <p>Xfce is packaged as part of the <a href="https://fedoraproject.org/wiki/EPEL">EPEL project</a>, therefore the first
 thing to do was install the EPEL repository configuration:</p>
-
 <pre><code>yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 </code></pre>
-
 <p>The Xfce package group can then be installed, along with the <code>X Window system</code>
 package group:</p>
-
 <pre><code>yum groupinstall xfce "X Window system"
 </code></pre>
-
 <p>274 packages and 144MB later Xfce was installed. The last thing to do was tell
 systemd to run a graphical environment and enable it to run at boot:</p>
-
 <pre><code>systemctl set-default graphical.target
 systemctl isolate graphical.target
 </code></pre>
-
 <p><strong>Note</strong>: if you only have a root account, it's a good idea to setup a separate
 user instead of logging into Xfce as root.</p>
-
 <h3>VirtualBox guest additions</h3>
-
 <p>If you're running CentOS as a Virtual Machine, it's a good idea to install the
 <a href="https://www.virtualbox.org/manual/ch04.html">guest additions software</a>. To start the
-installation process, select "Device -> Insert Guest Additions CD image" from
+installation process, select "Device -&gt; Insert Guest Additions CD image" from
 the menu:</p>
-
 <p><img class="pure-img" src="/2017/install-virtualbox-guest-additions.png"
   alt="Screenshot showing the Guest Additions menu item." /></p>
-
 <p>The guest additions need to be compiled against the Kernel. This should be
 straightforward, however headers and a suitable compiler need to be installed:</p>
-
 <pre><code>yum groupinstall "Development Tools"
 yum install kernel-devel-$(uname -r)
 yum install dkms
 </code></pre>
-
 <p><strong>Note</strong>: <abbr title="Dynamic Kernel Module Support">dkms</abbr> is not
 required, but it will save having to recompile after kernel updates.</p>
-
 <p>Once development tools have been installed the ISO can be mounted:</p>
-
 <pre><code>mount -o ro /dev/cdrom /mnt
 </code></pre>
-
 <p>From here it's just a case of running the installation script:</p>
-
 <pre><code>/mnt/VBoxLinuxAdditions.run
 </code></pre>
-
 <p><strong>Note</strong>: at this point you may need to restart the system before logging in.</p>
-
 <h2>Login</h2>
-
 <p>Once Xfce is installed, the system should boot into a gdm login screen:</p>
-
 <p><img class="pure-img" src="/2017/centos-login-prompt.png"
   alt="Screenshot of a gdm login screen." /></p>
-
 <p>From here you should be able to log in and start using Xfce. If you're new
 to Xfce, below are a few links to get you started:</p>
-
 <ul>
 <li><a href="http://docs.xfce.org/">Official Xfce documentation</a></li>
 <li><a href="https://wiki.xfce.org/">Xfce wiki</a></li>
@@ -125,9 +100,9 @@ to Xfce, below are a few links to get you started:</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -44,14 +44,11 @@ timestamp implementations will indirectly provide information about a systems
 uptime. While generally not particularly useful, this information can be used
 to spot systems with high uptimes that might be missing important kernel
 updates.</p>
-
 <h2>TCP and RFC1323</h2>
-
 <p>The TCP protocol guarantees data will not be received out of order over a
 single connection. To achieve this a 32 bit sequence number is used in the TCP
 header so segments can be re-ordered if they arrive out of order. A single TCP
 segment is structured as follows:</p>
-
 <pre><code>  0                   1                   2                   3
   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -72,7 +69,6 @@ segment is structured as follows:</p>
  |                             data                              |
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 </code></pre>
-
 <p>Back when the <a href="https://tools.ietf.org/html/std7">spec for TCP</a> was originally published, exhausting all
 possible sequence numbers in a single TCP connection, and having to reuse
 previous sequence numbers was very uncommon. However over time as TCP became
@@ -80,12 +76,10 @@ widely used, network bandwidth gradually increased. This is a problem because
 running TCP over a high throughput, high latency connection significantly
 increases the chance that a TCP segment with a reused sequence number might be
 received out of order.</p>
-
 <p>To address this issue <a href="https://tools.ietf.org/html/rfc1323">RFC 1323</a> proposed a number of different
 solutions, including adding an optional timestamp field to TCP segments. This
 proposal has been widely adopted, and can often be seen in TCP connections when
 using tools like <a href="http://man7.org/linux/man-pages/man1/tcpdump.1.html">tcpdump</a>:</p>
-
 <pre><code>$ tcpdump -nn host 192.168.0.1
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
 listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
@@ -93,24 +87,18 @@ listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
 21:45:37.044200 IP 192.168.0.1.22 &gt; 192.168.0.237.2753: Flags [S.], seq 1256573498, ack 819717777, win 28960, options [mss 1460,nop,nop,TS val 1503452426 ecr 1295498450], length 0
 21:45:37.044221 IP 192.168.0.237.2753 &gt; 192.168.0.1.22: Flags [R], seq 819717777, win 0, length 0
 </code></pre>
-
 <p>RFC 1323 specifies timestamps must be monotonically increasing, and tick
 between 1 ms and 1 second. The starting value for the timestamp is not
 explicitly specified, however many network stack implementations use a systems
 uptime to calculate the timestamp.</p>
-
 <h2>Using hping3</h2>
-
 <p>TCP timestamps can easily be checked with <a href="http://www.hping.org/">hping3</a>. On
 <a href="https://www.centos.org/">CentOS</a> <code>hping3</code> can be installed form <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a>:</p>
-
 <pre><code>yum install -y epel-release
 yum install -y hping3
 </code></pre>
-
 <p>Once <code>hping3</code> is installed you can extract timestamps by connecting to an open
 TCP port using the <code>--tcp--timestamp</code> option:</p>
-
 <pre><code>$ hping3 --count 2 --syn --destport 22 --tcp-timestamp 192.168.0.1
 HPING 192.168.0.1 (enp0s3 192.168.0.1): S set, 40 headers + 0 data bytes
 len=56 ip=192.168.0.1 ttl=64 DF id=0 sport=22 flags=SA seq=0 win=28960 rtt=1.1 ms
@@ -126,22 +114,17 @@ len=56 ip=192.168.0.1 ttl=64 DF id=0 sport=22 flags=SA seq=1 win=28960 rtt=1.1 m
 2 packets transmitted, 2 packets received, 0% packet loss
 round-trip min/avg/max = 1.1/1.1/1.1 ms
 </code></pre>
-
 <p>The example above suggests the uptime of <code>192.168.0.1</code> is roughly 173 days,
 running <code>uptime</code> on the remote system confirms this:</p>
-
 <pre><code>$ ssh 192.168.0.1 uptime
 root@192.168.0.1's password:
  21:14:45 up 173 days, 23:49,  load average: 0.08, 0.03, 0.05
 </code></pre>
-
 <h2>Hiding system uptime</h2>
-
 <p>On Linux the TCP timestamp feature can be controlled with the
 <code>net.ipv4.tcp_timestamp</code> kernel parameter. Normally the option can either be
 enabled (<code>1</code>) or disabled (<code>0</code>), however more recent kernels also have an
 option to add a random offset which will effectively hide the systems uptime:</p>
-
 <pre><code>tcp_timestamps - INTEGER
 Enable timestamps as defined in RFC1323.
         0: Disabled.
@@ -150,30 +133,22 @@ Enable timestamps as defined in RFC1323.
         2: Like 1, but without random offsets.
         Default: 1
 </code></pre>
-
 <p>You can check which mode is being used by reading
 <code>/proc/sys/net/ipv4/tcp_timestamps</code>:</p>
-
 <pre><code>$ cat /proc/sys/net/ipv4/tcp_timestamps
 1
 </code></pre>
-
 <p>The value can also be dynamically updated:</p>
-
 <pre><code>$ echo 2 &gt; /proc/sys/net/ipv4/tcp_timestamps
 </code></pre>
-
 <p><strong>Note</strong>: you can also use <a href="http://man7.org/linux/man-pages/man8/sysctl.8.html">sysctl</a> to read or update kernel
 parameters at runtime:</p>
-
 <pre><code>$ sysctl net.ipv4.tcp_timestamps
 net.ipv4.tcp_timestamps = 1
 $ sysctl net.ipv4.tcp_timestamps=2
 net.ipv4.tcp_timestamps = 2
 </code></pre>
-
 <p>Changes can be made persistent by adding a new file under <code>/etc/sysctl.d/</code>:</p>
-
 <pre><code>cat &gt; /etc/sysctl.d/tcp_timestamps.conf &lt;&lt; EOF
 net.ipv4.tcp_timestamps = 2
 EOF
@@ -183,9 +158,9 @@ EOF
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

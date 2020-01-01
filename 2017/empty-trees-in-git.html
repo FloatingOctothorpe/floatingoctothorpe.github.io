@@ -41,65 +41,49 @@
 
 <p>After using <a href="https://git-scm.com/">Git</a> for a little while, there is a reasonable chance
 you will run across the following hash:</p>
-
 <pre><code>4b825dc642cb6eb9a060e54bf8d69288fbee4904
 </code></pre>
-
 <p>So where does it come from, and why should you care?</p>
-
 <h2>Where does the hash come from?</h2>
-
 <p>Every git repository, even an empty repository will contain the hash. This
 can be verified with <code>git show</code>:</p>
-
 <pre><code>$ git show 4b825dc642cb6eb9a060e54bf8d69288fbee4904
 tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904
 </code></pre>
-
 <p>So where does this hash come from? Well internally Git keeps track of a few
 different object types. The most fundamental object is a blob which represents
 file content. Blobs are then referenced by tree objects which represent
 directories and commit objects reference tree objects. The diagram below gives
 a quick overview of this:</p>
-
 <p><img class="pure-img" src="/2017/pro-git-objects-diagram.png"
   alt="Git object diagram taken from Pro Git." /></p>
-
 <p><small>The diagram above is taken from <a href="https://git-scm.com/book/en/v2">Pro Git</a> and licensed under
 the Creative Commons <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">Attribution-NonCommercial-ShareAlike 3.0
 Unported</a> license.</small></p>
-
 <p><strong>Note</strong>: the <a href="https://git-scm.com/book/en/v2/Git-Internals-Git-Objects">Git Internals chapter</a> from Pro Git has more
 info on objects if you're still curious.</p>
-
 <p>So how does the hash fit in? Well it's actually the hash of an empty tree.
 This can be verified by creating a object hash for either <code>/dev/null</code> of an
 empty string:</p>
-
 <pre><code>$ git hash-object -t tree /dev/null
 4b825dc642cb6eb9a060e54bf8d69288fbee4904
 
 $ echo -n '' | git hash-object -t tree --stdin
 4b825dc642cb6eb9a060e54bf8d69288fbee4904
 </code></pre>
-
 <h2>Using the hash</h2>
-
 <p>The empty tree hash is often used with <a href="https://git-scm.com/docs/git-diff">git diff</a>. For example
 if you wanted to check for whitespace errors in a directory, you could use the
 <code>--check</code> option and compare <code>HEAD</code> against the empty tree:</p>
-
 <pre><code>$ git diff $(git hash-object -t tree /dev/null) HEAD --check -- po
 po/ca.po:7: trailing whitespace.
 +# Terminologia i criteris utilitzats
 po/ru.po:4: trailing whitespace.
 +#
 </code></pre>
-
 <p>The empty tree hash is also very useful when writing git hooks. A fairly common
 pattern is to validate new commits before accepting them with code similar to
 the following:</p>
-
 <pre><code>for changed_file in $(git diff --cached --name-only --diff-filter=ACM HEAD)
 do
   if ! validate_file "$changed_file"; then
@@ -108,11 +92,9 @@ do
   fi
 done
 </code></pre>
-
 <p>This works fine if there are previous commits, however the HEAD reference will
 not exist if no commits have been made. To get around this the empty tree hash
 can be used when checking the initial commit:</p>
-
 <pre><code>if git rev-parse --verify -q HEAD &gt; /dev/null; then
   against=HEAD
 else
@@ -133,9 +115,9 @@ done
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

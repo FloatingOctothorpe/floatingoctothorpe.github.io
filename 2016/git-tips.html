@@ -41,45 +41,34 @@
 
 <p>I've been using <a href="https://git-scm.com/">git</a> for a few years now. Initially I was a
 little reluctant to pick it up, however in retrospect I'm glad I did.</p>
-
 <p>This post is going to go over a few tips I wish I knew when I was starting out,
 if you're new to git you might want to look at some of the following resources
 instead:</p>
-
 <ul>
 <li><a href="https://git-scm.com/book">Pro Git</a> by Scott Chacon and Ben Straub</li>
-<li><a href="https://try.github.io">Github&#39;s git tutorial</a></li>
+<li><a href="https://try.github.io">Github's git tutorial</a></li>
 <li><a href="http://gitimmersion.com/">Git Immersion</a></li>
 </ul>
-
 <h2>Checking for trailing whitespace</h2>
-
 <p>It's very easy to accidently leave trailing whitespace in your files.
 Thankfully git makes it easy to check for this before you commit anything.  To
 do this you just need to run <code>git diff --check</code>:</p>
-
 <pre><code>$ git diff --check
 example.md:1: trailing whitespace.
 +Hello world 
 example.md:3: new blank line at EOF.
 </code></pre>
-
 <p>You can also set git up to automatically run this check by creating a
 pre-commit hook. To do this create a script called <code>.git/hooks/pre-commit</code> with
 the following contents:</p>
-
 <pre><code>#!/bin/sh
 git diff --check --cached
 </code></pre>
-
 <p><strong>Note</strong>: You need to used the <code>--cached</code> option if you want to compare changes
 which have already been staged.</p>
-
 <h2>Verbose commits</h2>
-
 <p>By default when you make a commit you will have a message like this in your
 favourite editor:</p>
-
 <pre><code># Please enter the commit message for your changes. Lines starting
 # with '#' will be ignored, and an empty message aborts the commit.
 # Explicit paths specified without -i or -o; assuming --only paths...
@@ -87,12 +76,10 @@ favourite editor:</p>
 # Changes to be committed:
 #       modified:   example.md
 </code></pre>
-
 <p>That's great if you remember what you changed, however it's very easy to forget
 exactly what you changed. One way around this is to use the verbose option
 (<code>-v</code>). This will insert a unified diff at the bottom of your commit message
 for reference.</p>
-
 <pre><code># Please enter the commit message for your changes. Lines starting
 # with '#' will be ignored, and an empty message aborts the commit.
 # On branch example
@@ -111,42 +98,30 @@ index 61408ec..88fbc46 100644
 +Hello world
 ...
 </code></pre>
-
 <h2>Pretty git graphs</h2>
-
 <p>Once you start regularly branching, merging and rebasing it gets very easy to
 lose track of where you are. A little while ago I stumbled across a <a href="http://stackoverflow.com/questions/1057564/pretty-git-branch-graphs">stack
 overflow question</a> asking about tools to make printable
 images of git history. The top answer suggests setting up a few aliases to call
 <code>git log</code> in a few different ways. The main command I use is:</p>
-
 <pre><code>git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
 </code></pre>
-
 <p>This is obviously a little long to type over and over so I have it aliased to
 <code>git lg</code>. You can do this by running:</p>
-
 <pre><code>git config --global alias.lg "log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
 </code></pre>
-
 <p>Once you've got an alias set up you can run <code>git lg</code> and you should get output
 that looks something like this:</p>
-
 <p><img class="pure-img" src="/2016/pretty-git-graph.png" alt="pretty git graph example output" /></p>
-
 <p>The <code>git log</code> command has quite a few options, it's well worth spending some
 time going through the <a href="https://git-scm.com/docs/git-log">documentation</a> and experimenting with a
 few of the available options.</p>
-
 <h2>Squashing commits</h2>
-
 <p>Unlike some version control systems commits are not automatically pushed
 upstream. This is nice because you can commit small changes often and easily
 see what you've done.</p>
-
 <p>The only problem with this approach is you soon end up with a commit history
 that looks something like this:</p>
-
 <pre><code>* b4b0acf - (2 seconds ago) Correct spelling mistake - Floatingoctothorpe (HEAD -&gt; example)
 * 86d323e - (9 minutes ago) Fix another typo... - Floatingoctothorpe
 * 0a3a74d - (13 minutes ago) Correct syntax error - Floatingoctothorpe
@@ -154,26 +129,21 @@ that looks something like this:</p>
 * 0eefcb6 - (84 minutes ago) Add really awesome feature - Floatingoctothorpe
 * 94694d1 - (2 hours ago) First commit - Floatingoctothorpe (master)
 </code></pre>
-
 <p>Thankfully it's pretty straightforward to squash unwanted commit messages
 together. For example to combine the commits made since master you can run
 <code>git rebase -i master</code>. This will drop you into an editor where you can change
 unwanted commits to <code>f</code>. Git will then discard the commit message for each
 commit and merge the change into the previous commit.</p>
-
 <pre><code>pick 0eefcb6 Add really awesome feature
 f 46740c6 Fix typo
 f 0a3a74d Correct syntax error
 f 86d323e Fix another typo...
 f b4b0acf Correct spelling mistake
 </code></pre>
-
 <p>Once your done the change log should be a little shorter:</p>
-
 <pre><code>* 050fce8 - (1 hours ago) Add really awesome feature - Floatingoctothorpe (HEAD -&gt; example)
 * 94694d1 - (2 hours ago) First commit - Floatingoctothorpe (master)
 </code></pre>
-
 <p><strong>Note</strong>: A word of warning, when you squash commits you are effectively
 discarding the previous commits. This is fine on your local topic branch,
 however doing this on the master branch of a group project is a good way to
@@ -183,9 +153,9 @@ make enemies...</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

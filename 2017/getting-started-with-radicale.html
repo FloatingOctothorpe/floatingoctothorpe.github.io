@@ -44,107 +44,87 @@
 quickly stand up a shared calendar which can be accessed with a wide range of
 clients. This post is going to go through standing up Radicale on a <a href="https://www.raspberrypi.org/">Raspberry
 Pi</a> running <a href="https://www.raspbian.org/">Raspbian</a>.</p>
-
 <h2>Installation</h2>
-
 <p>Radicale is available from the standard Raspbian repositories. Therefore
 installation is just a case of running <code>apt-get</code>:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install radicale
 </code></pre>
-
 <h2>Basic configuration</h2>
-
 <p>By default almost everything in the main configuration file,
 <code>/etc/radicale/config</code>, is commented out. The exception being the
 <code>filesystem_folder</code> option.</p>
-
 <p>The commented out configuration matches the default values Radicale will use
 when starting. Therefore it's worth having a read through the defaults. The
 <a href="http://radicale.org/user_documentation/">Radicale docs</a> go over the available configuration options,
 however below are some of the key options:</p>
-
 <pre><code>[server]
 host = 0.0.0.0:5232
 ssl = False
 </code></pre>
-
 <p>By default Radicale will bind to all IPv4 addresses and listen on TCP port
 5232. It's also worth noting that TLS/SSL is disabled by default.</p>
-
 <pre><code>[auth]
 type = None
 
 [rights]
 type = None
 </code></pre>
-
 <p>Radicale supports a range of different authentication methods, however by
 default no authentication is setup and unauthenticated users have full access
 to calendars.</p>
-
 <pre><code>[storage]
 filesystem_folder = /var/lib/radicale/collections
 </code></pre>
-
 <p>Radicale will by default store calendars as files in
 <code>/var/lib/radicale/collections</code>. It is however possible to use a database as a
 back-end.</p>
-
 <p>For the time being we are going to accept the defaults, however it's worth
 being aware no encryption or security is enabled out of the box!</p>
-
 <h2>Enabling and start Radicale</h2>
-
 <p>Radicale can be started using <code>systemctl</code>:</p>
-
 <pre><code>sudo systemctl start radicale.service
 </code></pre>
-
 <p>Assuming Radicale starts without any problems, you should also configure it to
 start at boot. This is done by uncommenting <code>ENABLE_RADICALE=yes</code> in
 <code>/etc/default/radicale</code>:</p>
-
 <pre><code>sudo sed -i -r 's/^#(ENABLE_RADICALE=yes$)/\1/' /etc/default/radicale
 </code></pre>
-
 <h2>Connecting with Thunderbird</h2>
-
 <p>Radicale has <a href="http://radicale.org/user_documentation/#idstarting-the-client">setup instructions</a> for quite a few
 different calendar applications. This post is going to go over setting up the
 <a href="https://www.mozilla.org/en-US/projects/calendar/">Lightning addon</a> which ships with
 <a href="https://www.mozilla.org/en-GB/thunderbird/">Thunderbird</a>.</p>
-
 <ol>
-<li><p>Start by creating a new calendar. This can be done by right clicking and
-selecting new calender:</p>
-
+<li>
+<p>Start by creating a new calendar. This can be done by right clicking and
+    selecting new calender:</p>
 <p><img class="pure-img" src="/2017/thunderbird-new-calendar.png"
-alt="Screenshot showing the New Calendar context menu option. "/></p></li>
-<li><p>Select "On the Network".</p></li>
-<li><p>Select "CalDAV" and enter the URL of the Radicale server. The path
-(<code>/user/calendar.ics/</code>) will be created if it does not exist:</p>
-
+ alt="Screenshot showing the New Calendar context menu option. "/></p>
+</li>
+<li>
+<p>Select "On the Network".</p>
+</li>
+<li>
+<p>Select "CalDAV" and enter the URL of the Radicale server. The path
+    (<code>/user/calendar.ics/</code>) will be created if it does not exist:</p>
 <p><img class="pure-img" src="/2017/thunderbird-new-calendar-location.png"
  alt="Screenshot showing a new CalDAV calendar being configured to use
  http://raspberrypi:5232/user/calendar.ics/" /></p>
-
-<p><strong>Note</strong>: the trailing <code>/</code> in the URL is required!</p></li>
-<li><p>Finally give the calendar a name.</p></li>
+<p><strong>Note</strong>: the trailing <code>/</code> in the URL is required!</p>
+</li>
+<li>
+<p>Finally give the calendar a name.</p>
+</li>
 </ol>
-
 <p>If the steps above worked correctly, Thunderbird should now be able to create
 calendar events which will sync with Radicale. To make sure everything is
 working as expected, check the Radicale log (<code>/var/log/radicale/radicale.log</code>).
 It should have entries similar to the following:</p>
-
 <pre><code>2017-05-04 22:37:14,193 - INFO: PROPFIND request at /user/calendar.ics/ received
 2017-05-04 22:37:14,360 - INFO: OPTIONS request at /user/ received
 </code></pre>
-
 <h2>Next steps</h2>
-
 <p>Although the default configuration does work out of the box, the Calendar
 traffic is neither encrypted or authenticated. The <a href="/2017/securing-radicale.html">next post</a> is
 going to look at correcting this.</p>
@@ -153,9 +133,9 @@ going to look at correcting this.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

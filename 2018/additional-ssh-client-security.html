@@ -39,73 +39,55 @@
 
 <time datetime="2018-06-15">15 June 2018</time>
 
-<p>Following on from <a href="/2018/protecting-ssh-keys.html">last week&#39;s post</a>, this post is going to look
+<p>Following on from <a href="/2018/protecting-ssh-keys.html">last week's post</a>, this post is going to look
 at some additional steps you can take to keep your SSH connections secure.</p>
-
 <h2>Using ssh-agent</h2>
-
 <p>If you're using key based authentication, it's a good idea to encrypt your
 private key using a passphrase. Unfortunately one of the big downsides to doing
 this is having to decrypt your key before using it. If you have a complex
 passphrase this can quickly become annoying if you regularly make new
 connections.</p>
-
 <p>One way round this problem is using <a href="https://man.openbsd.org/ssh-agent">ssh-agent</a> to cache your
 keys in memory. This makes it possible to use an encrypted private key multiple
 times without having to repeatedly enter your passphrase. To start <code>ssh-agent</code>
 run the following command:</p>
-
 <pre><code>$ eval $(ssh-agent)
 Agent pid 4948
 </code></pre>
-
 <p>This will start an <code>ssh-agent</code> process in the background and set the following
 environment variables:</p>
-
 <ul>
 <li><code>SSH_AUTH_SOCK</code>: the path to the socket file used to communicate with the
-agent.</li>
+   agent.</li>
 <li><code>SSH_AGENT_PID</code>: the process id of the <code>ssh-agent</code></li>
 </ul>
-
 <p>Once the agent is running you can use <code>ssh-add</code> to cache a private key:</p>
-
 <pre><code>$ ssh-add ~/.ssh/id_rsa
 Enter passphrase for /home/bob/.ssh/id_rsa:
 Identity added: /home/bob/.ssh/id_rsa (/home/bob/.ssh/id_rsa)
 </code></pre>
-
 <p>This will decrypt the key and store it in memory. Once you've done this <code>ssh</code>
 should be able to use your private key without you having to re-enter your
 passphrase:</p>
-
 <pre><code>$ ssh remotehost
 Last login: Fri Jun 15 19:41:40 2018 from somehost.example.com
 $
 </code></pre>
-
 <p>You can verify which SSH keys you've currently got loaded using the <code>-l</code>
 option:</p>
-
 <pre><code>$ ssh-add -l
 2048 2f:c6:62:4f:f8:e4:a7:56:df:f8:93:8d:47:a1:d2:bc .ssh/id_rsa (RSA)
 </code></pre>
-
 <p>If you want to unload a private key, you can use the <code>-d</code> option:</p>
-
 <pre><code>$ ssh-add -d .ssh/id_rsa
 Identity removed: .ssh/id_rsa ( bob@somehost.example.com)
 </code></pre>
-
 <p>Alternatively you can use the <code>-D</code> option to remove all identities.</p>
-
 <h3>Locking and unlocking</h3>
-
 <p>Once you've decrypted a private key, <code>ssh-agent</code> will store the key in memory.
 To prevent anyone using the key while it's loaded you can lock the agent using
 the <code>-x</code> option. This will prompt for a password, and then prevent any access
 to the key:</p>
-
 <pre><code>$ ssh-add -x
 Enter lock password:
 Again:
@@ -114,10 +96,8 @@ Agent locked.
 $ ssh remotehost
 Enter passphrase for key '/home/bob/.ssh/id_rsa':
 </code></pre>
-
 <p>To use the keys loaded in the agent again, use the <code>-X</code> option to unlock the
 key:</p>
-
 <pre><code>$ ssh-add -X
 Enter lock password:
 Agent unlocked.
@@ -125,31 +105,24 @@ $ ssh remotehost
 Last login: Fri Jun 15 21:10:15 2018 from somehost.example.com
 $
 </code></pre>
-
 <h2>Verifying remote hosts</h2>
-
 <p>When you first connect to a host via ssh you will get a message similar to the
 following:</p>
-
 <pre><code>$ ssh remotehost
 The authenticity of host 'remotehost (192.168.10.10)' can't be established.
 ECDSA key fingerprint is 61:13:87:c6:13:0c:b4:d4:0c:d6:86:53:b3:b7:a1:42.
 Are you sure you want to continue connecting (yes/no)?
 </code></pre>
-
 <p>Ideally you should verify the fingerprint matches the fingerprint for the host
 your connecting to. The <a href="https://man.openbsd.org/ssh-keygen">ssh-keygen</a> command can be used to
 display the fingerprint for a ssh host key:</p>
-
 <pre><code>[root@remotehost ~]# ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key
 256 61:13:87:c6:13:0c:b4:d4:0c:d6:86:53:b3:b7:a1:42   (ECDSA)
 </code></pre>
-
 <p>If you type <code>yes</code> the public key of the remote host will be added to
 <code>~/.ssh/known_hosts</code>. <code>ssh</code> will then verify the public key of the host your
 connecting to matches when making subsequent connections. If the public key
 doesn't match, <code>ssh</code> will display a message similar to the following:</p>
-
 <pre><code>$ ssh remotehost
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
@@ -165,14 +138,11 @@ Offending RSA key in /home/bob/.ssh/known_hosts:1
 RSA host key for remotehost has changed and you have requested strict checking.
 Host key verification failed.
 </code></pre>
-
 <h3>Using VisualHostKey</h3>
-
 <p>Verifying hex strings is fine for a computer, however spotting visual patterns
 is generally easier for humans. One alternative to using a host key fingerprint
 is enabling ASCII art representations of public keys. This can be done using
 the <code>VisualHostKey</code> option:</p>
-
 <pre><code>$ ssh -o VisualHostKey=yes remotehost
 Host key fingerprint is 61:13:87:c6:13:0c:b4:d4:0c:d6:86:53:b3:b7:a1:42
 +--[ECDSA  256]---+
@@ -187,9 +157,7 @@ Host key fingerprint is 61:13:87:c6:13:0c:b4:d4:0c:d6:86:53:b3:b7:a1:42
 |                 |
 +-----------------+
 </code></pre>
-
 <p><code>ssh-keygen</code> can also be used to display ASCII art for a specific key:</p>
-
 <pre><code>$ ssh-keygen -lv -f /etc/ssh/ssh_host_ecdsa_key
 256 61:13:87:c6:13:0c:b4:d4:0c:d6:86:53:b3:b7:a1:42   (ECDSA)
 +--[ECDSA  256]---+
@@ -204,49 +172,36 @@ Host key fingerprint is 61:13:87:c6:13:0c:b4:d4:0c:d6:86:53:b3:b7:a1:42
 |                 |
 +-----------------+
 </code></pre>
-
 <h2>Hashing known_hosts</h2>
-
 <p>By default the public keys of systems you've connected to are stored in
 <code>~/.ssh/known_hosts</code> in the following format:</p>
-
 <pre><code>{markers (optional)} {hostnames} {keytype} {base64-encoded key} {comment}
 </code></pre>
-
 <p>For example:</p>
-
 <pre><code>remotehost ssh-rsa AAAAB3NzaC1yc2EAAAA1sjcQhbQbmIvDvkpeAlHjQsidHJkI6mQBJFOw==
 </code></pre>
-
 <p>Because <code>known_hosts</code> stores the hostname of systems you've been connected to,
 anyone who managed to compromise your private key could use the file to
 enumerate systems which you may have configured key based authentication on.
 This can be prevented by setting the <code>HashKnownHosts</code> option in
 <code>~/.ssh/config</code>:</p>
-
 <pre><code>HashKnownHosts yes
 </code></pre>
-
 <p>Once this options is set all new host entries in <code>known_hosts</code> will be hashed
 before they are written to the <code>known_hosts</code> file. The resulting lines will
 look similar to the following:</p>
-
 <pre><code>|1|GSPSrSFBcYBQ8rOQxMqpnYMSGUs=|ajy4mVNhFqIfeMc0rzMunrGb2YI= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNo...
 </code></pre>
-
 <p>Setting <code>HashKnownHosts</code> will only affect new known host entries. Existing
 entries can be hashed by running <code>ssh-keygen -H</code>:</p>
-
 <pre><code>$ ssh-keygen  -H
 /home/bob/.ssh/known_hosts updated.
 Original contents retained as /home/bob/.ssh/known_hosts.old
 WARNING: /home/bob/.ssh/known_hosts.old contains unhashed entries
 Delete this file to ensure privacy of hostnames
 </code></pre>
-
 <p>It's also worth noting you can use <code>ssh-keygen -F</code> to check if a host exists in
 you're <code>known_hosts</code> file after you've hashed it:</p>
-
 <pre><code>$ ssh-keygen -F remotehost
 # Host remotehost found: line 1 type ECDSA
 ...
@@ -256,9 +211,9 @@ you're <code>known_hosts</code> file after you've hashed it:</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

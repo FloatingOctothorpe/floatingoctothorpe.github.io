@@ -41,39 +41,29 @@
 
 <p>Following on from a <a href="/2016/bash-tips.html">post I made a while ago</a> below are some
 more <a href="https://www.gnu.org/software/bash/">Bash</a> tips. Hopefully you find a few of them useful...</p>
-
 <p><strong>Note</strong>: Like the last post, some of the shortcuts below assume you are using
 the default emacs style line editing mode. You can check this by running
 <code>set -o | grep emacs</code>.  For more info have a look at the <a href="https://www.gnu.org/software/bash/manual/html_node/Command-Line-Editing.html">Bash command line
 editing docs</a>.</p>
-
 <h2>Controlling the prompt</h2>
-
 <p>By default your bash prompt will probably look something like this:</p>
-
 <pre><code>[user@example ~]$
 </code></pre>
-
 <p>The prompt is controlled by the <code>PS1</code> environment variable. In the example above
 <code>PS1</code> is set to <code>[\u@\h \W]$</code>. The escaped characters are replaced with the
 following:</p>
-
 <ul>
 <li><code>\u</code>: username of the current user</li>
 <li><code>\h</code>: the hostname of the system</li>
 <li><code>\W</code>: the basename of the current working directory</li>
 </ul>
-
 <p>The <a href="https://www.gnu.org/software/bash/manual/html_node/Controlling-the-Prompt.html">Bash documentation</a> gives a full list of special characters
 that can be used. In addition you can also execute code in a prompt. For
 example the line below will add a smiley or sad face to the prompt based on the
 return code of the previous command:</p>
-
 <pre><code>PS1='[ \u@\h $([ $? -eq 0 ] &amp;&amp; echo -e "\e[32m:)" || echo -e "\e[31m:(")\e[m ] $ '
 </code></pre>
-
 <p>After setting <code>PS1</code> the prompt should look something like this:</p>
-
 <pre style="background-color: #111; color: white; width: 25em;font-family: monospace; font-size: 1.2em;">
 [ user@example <span style="color: green">:)</span> ] $ true
 [ user@example <span style="color: green">:)</span> ] $ false
@@ -81,68 +71,46 @@ return code of the previous command:</p>
 </pre>
 
 <p><strong>Note</strong>: To make changes persistent set <code>PS1</code> in <code>~/.bash_profile</code>.</p>
-
 <h2>Useful cd options</h2>
-
 <p>Below are a couple of useful ways to call <code>cd</code>:</p>
-
 <ul>
 <li>Running with no arguments (<code>cd</code>) will take you to your home directory.</li>
 <li>Running with a dash (<code>cd -</code>) will take you to the previous working
-directory.</li>
+   directory.</li>
 </ul>
-
 <h2>Yank last arg</h2>
-
 <p>It's fairly common to run multiple commands with the same last argument. For
 example:</p>
-
 <pre><code> $ vim /some/very/log/file/path/example.py
  $ chmod 755 /some/very/log/file/path/example.py
  $ chgrp foo /some/very/log/file/path/example.py
 </code></pre>
-
 <p>Instead of repeating the file path multiple times you can use the following
 shortcut:</p>
-
 <p><kbd>alt</kbd> + <kbd>.</kbd></p>
-
 <p>Doing this will insert the last argument from the previous command. So in the
 example above after running <code>vim</code> you would type <code>chmod 755</code> followed by they
 keyboard shortcut to insert the file path.</p>
-
 <h2>Clear screen</h2>
-
 <p>It's often nice to clear any previous commands off the screen. Instead of using
 the <a href="http://man7.org/linux/man-pages/man1/clear.1.html">clear</a> command, the following shortcut can be used:</p>
-
 <p><kbd>ctrl</kbd> + <kbd>c</kbd></p>
-
 <h2>Undo edits</h2>
-
 <p>It's very easy to accidentally delete the wrong part of a command you're
 editing. For example if you press <kbd>ctrl</kbd> + <kbd>w</kbd> in the wrong
 place. You can actually undo edits using the following shortcut:</p>
-
 <p><kbd>ctrl</kbd> + <kbd>_</kbd></p>
-
 <h2>Brace expansion</h2>
-
 <p>Bash has a useful feature called <a href="https://www.gnu.org/software/bash/manual/html_node/Brace-Expansion.html">brace expansion</a>. It
 works by expanding an expression inside curly brace characters (<code>{</code> and <code>}</code>) to
 generate multiple arguments. For example, if you want to make a backup of a
 file you can run:</p>
-
 <pre><code>cp -p /etc/foobar.conf{,.backup}
 </code></pre>
-
 <p>Bash will then expand the expression to the following:</p>
-
 <pre><code>cp -p /etc/foobar.conf /etc/foobar.conf.backup
 </code></pre>
-
 <p>You can also use brace expansion with a sequence. For example:</p>
-
 <pre><code>$ touch example_{1..4}.txt
 $ ls
 example_1.txt  example_2.txt  example_3.txt  example_4.txt
@@ -152,9 +120,9 @@ example_1.txt  example_2.txt  example_3.txt  example_4.txt
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

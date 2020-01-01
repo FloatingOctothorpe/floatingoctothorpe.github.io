@@ -39,27 +39,21 @@
 
 <time datetime="2018-06-29">29 June 2018</time>
 
-<p>Following on from <a href="/2018/test-driven-development.html">last week&#39;s post</a>, this post is going to look
+<p>Following on from <a href="/2018/test-driven-development.html">last week's post</a>, this post is going to look
 at using the <a href="https://docs.python.org/3.6/library/unittest.html">unittest</a> module for test driven
 development in Python. To keep things simple, the example in this post will
 look at starting a basic calculator module.</p>
-
 <p><strong>Note</strong>: the example in this post uses the latest stable version of Python
 (currently <code>3.6.5</code>).</p>
-
 <h2>Setting up a test runner</h2>
-
 <p>The <code>unittest</code> module can be used as a simple test runner by calling the <a href="https://docs.python.org/3.6/library/unittest.html#unittest.main">main
 function</a> with code similar to the following:</p>
-
 <pre><code>import unittest
 
 if __name__ == '__main__':
     unittest.main()
 </code></pre>
-
 <p>Running the code above will produce output similar to the following:</p>
-
 <pre><code>$ python calc.py
 
 ---------------------------------------------------------------------- 
@@ -67,15 +61,11 @@ Ran 0 tests in 0.000s
 
 OK
 </code></pre>
-
 <p><strong>Note</strong>: although the test runner is working correctly, there are currently no
 tests to execute.</p>
-
 <h2>Adding a test case</h2>
-
 <p>Test cases can be added by creating a new class which extends the
 <code>unittest.TestCase</code> class, and then adding a method, for example:</p>
-
 <pre><code>import unittest
 
 class TestAddition(unittest.TestCase):
@@ -85,11 +75,9 @@ class TestAddition(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 </code></pre>
-
 <p>The <code>test_adding_integers</code> method uses the
 <a href="https://docs.python.org/3/library/unittest.html#unittest.TestCase.assertEqual">assertEqual</a> method to compare <code>4</code> and the output of
 <code>add(2, 2)</code>. Unsurprisingly the test should fail when run:</p>
-
 <pre><code>$ python calc.py
 E
 ====================================================================== 
@@ -105,17 +93,13 @@ Ran 1 test in 0.000s
 
 FAILED (errors=1)
 </code></pre>
-
 <p>We now have our first test which will drive the first bit of development. A
 very simple implementation to pass the test above might look something like the
 following:</p>
-
 <pre><code>def add(a, b):
     return a + b
 </code></pre>
-
 <p>Once implemented the failing test should now pass:</p>
-
 <pre><code>$ python calc.py
 .
 ---------------------------------------------------------------------- 
@@ -123,22 +107,17 @@ Ran 1 test in 0.000s
 
 OK
 </code></pre>
-
 <h2>Another test</h2>
-
 <p>Now the test suite is passing we can add a new test to describe the next
 feature, in this case the <code>add</code> function now needs to handle two or three
 parameters:</p>
-
 <pre><code>class TestAddition(unittest.TestCase):
     def test_adding_integers(self):
         self.assertEqual(4, add(2, 2))
     def test_adding_three_integers(self):
         self.assertEqual(10, add(2, 2, 6)
 </code></pre>
-
 <p>Initially this test will fail:</p>
-
 <pre><code>$ python calc.py
 .E
 ====================================================================== 
@@ -154,15 +133,11 @@ Ran 2 tests in 0.000s
 
 FAILED (errors=1)
 </code></pre>
-
 <p>To get the test to pass, the add function can be updated as follows:</p>
-
 <pre><code>def add(*args):
     return sum(args)
 </code></pre>
-
 <p>Running the test suite again confirms everything is OK:</p>
-
 <pre><code>$ python calc.py
 ..
 ---------------------------------------------------------------------- 
@@ -170,20 +145,15 @@ Ran 2 tests in 0.000s
 
 OK
 </code></pre>
-
 <h2>A different test case</h2>
-
 <p>You can group tests across multiple <code>TestCase</code> objects, this makes it easier to
 do things like selectively run tests in the future:</p>
-
 <pre><code>class TestMultiplication(unittest.TestCase):
     def test_multipling_integers(self):
         self.assertEqual(12, multiply(3, 4))
 </code></pre>
-
 <p>The test case above expects a multiply function which doesn't exist yet.
 Therefore it should initially fail:</p>
-
 <pre><code>$ python calc.py
 ..E
 ====================================================================== 
@@ -199,16 +169,12 @@ Ran 3 tests in 0.000s
 
 FAILED (errors=1)
 </code></pre>
-
 <p>When writing tests it's important to think about different parameters. It's
 obviously not possible to test everything, however the test above can be passed with the following implementation:</p>
-
 <pre><code>def multiply(a, b):
     return 12
 </code></pre>
-
 <p>Running the test suite confirms the implementation above passes:</p>
-
 <pre><code>$ python calc.py
 ...
 ---------------------------------------------------------------------- 
@@ -216,16 +182,12 @@ Ran 3 tests in 0.000s
 
 OK
 </code></pre>
-
 <p>To get around this a new test similar to the following can be added to
 complement the existing test:</p>
-
 <pre><code>def test_multipling_decimal_numbers(self):
     self.assertEqual(0.2, multiply(0.4, 0.5))
 </code></pre>
-
 <p>As always the new test will initially fail:</p>
-
 <pre><code>$ python calc.py
 ..F.
 ====================================================================== 
@@ -241,16 +203,12 @@ Ran 4 tests in 0.000s
 
 FAILED (failures=1)
 </code></pre>
-
 <p>To make both test cases pass the implementation can be updated to something
 similar to the following:</p>
-
 <pre><code>def multiply(a, b):
     return a * b
 </code></pre>
-
 <p>As expected all tests now pass:</p>
-
 <pre><code>$ python calc.py
 ....
 ---------------------------------------------------------------------- 
@@ -258,18 +216,13 @@ Ran 4 tests in 0.000s
 
 OK
 </code></pre>
-
 <h2>Refactoring implementation code</h2>
-
 <p>The final test case in this post is going to require the <code>multiply</code> function to
 cope with three parameters:</p>
-
 <pre><code>def test_multipling_three_numbers(self):
     self.assertEqual(64, multiply(2, 8, 4)
 </code></pre>
-
 <p>As with the previous test cases, it should initially fail:</p>
-
 <pre><code>$ python calc.py
 ....E
 ====================================================================== 
@@ -285,18 +238,14 @@ Ran 5 tests in 0.010s
 
 FAILED (errors=1)
 </code></pre>
-
 <p>An initially implementation might look something like the following:</p>
-
 <pre><code>def multiply(*args):
     product = 1
     for arg in args:
         product *= arg
     return product
 </code></pre>
-
 <p>Running the test suite confirms this passes:</p>
-
 <pre><code>$ python calc.py
 .....
 ---------------------------------------------------------------------- 
@@ -304,19 +253,15 @@ Ran 5 tests in 0.000s
 
 OK
 </code></pre>
-
 <p>However the implementation is not particularly tidy, and can be simplified
 using the <a href="https://docs.python.org/3/library/functools.html#functools.reduce">reduce function</a>:</p>
-
 <pre><code>from functools import reduce
 
 def multiply(*args):
     return reduce((lambda x, y: x * y), args)
 </code></pre>
-
 <p>Once the implementation is updated the test suite can be re-run to verify
 everything is still working as expected:</p>
-
 <pre><code>$ python calc.py
 .....
 ---------------------------------------------------------------------- 
@@ -324,14 +269,11 @@ Ran 5 tests in 0.000s
 
 OK
 </code></pre>
-
 <h2>Future steps</h2>
-
 <p>Software testing is obviously a very large topic, and the <a href="/2018/tdd_calc_example.py">calc
 example</a> in this post is deliberately simplistic. If you want to
 learn more I would recommend reading the <a href="https://docs.python.org/3.6/library/unittest.html">Python unittest
 docs</a> as a starting point.</p>
-
 <p>There is also <a href="http://www.obeythetestinggoat.com/pages/book.html">Test-Driven Development with Python</a> by Harry J.W.
 Percival, I've not read the book yet, however it looks like a good resource if
 you want a more in-depth look at writing tests in Python.</p>
@@ -340,9 +282,9 @@ you want a more in-depth look at writing tests in Python.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -43,24 +43,17 @@
 One of the main benefits of OpenWrt is the level of access you have over
 standard router firmware. This post is going to look at using the
 <code>luci-mod-rpc</code> module to manage OpenWrt over HTTP.</p>
-
 <h2>Installing luci-mod-rpc</h2>
-
 <p>The <code>luci-mod-rpc</code> module needs to be install. To do this you can run the
 following commands over SSH:</p>
-
 <pre><code>opkg install luci-mod-rpc
 /etc/init.d/uhttpd restart
 </code></pre>
-
 <p>Alternatively you can install the package using the web interface by going to
 <code>System -&gt; Software</code> and restart <code>uhttpd</code> from the <code>System -&gt; Startup</code> page.</p>
-
 <h2>Requesting an API token</h2>
-
 <p>API calls require a session token. To request a new token make a request to the
 <code>auth</code> API endpoint:</p>
-
 <pre><code>$ curl -X POST http://192.168.1.1/cgi-bin/luci/rpc/auth --data '
 {
   "id": 1,
@@ -68,40 +61,29 @@ following commands over SSH:</p>
   "params": ["root", "secret_password"]
 }'
 </code></pre>
-
 <p>This will return JSON with a token similar to the following assuming the
 authentication details are correct:</p>
-
 <pre><code>{"id":1,"result":"a191c1c171c210def536e5279ed0c67f","error":null}
 </code></pre>
-
 <p><strong>Note</strong>: the authentication details should normally be the same as the details
 for the LuCI web interface.</p>
-
 <h2>Calling the API</h2>
-
 <p>At the time of writing there are currently four API end points besides the auth
 API:</p>
-
 <ul>
 <li><code>/cgi-bin/luci/rpc/uci</code></li>
 <li><code>/cgi-bin/luci/rpc/fs</code></li>
 <li><code>/cgi-bin/luci/rpc/sys</code></li>
 <li><code>/cgi-bin/luci/rpc/ipkg</code></li>
 </ul>
-
 <p>The <a href="https://github.com/openwrt/luci/wiki/JsonRpcHowTo">OpenWrt wiki</a> briefly documents the available
 endpoints, however it's worth referring to the <a href="https://github.com/openwrt/luci/tree/master/documentation">LuCI docs on
 GitHub</a> for more information on the API calls being exposed.</p>
-
 <h3>Universal Configuration Interface</h3>
-
 <p>Universal Configuration Interface or UCI for short is an easy way to configure
 OpenWrt. If you're not already familiar with UCI the <a href="https://wiki.openwrt.org/doc/uci">OpenWrt
 docs</a> are a good place to go for further info.</p>
-
 <p>The <code>get</code> method can be used to check configuration values:</p>
-
 <pre><code>$ curl -X POST http://192.168.1.1/cgi-bin/luci/rpc/uci?auth=a191c1c171c210def536e5279ed0c67f --data '
 {
   "id": "1",
@@ -109,14 +91,10 @@ docs</a> are a good place to go for further info.</p>
   "params": ["luci", "sauth", "sessiontime"]
 }'
 </code></pre>
-
 <p>This will return output similar to the following:</p>
-
 <pre><code>{"id":"1","result":"3600","error":null}
 </code></pre>
-
 <p>You can also set configuration, for example:</p>
-
 <pre><code>$ curl -X POST http://192.168.1.1/cgi-bin/luci/rpc/uci?auth=a191c1c171c210def536e5279ed0c67f --data '
 {
   "id": "1",
@@ -124,13 +102,10 @@ docs</a> are a good place to go for further info.</p>
   "params": ["luci", "sauth", "sessiontime", 7200]
 }'
 </code></pre>
-
 <h3>File system access</h3>
-
 <p>The <code>fs</code> endpoint calls the <code>nixio.fs</code> library. This can be used to interact
 with files on the file system. For example the metadata associated with a file
 can be checked using the <code>stat</code> method:</p>
-
 <pre><code>$ curl -X POST http://192.168.1.1/cgi-bin/luci/rpc/fs?auth=a191c1c171c210def536e5279ed0c67f --data '
 {
   "id": "1",
@@ -138,10 +113,8 @@ can be checked using the <code>stat</code> method:</p>
   "params": ["/etc/hosts"]
 }'
 </code></pre>
-
 <p>It's also possible to read and write files. For example you can use <code>readfile</code>
 to get the contents of <code>/etc/hosts</code>:</p>
-
 <pre><code>$ curl -X POST http://192.168.1.1/cgi-bin/luci/rpc/fs?auth=a191c1c171c210def536e5279ed0c67f --data '
 {
   "id": "1",
@@ -149,21 +122,15 @@ to get the contents of <code>/etc/hosts</code>:</p>
   "params": ["/etc/hosts"]
 }'
 </code></pre>
-
 <p>The returned JSON should hopefully look similar to the following:</p>
-
 <pre><code>{"id":"1","result":"MTI3LjAuMC4xIGxvY2FsaG9zdAo=","error":null}
 </code></pre>
-
 <p>The result can then be decoded:</p>
-
 <pre><code>$ echo MTI3LjAuMC4xIGxvY2FsaG9zdAo= | base64 --decode
 127.0.0.1 localhost
 </code></pre>
-
 <p><strong>Note</strong>: unless you have the <code>luasocket</code> module installed you may get an error
 similar to the following:</p>
-
 <pre><code>{
   "id":"1",
   "result":null,
@@ -174,14 +141,11 @@ similar to the following:</p>
   }
 }
 </code></pre>
-
 <h3>Making system calls</h3>
-
 <p>The <code>sys</code> endpoint exposes methods from several libraries including <code>luci.sys</code>,
 <code>luci.sys.process</code>, and <code>luci.sys.net</code>. By default the endpoint will assume
 calls are being made to the <code>luci.sys</code> library. For example the <code>exec</code> method
 could be called with a curl command similar to the following:</p>
-
 <pre><code>$ curl -X POST http://192.168.1.1/cgi-bin/luci/rpc/sys?auth=a191c1c171c210def536e5279ed0c67f --data '
 {
   "id": "1",
@@ -189,11 +153,9 @@ could be called with a curl command similar to the following:</p>
   "params": ["echo 'hello world'"]
 }'
 </code></pre>
-
 <p>A prefix can be added to the method name to call methods from other <code>sys</code>
 libraries. For example if you wanted call the <code>arptable</code> method from
 <code>luci.sys.net</code> you could use a command similar to the following:</p>
-
 <pre><code>$ curl -X POST http://192.168.1.1/cgi-bin/luci/rpc/sys?auth=a191c1c171c210def536e5279ed0c67f --data '
 {
   "id": "1",
@@ -201,13 +163,10 @@ libraries. For example if you wanted call the <code>arptable</code> method from
   "params": []
 }'
 </code></pre>
-
 <h3>Managing packages</h3>
-
 <p>The <code>ipkg</code> end point can be used to managed installed software. For example you
 could check if <code>luci-mod-rpc</code> is installed with a command similar to the
 following:</p>
-
 <pre><code>$ curl -X POST http://192.168.1.1/cgi-bin/luci/rpc/ipkg?auth=a191c1c171c210def536e5279ed0c67f --data '
 {
   "id": "1",
@@ -215,12 +174,9 @@ following:</p>
   "params": ["luci-mod-rpc"]
 }'
 </code></pre>
-
 <p>The command above should return the following JSON:</p>
-
 <pre><code>{"id":"1","result":true,"error":null}
 </code></pre>
-
 <p><strong>Note</strong>: Unfortunately several methods such as <code>list_all</code> use a call back
 function instead of returning data. This makes them fairly tricky to call with
 the RPC API.</p>
@@ -229,9 +185,9 @@ the RPC API.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

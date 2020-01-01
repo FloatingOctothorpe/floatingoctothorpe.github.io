@@ -42,14 +42,11 @@
 <p>By default each SSH connection will create a new TCP connection and require
 authentication. For normal use cases this is absolutely fine, however it is
 possible to re-use an existing connection for multiple sessions.</p>
-
 <h2>Config</h2>
-
 <p>There are three SSH options which control multiplexing, <code>ControlMaster</code>,
 <code>ControlPath</code> and <code>ControlPersist</code>. A full description of these options can be
 found in the <a href="http://man.openbsd.org/ssh_config.5">ssh_config man page</a>, however below is a
 brief description of each option:</p>
-
 <dl>
   <dt>ControlMaster</dt>
   <dd>
@@ -68,71 +65,58 @@ brief description of each option:</p>
 
 <p>To set these options you can put something similar to the following in
 <code>~/.ssh/config</code>:</p>
-
 <pre><code>Host somehost.example.com
   ControlMaster=auto
   ControlPath=/dev/shm/ssh-%r@%h:%p
   ControlPersist=5m
 </code></pre>
-
 <p>After doing this when you first connect to <code>somehost.example.com</code> you will
 establish a new connection and SSH will create a socket file.</p>
-
 <p>Once the first connection to <code>somehost.exmaple.com</code> is established, additional
 connections will re-use the connection. This avoids the overhead of
 establishing a new connection.</p>
-
 <p><strong>Note</strong>: <code>/dev/shm</code> is normally a <a href="https://en.wikipedia.org/wiki/Tmpfs">tmpfs</a> filesystem, using it in
 <code>ControlPath</code> ensures socket files are removed each time the system is
 restarted. You can of couse use another location if you want to.</p>
-
 <h2>Advantages</h2>
-
 <p>There are two main advantages to sharing connections. Firstly you avoid
 overhead associated with establishing additional connections.  Connecting to
 <code>localhost</code> using a public key takes about 0.2 seconds:</p>
-
 <pre><code>$ time ssh bob@localhost :
 
 real    0m0.198s
 user    0m0.026s
 sys     0m0.011s
 </code></pre>
-
 <p>In comparison sharing an existing connection takes about a tenth of the time:</p>
-
 <pre><code>$ time ssh bob@localhost :
 
 real    0m0.022s
 user    0m0.004s
 sys     0m0.003s
 </code></pre>
-
 <p>Connection sharing also allows you to avoid re-type passwords. This is great
 for environments where you cannot use public key authentication.</p>
-
 <h2>OpenSSH on Cygwin</h2>
-
-<p>Unfortunately OpenSSH on Cygwin currently <a href="https://cygwin.com/ml/cygwin/2015-01/msg00123.html">doesn&#39;t support shared
+<p>Unfortunately OpenSSH on Cygwin currently <a href="https://cygwin.com/ml/cygwin/2015-01/msg00123.html">doesn't support shared
 connections</a>. The <a href="https://cygwin.com/cygwin-ug-net/highlights.html">Cygwin
 documentation</a> has the following note regarding
 AF_LOCAL sockets:</p>
-
 <blockquote>
-  <p>AF_UNIX (AF_LOCAL) sockets are not available in Winsock. They are
-  implemented in Cygwin by using local AF_INET sockets instead. This is
-  completely transparent to the application. Cygwin's implementation also
-  supports the getpeereid BSD extension. However, Cygwin does not yet support
-  descriptor passing.</p>
+<p>AF_UNIX (AF_LOCAL) sockets are not available in Winsock. They are
+implemented in Cygwin by using local AF_INET sockets instead. This is
+completely transparent to the application. Cygwin's implementation also
+supports the getpeereid BSD extension. However, Cygwin does not yet support
+descriptor passing.</p>
 </blockquote>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

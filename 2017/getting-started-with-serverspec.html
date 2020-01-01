@@ -43,40 +43,28 @@
 server configuration is often overlooks. There are some great tools out there
 to help you automat testing servers. <a href="http://serverspec.org/">Serverspec</a> is one tool
 that can be used to do this.</p>
-
 <p>Serverspec allows you to write <a href="http://rspec.info/">RSpec</a> tests for server
 infrastructure. As a bonus Serverspec is also agent-less and can be run via SSH.
 This is great because it means you don't need to worry about distributing test
 code.</p>
-
 <h2>Installing Serverspec</h2>
-
 <p>On <a href="https://www.centos.org">CentOS</a> Serverspec can be installed using the <code>RubyGems</code>
 package manager. First install the required ruby packages:</p>
-
 <pre><code>yum install -y rubygem-rake rubygems
 </code></pre>
-
 <p>You can then install Serverspec using the <code>gem</code> command:</p>
-
 <pre><code>gem install serverspec
 </code></pre>
-
 <p><strong>Note</strong>: The commands above should normally be run as <code>root</code>, however you can
 install gems as a non-root user. If you do this the gems will be unpacked in
 <code>~/.gem</code> instead of <code>/usr/local/share/gems/</code>.</p>
-
 <h2>Setting up a simple spec file</h2>
-
 <p>Before getting started make sure you have configured SSH keys to allow you to
 connect to the server you want to test:</p>
-
 <pre><code>$ ssh-keygen
 $ ssh-copy-id remote.example.com
 </code></pre>
-
 <p>You can then run <code>serverspec-init</code> to setup a basic Serverspec structure:</p>
-
 <pre><code>$ serverspec-init
 Select OS type:
 
@@ -101,10 +89,8 @@ Input target host name: remote.example.com
  + Rakefile
  + .rspec
 </code></pre>
-
 <p>This will create a spec file (<code>sample_spec.rb</code>) with some example tests similar
 to the following:</p>
-
 <pre><code>require 'spec_helper'
 
 describe package('httpd') do
@@ -120,14 +106,10 @@ describe port(80) do
   it { should be_listening }
 end
 </code></pre>
-
 <p><strong>Note</strong>: the example above is a simplified version of the spec file
 <code>serverspec-init</code> will normally produce.</p>
-
 <h2>Running tests</h2>
-
 <p><code>serverspec-init</code> will also create a rakefile which can be used to run <code>rspec</code>:</p>
-
 <pre><code>$ rake spec
 /usr/bin/ruby -I/usr/local/share/gems/gems/rspec-core-3.5.4/lib:/usr/local/share/gems/gems/rspec-support-3.5.0/lib /usr/local/share/gems/gems/rspec-core-3.5.4/exe/rspec --pattern spec/remote.example.com/\*_spec.rb
 
@@ -142,18 +124,14 @@ Port "80"
   should be listening (FAILED - 3)
 ...
 </code></pre>
-
 <p>RSpec will look in <code>.rspec</code> for options, however these can be overridden using
 the <code>SPEC_OPTS</code> variable. For example if you want to use the progress
 formatter:</p>
-
 <pre><code>$ rake spec SPEC_OPTS='--format progress'
 /usr/bin/ruby -I/usr/local/share/gems/gems/rspec-core-3.5.4/lib:/usr/local/share/gems/gems/rspec-support-3.5.0/lib /usr/local/share/gems/gems/rspec-core-3.5.4/exe/rspec --pattern spec/remote.example.com/\*_spec.rb
 .FFF
 </code></pre>
-
 <p>You can also run spec files directly using the <code>rspec</code> command:</p>
-
 <pre><code>$ export GEM_PATH=/usr/local/share/gems/
 $ rspec spec/remote.example.com/sample_spec.rb
 
@@ -170,9 +148,7 @@ Port "80"
 Finished in 0.38349 seconds (files took 0.28304 seconds to load)
 4 examples, 0 failures
 </code></pre>
-
 <h2>Where next?</h2>
-
 <p>Once you've got Serverspec up and running, the <a href="http://serverspec.org/resource_types.html">resource
 types</a> section on the Serverspec site is worth a
 visit. It's full of examples which should make writing you're first few tests
@@ -182,9 +158,9 @@ easy.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

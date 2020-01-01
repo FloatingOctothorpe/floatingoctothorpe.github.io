@@ -42,87 +42,61 @@
 <p><a href="https://developer.android.com/studio/command-line/adb.html">Android Debug Bridge (adb)</a> is a command line tool that can be used
 to manage Android devices over USB. This post is going to go over using <code>adb</code>
 to backup and restore application data.</p>
-
 <h2>Installing adb</h2>
-
 <p>On Debian the <code>adb</code> command can be installed from the official repositories
 using <code>apt-get</code>:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install android-tools-adb
 </code></pre>
-
 <p>Alternatively the <a href="https://apps.fedoraproject.org/packages/android-tools">android-tools</a> package can be used on
 recent Fedora or CentOS systems:</p>
-
 <pre><code>sudo yum install android-tools
 </code></pre>
-
 <p><strong>Note</strong>: <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a> needs to be configured on CentOS.</p>
-
 <p>For Windows and Mac systems, the easiest way to get access to <code>adb</code> is to
 install <a href="https://developer.android.com/studio/releases/platform-tools.html">SDK-Platform-Tools</a> from Google.</p>
-
 <h2>Enabling USB debugging</h2>
-
 <p>Before connecting to an Android device USB debugging needs to be enabled. To do
 this select <strong>Developer options</strong> from the device system settings and enable
 the <strong>USB debugging</strong> option:</p>
-
 <p><img class="pure-img" src="/2017/android-developer-options.png"
   alt="Screenshot showing the Android developer options"/></p>
-
 <p><strong>Note</strong>: on Android 4.2 and up the <strong>Developer options</strong> menu is hidden. To
 enable it select <strong>About phone</strong> from the device system settings and tap the
 <strong>Build number</strong> seven times. The developer options should now be available on
 the system settings screen.</p>
-
 <h2>Connecting adb</h2>
-
 <p>Once you've installed <code>adb</code> and enabled USB debugging, connect the device via a
 USB cable and run <code>sudo adb devices -l</code>:</p>
-
 <pre><code>$ sudo adb devices -l
 * daemon not running. starting it now on port 5037 *
 * daemon started successfully *
 List of devices attached
 FB21AA891M             offline usb:1-2
 </code></pre>
-
 <p>This will start up the <code>adb</code> daemon and should list the connected device. On
 the device you also need to allow the connection:</p>
-
 <p><img class="pure-img" src="/2017/android-usb-confirmation.png"
   alt="Screenshot showing the Android adb USB confirmation dialog"/></p>
-
 <p>Once this is done the device should be online:</p>
-
 <pre><code>$ sudo adb devices -l
 List of devices attached
 FB21AA891M             device usb:1-2 product:F5121 model:F5121 device:F5121
 </code></pre>
-
 <p><strong>Note</strong>: if you want to avoid having to use <code>sudo</code>, make your user account a
 member of the <code>adb</code> group.</p>
-
 <h2>Backing up application data</h2>
-
 <p>Once the device is online application data can be backed up with the <code>backup</code>
 command:</p>
-
 <pre><code>$ sudo adb backup -f portknocker.ab com.xargsgrep.portknocker
 Now unlock your device and confirm the backup operation.
 </code></pre>
-
 <p>As suggested you will then need to confirm the backup on the device:</p>
-
 <p><img class="pure-img" src="/2017/android-backup-confirmation.png"
   alt="Screenshot showing the Android backup confirmation dialog"/></p>
-
 <p>The command above will create a backup file called <code>portknocker.ab</code> with the
 data from the <code>com.xargsgrep.portknocker</code> application. You can get a list of
 installed applications using <code>adb shell</code>:</p>
-
 <pre><code>$ sudo adb shell pm list package
 package:com.sony.nfx.app.sfrc
 package:com.sonyericsson.android.techmode
@@ -132,18 +106,14 @@ package:com.google.android.youtube
 package:com.ghostsq.commander
 ...
 </code></pre>
-
 <p>There are also additional options such as <code>-apk</code> which can be used to control
 which data is backed up. Interestingly I had to add single quotes to use these
 options:</p>
-
 <pre><code>$ sudo adb backup -f portknocker.ab '-apk com.xargsgrep.portknocker'
 Now unlock your device and confirm the backup operation.
 </code></pre>
-
 <p><strong>Note</strong>: if the single quotes are not used the backup will fail silently. This
 can be verified using <code>adb logcat</code> to tail the device logs:</p>
-
 <pre><code>$ sudo adb logcat
 08-17 22:51:36.289 17264 17264 D AndroidRuntime: Calling main entry com.android.commands.bu.Backup
 08-17 22:51:36.289 17264 17264 D bu      : Beginning: backup
@@ -151,18 +121,13 @@ can be verified using <code>adb logcat</code> to tail the device logs:</p>
 08-17 22:51:36.292 17264 17264 E bu      : no backup packages supplied and neither -shared nor -all given
 08-17 22:51:36.292 17264 17264 D bu      : Finished.
 </code></pre>
-
 <p>Full documentation on the additional options can be found on the <a href="https://developer.android.com/studio/command-line/adb.html#issuingcommands">Android
 command adb docs</a>.</p>
-
 <h2>Restoring backups</h2>
-
 <p>Backups can be restored using the <code>restore</code> command:</p>
-
 <pre><code>$ sudo adb restore portknocker.ab
 Now unlock your device and confirm the restore operation.
 </code></pre>
-
 <p><strong>Note</strong>: backups which were created without the <code>-apk</code> option failed to
 restore silently. Unfortunately I'm not quite sure why this happens...</p>
       </article>
@@ -170,9 +135,9 @@ restore silently. Unfortunately I'm not quite sure why this happens...</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

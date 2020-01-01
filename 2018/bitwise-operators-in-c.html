@@ -39,7 +39,7 @@
 
 <time datetime="2018-04-06">06 April 2018</time>
 
-<p><style>
+<style>
   th.highlight, td.highlight {
     background-color: #f2f2f2;
   }
@@ -50,18 +50,15 @@
     min-width: 10px;
     text-align: center;
   }
-</style></p>
+</style>
 
-<p>In <a href="/2018/the-c-programming-language-chapter-2.html">last week&#39;s post</a> I very briefly mentioned bitwise
+<p>In <a href="/2018/the-c-programming-language-chapter-2.html">last week's post</a> I very briefly mentioned bitwise
 operators. This week's post is going to look at bitwise operators in detail. If
 you're already familiar with bitwise operators, feel free to skip this post.</p>
-
 <h2>Chars, Integers and bits</h2>
-
 <p>In C numeric types such as integers are stored using binary. For example 18 is
 <code>10010</code> in binary, and would therefore be stored with bits similar to the
 following:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>0</td>
@@ -89,13 +86,10 @@ the range 0 to 65535. Therefore integers must be at least 16 bits long
 (2<sup>16</sup> - 1 = 65335). To simplify the rest of this post all subsequent
 examples with use unsigned chars, and assume the maximum possible unsigned char
 value is 255.</p>
-
 <h3>Printing bits</h3>
-
 <p>Unfortunately <a href="http://man7.org/linux/man-pages/man3/printf.3.html">printf</a> doesn't have a built in way to print a
 binary representation of a char. To get around this a function similar to the
 following can be used:</p>
-
 <pre><code>void print_bits(unsigned char x)
 {
     int i;
@@ -104,19 +98,14 @@ following can be used:</p>
         printf("%d", (x &gt;&gt; i) % 2);
 }
 </code></pre>
-
 <p>The function above will print a binary representation of a number, for example
 <code>print_bits(18)</code> should output the following line:</p>
-
 <pre><code>00010010
 </code></pre>
-
 <h2>Bitwise AND</h2>
-
 <p>In C the logical AND operator (<code>&amp;&amp;</code>) will return 1 if both operands are true,
 otherwise it will return 0. The table below shows possible outcomes for
 <code>a &amp;&amp; b</code>, where <code>a</code> and <code>b</code> are either 0 or 1:</p>
-
 <table class="pure-table pure-table-bordered">
   <tr><td class=""></td><th class="highlight">b = 0</th><th class="highlight">b = 1</th></tr>
   <tr><th class="highlight">a = 0</th><td>0</td><td>0</td></tr>
@@ -125,16 +114,13 @@ otherwise it will return 0. The table below shows possible outcomes for
 
 <p>The bitwise AND operator (<code>&amp;</code>) carries out the same logic, but for each individual
 bit. For example consider the following:</p>
-
 <pre><code>unsigned char a = 155;
 unsigned char b = 171;
 unsigned char c;
 
 c = a &amp; b;
 </code></pre>
-
 <p>In the example above, <code>a</code> would be represented by the following bits:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>1</td>
@@ -149,7 +135,6 @@ c = a &amp; b;
 </table>
 
 <p>And <code>b</code> would be:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>1</td>
@@ -166,7 +151,6 @@ c = a &amp; b;
 <p>The <code>&amp;</code> operator will go through each bit in <code>a</code> and <code>b</code> and perform a logical
 AND. The leftmost bit in both <code>a</code> and <code>b</code> is 1, therefore the first bit will be
 1:</p>
-
 <table class="pure-table bits">
   <tr>
     <td class="highlight">1</td>
@@ -181,7 +165,6 @@ AND. The leftmost bit in both <code>a</code> and <code>b</code> is 1, therefore 
 </table>
 
 <p>The next bit will be 0, because it's 0 in both <code>a</code> and  <code>b</code>:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>1</td>
@@ -196,7 +179,6 @@ AND. The leftmost bit in both <code>a</code> and <code>b</code> is 1, therefore 
 </table>
 
 <p>Once each bit is evaluated, the following value will be assigned to <code>c</code>:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>1</td>
@@ -211,10 +193,8 @@ AND. The leftmost bit in both <code>a</code> and <code>b</code> is 1, therefore 
 </table>
 
 <h2>Bitwise OR</h2>
-
 <p>The logical OR operator (<code>||</code>) also has a bitwise equivalent. The following
 table shows potential outcomes when bit <code>a</code> is compared to bit <code>b</code>:</p>
-
 <table class="pure-table pure-table-bordered">
   <tr><td class=""></td><th class="highlight">b = 0</th><th class="highlight">b = 1</th></tr>
   <tr><th class="highlight">a = 0</th><td>0</td><td>1</td></tr>
@@ -222,16 +202,13 @@ table shows potential outcomes when bit <code>a</code> is compared to bit <code>
 </table>
 
 <p>The bitwise equivalent of <code>||</code> is <code>|</code>:</p>
-
 <pre><code>unsigned char a = 155;
 unsigned char b = 171;
 unsigned char c;
 
 c = a | b;
 </code></pre>
-
 <p>In the example above, <code>a</code> would be represented by the following bits:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>1</td>
@@ -246,7 +223,6 @@ c = a | b;
 </table>
 
 <p>And <code>b</code> would be:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>1</td>
@@ -261,7 +237,6 @@ c = a | b;
 </table>
 
 <p>And the resulting value assigned to <code>c</code> would be 187:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>1</td>
@@ -276,12 +251,10 @@ c = a | b;
 </table>
 
 <h3>Bitwise OR (exclusive)</h3>
-
 <p>The bitwise OR operator is normally inclusive, that is if both bits are 1, the
 result will be 1. C also has an exclusive bitwise OR (<code>^</code>). Unlike the
 inclusive bitwise OR, if both bits at a given position are 1 the resulting bit
 will be set to zero:</p>
-
 <table class="pure-table pure-table-bordered">
   <tr><td class=""></td><th class="highlight">b = 0</th><th class="highlight">b = 1</th></tr>
   <tr><th class="highlight">a = 0</th><td>0</td><td>1</td></tr>
@@ -289,16 +262,13 @@ will be set to zero:</p>
 </table>
 
 <p>For example if an exclusive OR is used:</p>
-
 <pre><code>unsigned char a = 155;
 unsigned char b = 171;
 unsigned char c;
 
 c = a ^ b;
 </code></pre>
-
 <p>The resulting value of <code>c</code> will be 48, instead of 187:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>0</td>
@@ -313,11 +283,9 @@ c = a ^ b;
 </table>
 
 <h2>Bit shifting</h2>
-
 <p>There are two bit shifting operators, left shift (<code>&lt;&lt;</code>) and right shift (<code>&gt;&gt;</code>).
 These operators move each bit either left or right a specified number of times.
 For example:</p>
-
 <pre><code>unsigned char x = 7;
 
 printf("%d\n", x); /* print 7 */
@@ -328,9 +296,7 @@ printf("%d\n", x); /* print 28 */
 x = x &gt;&gt; 2;
 printf("%d\n", x); /* print 7 again" */
 </code></pre>
-
 <p>In the example above <code>x</code> starts of as the following:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>0</td>
@@ -346,7 +312,6 @@ printf("%d\n", x); /* print 7 again" */
 
 <p>The bits in <code>x</code> are then shifted to the left twice, the blank bits on the far
 right are filled in with zeros:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>0</td>
@@ -362,10 +327,8 @@ right are filled in with zeros:</p>
 
 <p><strong>Note</strong>: each shift effectively doubles the value, therefore the final value
 is 28 (<code>7 * 2 * 2</code>).</p>
-
 <p>Finally the value is shifted back two places by the right shift operator, and
 the two bits on the far left are replaced with zeros:</p>
-
 <table class="pure-table bits">
   <tr>
     <td class="highlight">0</td>
@@ -381,26 +344,19 @@ the two bits on the far left are replaced with zeros:</p>
 
 <p>It's important to note that the shift operators will truncate bits. This can be
 demonstrated with the following code:</p>
-
 <pre><code>unsigned char x = 1;
 x = (x &gt;&gt; 1) &lt;&lt; 1;
 </code></pre>
-
 <p>In the example above <code>x</code> is shifted right then left, however doing this will
 effectively lose the right hand bit and <code>x</code> will end up as 0.</p>
-
 <h2>Ones' complement</h2>
-
 <p>Unlike the bitwise operators above, the <code>~</code> operator is a unary operator;
 therefore it only takes a single operand. Each bit in the operand is inverted,
 so 1 becomes 0 and zero becomes 1. For example:</p>
-
 <pre><code>unsigned char x = 142;
 x = ~x;
 </code></pre>
-
 <p>In the code above <code>x</code> starts as 142:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>1</td>
@@ -415,7 +371,6 @@ x = ~x;
 </table>
 
 <p>Each bit is then flipped and 113 is assigned to <code>x</code>:</p>
-
 <table class="pure-table bits">
   <tr>
     <td>0</td>
@@ -440,9 +395,9 @@ maximum possible value for that data type.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

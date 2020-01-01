@@ -43,54 +43,39 @@
 standard <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea">textarea element</a>. It is however fairly easy to
 extend Gitit. This post is going to look at using the <a href="https://ace.c9.io/">Ace editor</a>
 with Gitit.</p>
-
 <h2>Downloading Ace</h2>
-
 <p>Ace builds are hosted in a separate <a href="https://github.com/ajaxorg/ace-builds/">GitHub repository</a>, start by
 cloning this repository to a temporary directory:</p>
-
 <pre><code>git clone --depth 1 https://github.com/ajaxorg/ace-builds.git /tmp/ace-builds
 </code></pre>
-
 <p><strong>Note</strong>: using the <code>--depth</code> option will create a shallow clone without a full
 commit history.  This option isn't strictly necessary, however it should reduce
 the download time.</p>
-
 <p>If you don't have Git installed you can download a tar file instead:</p>
-
 <pre><code>curl -OL https://github.com/ajaxorg/ace-builds/archive/master.tar.gz
 tar xf master.tar.gz -C /tmp
 rm master.tar.gz
 </code></pre>
-
 <p>You now need to pick which version of Ace you want to use, there are currently
 four versions:</p>
-
 <ul>
 <li><code>src</code>: concatenated but not minified</li>
 <li><code>src-min</code>: concatenated and minified with uglify.js</li>
 <li><code>src-noconflict</code>: uses ace.require instead of require</li>
 <li><code>src-min-noconflict</code>: concatenated, minified with uglify.js, and uses
-ace.require instead of require</li>
+   ace.require instead of require</li>
 </ul>
-
 <p>Once you've picked a version, make a <code>static/js</code> folder in the Gitit wiki and
 copy the version across:</p>
-
 <pre><code>mkdir /home/gitit/wiki/static/js
 cp -r /tmp/ace-builds/src-min-noconflict/ /home/gitit/wiki/static/js/ace
 </code></pre>
-
 <h2>Updating Gitit templates</h2>
-
 <p>We now need to override the Gitit page template to embed Ace. Start by copying
 the default page template into the <code>templates</code> directory of the wiki:</p>
-
 <pre><code>cp /usr/share/gitit/data/templates/page.st /home/gitit/wiki/templates/
 </code></pre>
-
 <p>Now add the following between <code>$getuser()$</code> and <code>&lt;/body&gt;</code>:</p>
-
 <pre><code>&lt;script src="$base$/js/ace/ace.js" type="text/javascript" charset="utf-8"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
     function enable_ace_editor(old_editor) {
@@ -119,25 +104,18 @@ the default page template into the <code>templates</code> directory of the wiki:
     }
 &lt;/script&gt;
 </code></pre>
-
 <p>This code will check if the <code>editedText</code> element exists. If the element does
 exist, it will create a new <code>div</code> for Ace, hide the existing <code>textarea</code> and set
 up a function to sync the Ace editor with the old <code>textarea</code>.</p>
-
 <p><strong>Note</strong>: <code>$</code> will normally be interpreted when Gitit renders the template,
 therefore the dollar in front of <code>$blockScrolling</code> is escaped.</p>
-
 <p>Finally restart Gitit (<code>systemctl restart gitit.service</code>) to reload the page
 template. If everything goes well you should now see Ace in the edit tab:</p>
-
 <p><img class="pure-img" src="/2017/gitit-with-ace.png"
   alt="Screenshot of Gitit with the Ace editor embeded"/></p>
-
 <h2>Customising Ace</h2>
-
 <p>From here it's fairly easy to customise Ace, below are the additional settings
 I ended up using:</p>
-
 <pre><code>editor.getSession().setMode("ace/mode/markdown");
 editor.setTheme("ace/theme/chaos");
 editor.setFontSize(14);
@@ -151,16 +129,12 @@ editor.setOption("scrollPastEnd", true);
 editor.getSession().setUseSoftTabs(true);
 editor.getSession().setUseWrapMode(true);
 </code></pre>
-
 <p>The <a href="https://ace.c9.io/#nav=api">Ace documentation</a> has a full list of available options, the <a href="https://ajaxorg.github.io/ace-builds/kitchen-sink.html">Ace
 Kitchen Sink</a> is also worth looking at to get a feel for
 which options you want to configure.</p>
-
 <h3>New commands</h3>
-
 <p>Ace also makes it easy to add custom key bindings, the code below will add
 support for <code>:w</code> and <code>:q</code>:</p>
-
 <pre><code>// Monkey patch in write and quit commands for Vim binding
 ace.config.loadModule("ace/keyboard/vim", function (m) {
     var VimApi = ace.require("ace/keyboard/vim").CodeMirror.Vim;
@@ -188,7 +162,6 @@ editor.commands.addCommand({
     }
 });
 </code></pre>
-
 <p><strong>Note</strong>: if you are using  <a href="https://httpd.apache.org/docs/current/mod/mod_proxy_html.html">mod_proxy_html</a> to
 rewrite pages, make sure you update the quit function to use the correct URL
 (e.g. <code>/wiki$pageUrl$</code>).</p>
@@ -197,9 +170,9 @@ rewrite pages, make sure you update the quit function to use the correct URL
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

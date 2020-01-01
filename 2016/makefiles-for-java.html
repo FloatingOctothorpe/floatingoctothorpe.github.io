@@ -43,12 +43,9 @@
 most commonly used include <a href="http://ant.apache.org/">Apache Ant</a>, <a href="https://maven.apache.org/">Apache
 Maven</a> and <a href="https://gradle.org/">Gradle</a>. It is however perfectly
 feasible to use <a href="https://www.gnu.org/software/make/">GNU make</a> to build Java projects.</p>
-
 <h2>Makefile setup</h2>
-
 <p>Create a file called <code>Makefile</code> in the root of the project directory, with the
 following contents:</p>
-
 <pre><code>.SUFFIXES:
 
 SOURCE = src
@@ -73,20 +70,15 @@ run: $(classes)
 clean:
         rm -vrf $(OUTPUT)/
 </code></pre>
-
 <p>The makefile above assumes the following:</p>
-
 <ul>
 <li>GNU make is installed</li>
 <li><code>java</code> and <code>javac</code> are installed and available</li>
 <li>The <code>find</code> command is available</li>
 <li>Java source code is being kept under a directory called <code>src/</code></li>
 </ul>
-
 <h2>Using make</h2>
-
 <p>Before anything is built only the Java source code and makefile will exist:</p>
-
 <pre><code>$ tree
 .
 ├── Makefile
@@ -99,18 +91,14 @@ clean:
 
 3 directories, 4 files
 </code></pre>
-
 <p>Running make will call <code>javac</code> to compile the source code:</p>
-
 <pre><code>$ make
 mkdir -p build/com/example/
 javac -cp src -d build src/com/example/Foo.java
 javac -cp src -d build src/com/example/Bar.java
 javac -cp src -d build src/com/example/Main.java
 </code></pre>
-
 <p>The class files will be created under the <code>build</code> directory:</p>
-
 <pre><code>$ tree
 .
 ├── build
@@ -129,16 +117,12 @@ javac -cp src -d build src/com/example/Main.java
 
 6 directories, 7 files
 </code></pre>
-
 <p>Running <code>make run</code> will run the Java program:</p>
-
 <pre><code>$ make run
 cd build; java com.example.Main
 Hello World!
 </code></pre>
-
 <p>And finally running <code>make clean</code> will completely remove the <code>build</code> directory:</p>
-
 <pre><code>$ make clean
 rm -vrf build/
 removed ‘build/com/example/Foo.class’
@@ -148,75 +132,55 @@ removed directory: ‘build/com/example’
 removed directory: ‘build/com’
 removed directory: ‘build/’
 </code></pre>
-
 <h2>Makefile explanation</h2>
-
 <p>Makefiles can be a little cryptic. Below is a quick explanation for each
 section of the makefile:</p>
-
 <p>Setting <code>.SUFFIXES</code> to nothing removes all known suffixes. This prevents make
 trying to run default <a href="https://www.gnu.org/software/make/manual/html_node/Suffix-Rules.html">suffix rules</a>:</p>
-
 <pre><code>.SUFFIXES:
 </code></pre>
-
 <p>The source directory, build directory and class path variables are set next:</p>
-
 <pre><code>SOURCE = src
 OUTPUT = build
 CLASS_PATH = $(SOURCE)
 </code></pre>
-
 <p>Next a list of Java source files is created. This is done using the <a href="https://www.gnu.org/software/make/manual/html_node/Shell-Function.html">shell
 function</a> to call <code>find</code>:</p>
-
 <pre><code>sources = $(shell find $(SOURCE) -type f -name '*.java')
 </code></pre>
-
 <p>The <code>sources</code> list is then used to create two additional lists; a list of class
 file paths and a list of directories. This is done using
 <a href="https://www.gnu.org/software/make/manual/html_node/Text-Functions.html">text</a> and <a href="https://www.gnu.org/software/make/manual/html_node/File-Name-Functions.html">file name</a>
 functions. Note that <code>sort</code> is used to remove any duplicate build directories.</p>
-
 <pre><code>classes = $(sources:$(SOURCE)/%.java=$(OUTPUT)/%.class)
 build_dirs = $(sort $(dir $(classes)))
 </code></pre>
-
 <p>The first target not prefixed with a dot (<code>.</code>) will be the default goal. In
 this case a <a href="https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html">phony target</a> is used to create all Java
 classes:</p>
-
 <pre><code>all: $(classes)
 </code></pre>
-
 <p>The next target creates the build directories. The recipe uses an <a href="https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html">automatic
 variable</a> (<code>$@</code>) to avoid hard coding directory
 names.</p>
-
 <pre><code>$(build_dirs):
         mkdir -p $@
 </code></pre>
-
 <p>The next target uses a <a href="https://www.gnu.org/software/make/manual/html_node/Pattern-Rules.html">pattern rule</a> to build class
 files using <code>javac</code>. The pipe character is used to make sure the directories
 listed in <code>build_dirs</code> are order only prerequisites; without this Java classes
 will be rebuilt unnecessary if build directories are modified.</p>
-
 <pre><code>$(OUTPUT)/%.class: $(SOURCE)/%.java | $(build_dirs)
         javac -cp $(CLASS_PATH) -d $(OUTPUT) $&lt;
 </code></pre>
-
 <p>The <code>run</code> target switches into the build directory and runs the
 <code>com.example.Main</code> class. It's worth noting that setting the class path could
 be used as an alternative to changing directory.</p>
-
 <pre><code>run: $(classes)
         cd $(OUTPUT); java com.example.Main
 </code></pre>
-
 <p>Finally a <code>clean</code> phony target is defined to make it easy to remove any
 compiled classes:</p>
-
 <pre><code>clean:
         rm -vrf $(OUTPUT)/
 </code></pre>
@@ -225,9 +189,9 @@ compiled classes:</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -43,46 +43,33 @@
 library</a>. This is great if you need to quickly hack
 together a script. There are also a large number of modules which can be run
 directly. To run a module directly the <code>-m</code> option can be used:</p>
-
 <blockquote>
-  <p>-m mod : run library module as a script (terminates option list)</p>
+<p>-m mod : run library module as a script (terminates option list)</p>
 </blockquote>
-
 <p>This post is going to go over a few of the more useful modules that can be
 run directly.</p>
-
 <h2>Running a web server</h2>
-
 <p>Python ships with a complete web server implementation. This is very helpful if
 you quickly need to send files across a local network.</p>
-
 <pre><code>$ python -m http.server
 Serving HTTP on 0.0.0.0 port 8000 ...
 127.0.0.1 - - [01/Nov/2016 22:44:19] "GET / HTTP/1.1" 200 -
 </code></pre>
-
 <p>You can also specify a port number as an additional argument:</p>
-
 <pre><code>$ python -m http.server 80
 Serving HTTP on 0.0.0.0 port 80 ...
 127.0.0.1 - - [01/Nov/2016 22:46:42] "GET / HTTP/1.1" 200 -
 </code></pre>
-
 <p><strong>Note</strong>: In earlier versions of Python (2.x), the module is called
 <code>SimpleHTTPServer</code>.</p>
-
 <h2>Pretty JSON</h2>
-
 <p><a href="https://en.wikipedia.org/wiki/Representational_state_transfer">RESTful</a> APIs that return JSON are pretty ubiquitous. However
 it's not uncommon for responses to have no white space:</p>
-
 <pre><code>$ curl -s https://status.github.com/api/messages.json
 [{"status":"good","body":"Everything operating normally.","created_on":"2016-11-01T03:44:22Z"},{"status":"minor","body":"We are investigating a high number of exceptions on GitHub.com.","created_on":"2016-11-01T02:55:49Z"}]
 </code></pre>
-
 <p>The <code>json.tool</code> module can be used to pretty-print JSON, making it a little
 more human readable:</p>
-
 <pre><code>$ curl -s https://status.github.com/api/messages.json | python -m 'json.tool'
 [
     {
@@ -97,28 +84,21 @@ more human readable:</p>
     }
 ]
 </code></pre>
-
 <h2>Mimetypes</h2>
-
 <p>The <code>mimetypes</code> modules is pretty self explanatory. It can be used to guess the
 mimetype of a file:</p>
-
 <pre><code>$ python -m mimetypes example.jpg
 type: image/jpeg encoding: None
 
 $ python -m mimetypes example.tar.gz
 type: application/x-tar encoding: gzip
 </code></pre>
-
 <p><strong>Note</strong>: unlike the <a href="http://man7.org/linux/man-pages/man1/file.1.html">file</a> command, <code>mimetypes</code> only looks at the
 file extension, not the actual contents of the file.</p>
-
 <h2>Archive files</h2>
-
 <p>There are also modules which can be used to work with common archive formats
 such as <code>tar</code> and <code>zip</code>. The <code>tarfile</code> modules can be used to manipulate tar
 files:</p>
-
 <pre><code>$ python -m tarfile -h
 usage: tarfile.py [-h] [-v] [-l &lt;tarfile&gt; | -e &lt;tarfile&gt; [&lt;output_dir&gt; ...] |
                   -c &lt;name&gt; [&lt;file&gt; ...] | -t &lt;tarfile&gt;]
@@ -137,9 +117,7 @@ optional arguments:
   -t &lt;tarfile&gt;, --test &lt;tarfile&gt;
                         Test if a tarfile is valid
 </code></pre>
-
 <p>And the <code>zipfile</code> module can be used to manipulate zip archives:</p>
-
 <pre><code>$ python -m zipfile -h
 Usage:
     zipfile.py -l zipfile.zip        # Show listing of a zipfile
@@ -147,16 +125,12 @@ Usage:
     zipfile.py -e zipfile.zip target # Extract zipfile into target dir
     zipfile.py -c zipfile.zip src ... # Create zipfile from sources
 </code></pre>
-
 <p><strong>Note</strong>: the <code>gzip</code> module can be used to compress/decompress tar files, or
 any other file if required.</p>
-
 <h2>Telnet client</h2>
-
 <p>Although <a href="https://en.wikipedia.org/wiki/Netcat">netcat</a> is a far more flexible tool, the <code>telnetlib</code> module
 can be used as a basic telnet client. You <em>could</em> use it to connect to a telnet
 server, however it can also be used for other protocols, e.g. HTTP:</p>
-
 <pre><code>$ python -m telnetlib example.com 80
 GET / HTTP/1.1
 HOST: example.com
@@ -166,44 +140,32 @@ Cache-Control: max-age=604800
 Content-Type: text/html
 ...
 </code></pre>
-
 <p><strong>Note</strong>: it's worth pointing out that telnet does differ from a raw TCP
 socket. In addition to sending/receiving raw data, telnet also sends control
 information. See <a href="https://tools.ietf.org/html/rfc854">RFC854</a> if you're interested in the specifics.</p>
-
 <h2>Base64 and ROT13</h2>
-
 <p>The <code>base64</code> modules can be used to, you guessed it, encode and decode
 <a href="https://en.wikipedia.org/wiki/Base64">Base64</a> data. By default data from stdin or a file will be read
 and encoded:</p>
-
 <pre><code>$ echo hello world | python -m base64
 aGVsbG8gd29ybGQK
 $ echo hello world &gt; example.txt
 $ python -m base64 example.txt
 aGVsbG8gd29ybGQK
 </code></pre>
-
 <p>However the <code>-d</code> option can be used to decode data:</p>
-
 <pre><code>$ echo aGVsbG8gd29ybGQK | python -m base64 -d
 hello world
 </code></pre>
-
 <p>There is also a ROT13 module (<code>encodings.rot_13</code>), which can be used to
 transform text using the <a href="https://en.wikipedia.org/wiki/ROT13">ROT13</a> cipher:</p>
-
 <pre><code>$ echo uryyb jbeyq | python -m encodings.rot_13
 hello world
 </code></pre>
-
 <p><strong>Note</strong>: unlike <code>base64</code>, <code>encodings.rot_13</code> will only read from stdin.</p>
-
 <h2>Turtles all the way down</h2>
-
 <p>Last, but not least, there is a demonstration of the <a href="https://docs.python.org/3/library/turtle.html">turtle
 module</a>:</p>
-
 <pre><code>$ python -m turtle
 </code></pre>
       </article>
@@ -211,9 +173,9 @@ module</a>:</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

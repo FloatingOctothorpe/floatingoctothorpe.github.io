@@ -41,15 +41,11 @@
 
 <p>When it comes down to it, files are just a sequence of bytes. So how do you go
 about measuring how random a file is?</p>
-
 <h2>Quick solution</h2>
-
 <p>A quick and dirty solution is to just sum the number of times each byte
 appears. In more "random" files the totals for each byte should be similar. In
 less "random" files the totals will be further apart.</p>
-
 <p><a href="https://linux.die.net/man/1/xxd">xxd</a> can be used to represent each byte in a file has hex:</p>
-
 <pre><code>$ xxd --cols 1 input.dat
 00000000: 48  H
 00000001: 65  e
@@ -64,10 +60,8 @@ less "random" files the totals will be further apart.</p>
 0000000a: 64  d
 0000000b: 0a  .
 </code></pre>
-
 <p><a href="http://man7.org/linux/man-pages/man1/sort.1.html">sort</a>, <a href="http://man7.org/linux/man-pages/man1/uniq.1.html">uniq</a> and <a href="http://man7.org/linux/man-pages/man1/awk.1p.html">awk</a> can then be used to count
 how frequently each byte occurs:</p>
-
 <pre><code>$ xxd --cols 1 input.dat | awk '{print $2}' | sort | uniq -c
       1 0a
       1 20
@@ -79,16 +73,12 @@ how frequently each byte occurs:</p>
       1 72
       1 77
 </code></pre>
-
 <p>There are, however 2<sup>8</sup> distinct bytes. One way to simplify this is to
 total the hex characters instead of the actual bytes. This can be done by
 modifying the awk program slightly:</p>
-
 <pre><code>xxd --cols 1 input.dat | awk '{split($2, a, ""); print a[1]; print a[2]}' | sort | uniq -c
 </code></pre>
-
 <p>Running this against a random file should normally show an even distribution:</p>
-
 <pre><code>$ dd if=/dev/urandom of=input.dat bs=1024 count=10
 10+0 records in
 10+0 records out
@@ -111,9 +101,7 @@ $ xxd --cols 1 input.dat | awk '{split($2, a, ""); print a[1]; print a[2]}' | so
    1275 e
    1242 f
 </code></pre>
-
 <p>However, data such as plain text produces a more uneven distribution:</p>
-
 <pre><code>$ cat /usr/share/doc/*/README &gt; input.dat
 $ xxd --cols 1 input.dat | awk '{split($2, a, ""); print a[1]; print a[2]}' | sort | uniq - c
  237356 0
@@ -133,67 +121,52 @@ $ xxd --cols 1 input.dat | awk '{split($2, a, ""); print a[1]; print a[2]}' | so
   65413 e
   65121 f
 </code></pre>
-
 <h2>A more formal approach</h2>
-
 <p>A more formal way to look at how "random" a file is, is to calculate it's
 entropy. In <a href="https://en.wikipedia.org/wiki/Entropy_(information_theory)">information theory</a>, entropy is a measure of
 unpredictability in information content. Shannon entropy can be calculated with
 the following formula:</p>
-
 <p><img class="pure-img" src="/2016/shannon-entropy-equation.png" alt="H(X) = - sum from{i=1} to{n} p(x_{i})log_{2}p(x_{i})" /></p>
-
 <p>Implementing the equation above involves the following steps:</p>
-
 <ol>
 <li>Count the number of times each byte appears in a file.</li>
 <li>Calculate the probability, <code>p(x)</code>, for each byte. This will be the number of
-times the byte appears in the file, divided by the number of bytes in the
-file.</li>
+    times the byte appears in the file, divided by the number of bytes in the
+    file.</li>
 <li>Multiply each probability, by the base two logarithm of the probability.</li>
 <li>Finally total the results from the previous step, and take the absolute
-value. This will give the average entropy per byte, <code>H(X)</code>.</li>
+    value. This will give the average entropy per byte, <code>H(X)</code>.</li>
 </ol>
-
 <p>The steps above can easily be implemented in a <a href="/2016/shannon_entropy.py">few lines of
 Python</a>. If you're interested in learning more about information
 theory, <a href="https://en.wikipedia.org/wiki/Claude_Shannon">Claude Shannon</a>'s paper, <a href="https://en.wikipedia.org/wiki/A_Mathematical_Theory_of_Communication">A Mathematical Theory
 of Communication</a>, discusses entropy in far greater detail.
 If you haven't already guessed, Shannon entropy is named after Claude Shannon.</p>
-
 <h2>Encryption, compression and entropy</h2>
-
 <p>So why is calculating entropy useful? Well, it makes it very easy to
 distinguish plain text from Ciphertext. Plain text will have relatively low
 entropy per byte:</p>
-
 <pre><code>$ cat /usr/share/doc/*/README | ./shannon_entropy.py
 bytes        : 1052310
 entropy      : 5145048
 entropy/byte : 4.889290
 </code></pre>
-
 <p>Encrypting the text will significantly increase the entropy per byte:</p>
-
 <pre><code>$ cat /usr/share/doc/*/README | gpg2 --batch --passphrase secret_key --symmetric -o - - | ./ shannon_entropy.py
 bytes        : 392180
 entropy      : 3137215
 entropy/byte : 7.999428
 </code></pre>
-
 <p>It is however worth noting that encrypted files, are not the only sort of file
 with high entropy per byte. Lossless compression tools like gzip will reduce
 repeating patterns, thereby increasing entropy per byte:</p>
-
 <pre><code>$ cat /usr/share/doc/*/README | gzip | ./shannon_entropy.py
 bytes        : 355186
 entropy      : 2840820
 entropy/byte : 7.998122
 </code></pre>
-
 <p>Files compressed with lossy compression, such as JPEG, will also have high
 entropy per byte values:</p>
-
 <pre><code>$ ./shannon_entropy.py picture.jpg
 bytes        : 27958
 entropy      : 222870
@@ -204,9 +177,9 @@ entropy/byte : 7.971627
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

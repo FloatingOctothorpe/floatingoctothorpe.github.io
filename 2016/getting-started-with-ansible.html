@@ -42,11 +42,9 @@
 <p>I've been using <a href="https://puppet.com/">Puppet</a> for a few years now. Generally it's a
 great tool for server automation, however like all software it has it's share
 of rough edges.</p>
-
 <p>One edge I've run up against recently is performance on low powered devices.
 For example running even trivial configuration on my <a href="https://www.raspberrypi.org/products/model-b-plus/">Raspberry
 Pi</a> takes a long time:</p>
-
 <pre><code>pi@raspberrypi:~ $ time sudo puppet apply -e "service {'sshd': ensure =&gt; running }"
 Notice: Compiled catalog for raspberrypi.lan in environment production in 3.60 seconds
 Notice: Finished catalog run in 0.62 seconds
@@ -55,113 +53,83 @@ real    0m38.155s
 user    0m34.690s
 sys     0m2.450s
 </code></pre>
-
 <p>With the above in mind I decided to have a look at using
 <a href="https://www.ansible.com/">Ansible</a> instead. Both because I hoped it would perform better,
 and because it's always interesting to learn about alternative tools.</p>
-
 <h2>Installing Ansible</h2>
-
 <p>Unlike Puppet, Ansible is agent-less. Therefore installation is just a case of
 getting Ansible installed on a single control host. On <a href="https://www.centos.org/">CentOS</a>
 You can install the <code>ansible</code> package from <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a>:</p>
-
 <pre><code>yum install ansible
 </code></pre>
-
 <p>The <a href="http://docs.ansible.com/ansible/intro_installation.html">Ansible docs</a> cover installation on other platforms.
 It's worth noting that Windows cannot currently be used as a control host,
 however Ansible can be used to <a href="http://docs.ansible.com/ansible/intro_windows.html">manage Windows
 systems</a>.</p>
-
 <h2>SSH setup</h2>
-
 <p>The most common connection method used by Ansible is SSH. Although password
 authentication can be used it's normally a good idea to setup SSH keys. This
 requires two steps:</p>
-
 <ol>
 <li>Generate a public/private SSH key pair using <a href="http://man.openbsd.org/ssh-keygen">ssh-keygen</a>.</li>
 <li>Copy the public key onto each target host using
-<a href="http://www.freebsd.org/cgi/man.cgi?query=ssh-copy-id">ssh-copy-id</a>.</li>
+    <a href="http://www.freebsd.org/cgi/man.cgi?query=ssh-copy-id">ssh-copy-id</a>.</li>
 </ol>
-
 <p>After everything is set up the control host should be able to connect to each
 target host without using a password:</p>
-
 <pre><code>[user@ansible-control ~]$ ssh pi@192.168.1.129 hostname
 raspberrypi
 </code></pre>
-
 <h2>Connecting with Ansible</h2>
-
 <p>Once SSH keys have been set up Ansible should be able to connect:</p>
-
 <pre><code>[user@ansible-control ~]$ ansible all -i '192.168.1.129,' -u pi -m ping
 192.168.1.129 | SUCCESS =&gt; {
     "changed": false,
     "ping": "pong"
 }
 </code></pre>
-
 <p>The command above uses the <a href="http://docs.ansible.com/ansible/ping_module.html">Ansible ping module</a> to
 connect to the target host. Once connected the module confirms Ansible has
 everything it needs to run on the host; namely a suitable python environment.</p>
-
 <h3>Inventory</h3>
-
 <p>The ping example above can be shortened significantly by using an inventory
 file. By default Ansible looks in <code>/etc/ansible/hosts</code> for host information.
 For example the following lines will create a pi group with a single host in
 it:</p>
-
 <pre><code>[pi]
 192.168.1.129 ansible_user=pi
 </code></pre>
-
 <p>After the new config has been added to the inventory file, the name of the host
 group can be used in place of the IP and user name:</p>
-
 <pre><code>[user@ansible-control ~]$ ansible pi -m ping
 192.168.1.129 | SUCCESS =&gt; {
     "changed": false,
     "ping": "pong"
 }
 </code></pre>
-
 <h2>Root access</h2>
-
 <p>By default Ansible will run as the user it connected with:</p>
-
 <pre><code>[user@ansible-control ~]$ ansible pi -m command -a 'whoami'
 192.168.1.129 | SUCCESS | rc=0 &gt;&gt;
 pi
 </code></pre>
-
 <p>To become root you can use the <code>--sudo</code> option:</p>
-
 <pre><code>[user@ansible-control ~]$ ansible pi --sudo  -m command -a 'whoami'
 192.168.1.129 | SUCCESS | rc=0 &gt;&gt;
 root
 </code></pre>
-
 <p>This can also be set persistently in the inventory config using
 <code>ansible_become</code>:</p>
-
 <pre><code>[pi]
 192.168.1.129 ansible_user=pi ansible_become=true
 </code></pre>
-
 <p><strong>Note</strong>: the <code>--sudo</code> and <code>ansible_become</code> options will only work if sudo has
 been configured on the target host.</p>
-
 <h2>Thoughts so far</h2>
-
 <p>I'm still very new to Ansible, but I'm quite impressed with what I've seen so
 far. Getting up and running was pretty straightforward and Ansible is faster
 than Puppet. Well at least for the slightly contrived example I had at the
 start of this post:</p>
-
 <pre><code>[user@ansible-control ~]$ time ansible pi -m service -a 'name=sshd state=running'
 192.168.1.129 | SUCCESS =&gt; {
     "changed": false,
@@ -173,7 +141,6 @@ real    0m2.769s
 user    0m0.589s
 sys     0m0.215s
 </code></pre>
-
 <p>From here I'm planning to have a go at writing a few <a href="http://docs.ansible.com/ansible/playbooks.html">Ansible
 playbooks</a> to actually do something useful. This
 should give me a better idea of what Ansible is capable of, or at least make me
@@ -183,9 +150,9 @@ a little less naive when it comes to Ansible.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

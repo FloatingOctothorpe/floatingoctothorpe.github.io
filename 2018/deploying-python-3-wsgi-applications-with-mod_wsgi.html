@@ -43,82 +43,60 @@
 <a href="http://flask.pocoo.org/">Flask</a>. After finally <a href="https://github.com/FloatingOctothorpe/python-kanban">publishing the code</a>, this post is going to
 look at running Python 3 WSGI applications, like the Kanban board, under
 <a href="https://httpd.apache.org/">Apache</a> using <a href="https://modwsgi.readthedocs.io/en/develop/">mod_wsgi</a>.</p>
-
 <h2>Installing packages</h2>
-
 <p>The first thing to do is install Apache and the Python 3 version of mod_wsgi,
 this can be done with the following command:</p>
-
 <pre><code>apt-get install libapache2-mod-wsgi-py3 apache2
 </code></pre>
-
 <p>For the example in this post, the WSGI application is going to be downloaded
 from GitHub, and use a Python 3 virtual environment. Therefore the following
 packages also need to be installed:</p>
-
 <pre><code>apt-get install python3-venv git
 </code></pre>
-
 <h2>Creating a user account</h2>
-
 <p>It's good practise to use a separate user account to run the WSGI application.
 A user account can be created using <a href="http://man7.org/linux/man-pages/man8/useradd.8.html">useradd</a>:</p>
-
 <pre><code>useradd \
   --shell /sbin/nologin \
   --create-home \
   --home-dir /srv/kanban \
   kanban
 </code></pre>
-
 <p><strong>Note</strong>: the shell for the account has been set to <code>/sbin/nologin</code> to prevent
 interactive login sessions.</p>
-
 <h2>Cloning the Application</h2>
-
 <p>Once the user account is ready the application code can be cloned with a
 command similar to the following:</p>
-
 <pre><code>sudo -u kanban \
   git clone https://github.com/FloatingOctothorpe/python-kanban.git \
   /srv/kanban/python-kanban
 </code></pre>
-
 <p><strong>Note</strong>: the command above should be run from a directory the <code>kanban</code> user
 can read (e.g. <code>/</code>).</p>
-
 <p>For the example in this post, Python modules are going to be installed to a
 virtual environment. The virtual environment can be created with the following
 commands:</p>
-
 <pre><code>sudo -u kanban python3 -m venv /srv/kanban/venv
 sudo -u kanban bash -c '
   source /srv/kanban/venv/bin/activate;
   pip install -r /srv/kanban/python-kanban/requirements.txt'
 </code></pre>
-
 <p>Once the virtual environment has been created, it should be possible to run the
 Flask application directly as the <code>kanban</code> user with a command similar to the
 following:</p>
-
 <pre><code>sudo -u kanban bash -c '
   source /srv/kanban/venv/bin/activate;
   cd /srv/kanban/python-kanban;
   FLASK_APP=main.py flask run'
 </code></pre>
-
 <h2>Configuring Apache</h2>
-
 <p>Assuming the application runs without a problem the last thing to do is
 configure Apache to run the application. This involves creating two files, a
 WSGI application script file (<code>/srv/kanban/python-kanban/kanban.wsgi</code>), and an
 Apache config file (<code>/etc/apache2/conf-available/kanban.conf</code>).</p>
-
 <h3>WSGI application script file</h3>
-
 <p>For the example in this post, the WSGI application script should contain the
 following:</p>
-
 <pre><code>#!/usr/bin/env python3
 
 import os
@@ -129,15 +107,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from main import app as application
 </code></pre>
-
 <p><strong>Note</strong>: <code>os.chdir</code> and <code>sys.path.insert</code> are used to make sure the
 application's current working directory is <code>/srv/kanban/python-kanban</code> and code
 from the directory can be imported.</p>
-
 <h3>Apache config</h3>
-
 <p>The Apache config should look similar to the following:</p>
-
 <pre><code>WSGIDaemonProcess kanban user=kanban group=kanban threads=5 python-home=/srv/kanban/venv
 WSGIScriptAlias /kanban /srv/kanban/python-kanban/kanban.wsgi
 
@@ -147,26 +121,20 @@ WSGIScriptAlias /kanban /srv/kanban/python-kanban/kanban.wsgi
     Require all granted
 &lt;/Directory&gt;
 </code></pre>
-
 <p>The first line tells Apache to create a daemon process which will run the
 Kanban application using the <a href="https://modwsgi.readthedocs.io/en/develop/configuration-directives/WSGIDaemonProcess.html">WSGIDaemonProcess</a>
 directive. The following line uses the <a href="https://modwsgi.readthedocs.io/en/develop/configuration-directives/WSGIScriptAlias.html">WSGIScriptAlias</a>
 directive to map a URL to the application. Finally the <a href="https://httpd.apache.org/docs/2.4/mod/core.html#directory">Directory
 section</a> maps the directory to the process and
 application groups and grants access to the directory.</p>
-
 <h3>Enabling new configuration</h3>
-
 <p>Once the WSGI script and Apache config are in place the following commands can
 be used to pick up the new config:</p>
-
 <pre><code>a2enconf kanban
 systemctl reload apache2
 </code></pre>
-
 <p>If everything goes well there should now be an <code>apache2</code> process running as the
 <code>kanban</code> user, and the application should be available:</p>
-
 <pre><code>$ pgrep -u kanban -a
 5474 /usr/sbin/apache2 -k start
 
@@ -174,7 +142,6 @@ $ curl --head http://localhost/kanban/
 HTTP/1.1 200 OK
 ...
 </code></pre>
-
 <p><strong>Note</strong>: If the http status from curl is not 200, check
 <code>/var/log/apache2/error.log</code> for details.</p>
       </article>
@@ -182,9 +149,9 @@ HTTP/1.1 200 OK
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

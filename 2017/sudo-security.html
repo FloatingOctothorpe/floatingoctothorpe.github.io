@@ -37,113 +37,85 @@
       <article>
 <h1>Sudo security</h1>
 
-<p><!-- timestamp here -->
-<a href="https://www.sudo.ws/">Sudo</a> is a great tool for selectively granting access, and is
+<time datetime="2017-04-28">28 April 2017</time>
+
+<p><a href="https://www.sudo.ws/">Sudo</a> is a great tool for selectively granting access, and is
 installed by default in most Linux distributions. Unfortunately it's also very
 easy to shoot yourself in the foot with Sudo. This post is going to cover some
 common mistakes and how to correct them.</p>
-
 <h2>Editing files</h2>
-
 <p>A naive approach to allowing a user to edit <code>/etc/motd</code>, might look something
 like this:</p>
-
 <pre><code>user ALL=(root) /bin/vi /etc/motd
 </code></pre>
-
 <p>This works fine, however it's also possible for the user to start a root shell
 from <code>vi</code>:</p>
-
 <pre><code>$ sudo /bin/vi /etc/motd
 :!bash
 </code></pre>
-
 <p>You can prevent processes being spawned with the <code>NOEXEC</code> option:</p>
-
 <pre><code>user ALL=(root) NOEXEC: /bin/vi /etc/motd
 </code></pre>
-
 <p>This will prevent <code>bash</code> being executed with the following message:</p>
-
 <pre><code>Cannot execute shell /bin/bash
 </code></pre>
-
 <p>However it doesn't stop the user changing the file they are editing:</p>
-
 <pre><code>:e /root/.bashrc
 </code></pre>
-
 <h3>Using sudoedit</h3>
-
 <p>There is however another option, <code>sudoedit</code>:</p>
-
 <pre><code>user ALL=(root) sudoedit /etc/motd
 </code></pre>
-
 <p>Unlike normal sudo rules, sudoedit runs through the following steps (see
 <a href="https://www.sudo.ws/man/sudo.man.html">SUDO(8)</a> for more detail):</p>
-
 <ol>
-<li><p>Temporary copies are made of the files to be edited with the owner set to
-the invoking user.</p></li>
-<li><p>The editor specified by the policy is run to edit the temporary files. The
-sudoers policy uses the <code>SUDO_EDITOR</code>, <code>VISUAL</code> and <code>EDITOR</code> environment
-variables (in that order). If none of <code>SUDO_EDITOR</code>, <code>VISUAL</code> or EDITOR are
-set, the first program listed in the editor sudoers(5) option is used.</p></li>
-<li><p>If they have been modified, the temporary files are copied back to their
-original location and the temporary versions are removed.</p></li>
+<li>
+<p>Temporary copies are made of the files to be edited with the owner set to
+    the invoking user.</p>
+</li>
+<li>
+<p>The editor specified by the policy is run to edit the temporary files. The
+    sudoers policy uses the <code>SUDO_EDITOR</code>, <code>VISUAL</code> and <code>EDITOR</code> environment
+    variables (in that order). If none of <code>SUDO_EDITOR</code>, <code>VISUAL</code> or EDITOR are
+    set, the first program listed in the editor sudoers(5) option is used.</p>
+</li>
+<li>
+<p>If they have been modified, the temporary files are copied back to their
+    original location and the temporary versions are removed.</p>
+</li>
 </ol>
-
 <p>This is great because it means if the user does shell out, they will just be
 running as themselves. They can also pick which editor they want to use.</p>
-
 <p><strong>Note</strong>: unlike most commands, you should not use a full path to <code>sudoedit</code>!</p>
-
 <h2>Reading files</h2>
-
 <p>One very common command used to read files is <a href="http://man7.org/linux/man-pages/man1/less.1.html">less</a>:</p>
-
 <pre><code>user ALL=(root) /bin/less /var/log/messages
 </code></pre>
-
 <p>However it's actually possible to start a shell from less by typing <code>!sh</code>:</p>
-
 <pre><code>[user@somehose ~]$ sudo less /var/log/messages
 sh-4.2# whoami
 root
 </code></pre>
-
 <p>Like <code>vi</code> it's also possible to open a new file by typing <code>:e</code>:</p>
-
 <pre><code>Examine: /etc/shadow
 </code></pre>
-
 <p>A simple solution to this problem is to change the sudo rule to use a
 command like <a href="http://man7.org/linux/man-pages/man1/cat.1.html">cat</a>:</p>
-
 <pre><code>user ALL=(root) /bin/cat /var/log/messages
 </code></pre>
-
 <p>The user can then pipe stdout into less:</p>
-
 <pre><code>$ sudo cat /var/log/messages | less
 </code></pre>
-
 <p>Alternatively you could look at setting the <code>LESSSECURE</code> environment variable
 before less is executed.</p>
-
 <h2>Config files</h2>
-
 <p>It's fairly common to delegate managing configuration files using sudo. For
 example:</p>
-
 <pre><code>user ALL=(root) sudoedit /etc/logrotate.d/httpd
 </code></pre>
-
 <p>As a general rule, if the config is read by a root process you should be very
 careful. In the example above logrotate can be configured to run arbitrary
 commands using the <code>postrotate</code> directive:</p>
-
 <pre><code>/var/log/httpd/*log {
     missingok
     notifempty
@@ -155,75 +127,53 @@ commands using the <code>postrotate</code> directive:</p>
     endscript
 }
 </code></pre>
-
 <h2>tcpdump</h2>
-
 <p>To capture network traffic <a href="http://www.tcpdump.org/tcpdump_man.html">tcpdump</a> needs to be run as root. A
 sudo rule similar to the following could be used to grant access to tcpdump:</p>
-
 <pre><code>user ALL=(root) /sbin/tcpdump
 </code></pre>
-
 <p>Unfortunately tcpdump actually lets you run arbitrary commands using the <code>-z</code>
 option:</p>
-
 <blockquote>
-  <p>Used in conjunction with the -C or -G options, this will make tcpdump run "
-    postrotate-command file " where file is the savefile being closed after
-    each rotation. For example, specifying -z gzip or -z bzip2 will compress
-    each savefile using gzip or bzip2.</p>
+<p>Used in conjunction with the -C or -G options, this will make tcpdump run "
+  postrotate-command file " where file is the savefile being closed after
+  each rotation. For example, specifying -z gzip or -z bzip2 will compress
+  each savefile using gzip or bzip2.</p>
 </blockquote>
-
 <p>This can be used to run arbitrary code as root with a command similar to the
 following:</p>
-
 <pre><code>sudo tcpdump -w /dev/null -G 1 -z /tmp/evil_script.sh -Z root
 </code></pre>
-
 <p>The <code>-G</code> option tells tcpdump to rotate the file it's dumping to, <code>/dev/null</code>,
 every second. <code>/tmp/evil_script.sh</code> will then be called after each rotation.
 The <code>NOEXEC</code> option can be used to prevent the script being executed:</p>
-
 <pre><code>user ALL=(root) NOEXEC: /sbin/tcpdump
 </code></pre>
-
 <p>If <code>NOEXEC</code> is set, trying to run a command with <code>-z</code> will fail:</p>
-
 <pre><code>$ sudo tcpdump -w /dev/null -G1 -z /tmp/evil_script.sh -Z root
 tcpdump: listening on enp0s3, link-type EN10MB (Ethernet), capture size 65535 bytes
 compress_savefile:execlp(/tmp/evil_script.sh, /dev/null): Permission denied
 compress_savefile:execlp(/tmp/evil_script.sh, /dev/null): Permission denied
 </code></pre>
-
 <h2>Wildcards</h2>
-
 <p>Sudo does support wildcards, for example:</p>
-
 <pre><code>user ALL=(root) /bin/grep * /var/log/httpd/*
 </code></pre>
-
 <p>Unfortunately the <code>*</code> character will match anything, including <code>../../../</code>.
 This potentially allows directory traversal:</p>
-
 <pre><code>$ sudo grep root /var/log/httpd/../../../etc/shadow
 root:$6$ptJc.Gfb$ldpLqMu1BpgLMPZzkxGxaY.V9k71u3t45gdZIpYXVbG7qwDB9q3qhFGeUoIr5Kkg/yNKZ4bqlkOU1eEsblu5d0:17182:0:99999:7:::
 </code></pre>
-
 <p>Sadly sudo rules can't use regex. As a result it's very hard to prevent
 directory traversal when wildcards are used.</p>
-
 <h2>Environment variables</h2>
-
 <p>By default environment variables are reset before any commands are run via
 sudo. It is however possible to whitelist additional environment variables
 using <code>env_keep</code>:</p>
-
 <pre><code>Defaults!/bin/yum env_keep += "PYTHONPATH"
 user ALL=(root) /bin/yum update httpd
 </code></pre>
-
 <p>Environment variables like <code>PYTHONPATH</code> however are generally not safe:</p>
-
 <pre><code>$ whoami
 user
 $ cat /tmp/yum.py
@@ -232,11 +182,8 @@ subprocess.call('/bin/bash')
 $ sudo PYTHONPATH=/tmp yum update httpd
 [root@somehost tmp]#
 </code></pre>
-
 <p>Be very careful if you do decide to whitelist environment variables!</p>
-
 <h2>Conclusion</h2>
-
 <p>With sudo it's very easy to accidentally grant more access than you intended.
 If you're giving sudo access to run a command, look closely at all of the
 options and think carefully before setting up a new rule.</p>
@@ -245,9 +192,9 @@ options and think carefully before setting up a new rule.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

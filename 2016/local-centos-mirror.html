@@ -44,37 +44,27 @@ quickly going to go through setting up a local <a href="https://www.centos.org">
 repository. Although just pulling packages from a public mirror is easier, it
 can sometimes be useful to have a local mirror if you're working offline or
 with a limited connection.</p>
-
 <h2>Extracting packages or mounting</h2>
-
 <p>The <a href="http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Everything-1511.iso">CentOS 7.2 everything iso</a> contains just under 7GB of
 packages. The two directories you need are <code>Packages</code> and <code>repodata</code>. If you
 are on a Linux based system you should be able to mount the ISO with a command
 similar to the following:</p>
-
 <pre><code>mount -o ro,loop CentOS-7-x86_64-Everything-1511.iso /mnt/
 </code></pre>
-
 <p>Alternatively you can use an archive manager like <a href="http://www.7-zip.org/">7-zip</a> to extract
 the directories.</p>
-
 <h3>Truncated filenames</h3>
-
 <p>The CentOS ISO uses a <a href="https://en.wikipedia.org/wiki/Joliet_(file_system)">Joliet file system</a>. Part of the spec
 includes the following:</p>
-
 <blockquote>
-  <p>The File or Directory Identifiers may be up to 128 bytes (64 unicode
-  characters) in length.</p>
+<p>The File or Directory Identifiers may be up to 128 bytes (64 unicode
+characters) in length.</p>
 </blockquote>
-
 <p>The ISO does include <a href="https://en.wikipedia.org/wiki/TRANS.TBL">TRANS.TBL</a> files with the full filenames,
 however 7-zip currently doesn't use them to translate the filenames
 (<a href="https://sourceforge.net/p/sevenzip/bugs/1055/">bug #1055</a> and <a href="https://sourceforge.net/p/sevenzip/bugs/1412/">bug #1412</a>).</p>
-
 <p>You can quickly check if this is an issue by having a look in the <code>repodata</code>
 directory:</p>
-
 <pre><code>$ ls
 0e54cd65abd3621a0baf9a963eafb1a0ffd53603226f02aadce59635329bc937
 308b19b243c882f0278206ea4ffc4e120df78c0218867917916fd437e4d0ea49
@@ -87,12 +77,10 @@ cb645bc44fea73070c995fd830d96d624a24c6356d0932ad39c077ad01c54103
 repomd.xml
 TRANS.TBL
 </code></pre>
-
 <p>To fix this the truncated files need to be renamed to match the filenames
 listed in <code>TRANS.TBL</code>. I've written a quick <a href="/2016/fix_truncated_files.py">python
 script</a> to do this. Running the script should
 rename any truncated files:</p>
-
 <pre><code>$ python fix_truncated_files.py repodata/ Packages/
 Missing file: 0e54cd65abd3621a0baf9a963eafb1a0ffd53603226f02aadce59635329bc937-primary.xml.gz
 Renaming: repodata/0e54cd65abd3621a0baf9a963eafb1a0ffd53603226f02aadce59635329bc937 -&gt; repodata/0e54cd65abd3621a0baf9a963eafb1a0ffd53603226f02aadce59635329bc937-primary.xml.gz
@@ -100,39 +88,29 @@ Missing file: 308b19b243c882f0278206ea4ffc4e120df78c0218867917916fd437e4d0ea49-f
 Renaming: repodata/308b19b243c882f0278206ea4ffc4e120df78c0218867917916fd437e4d0ea49 -&gt; repodata/308b19b243c882f0278206ea4ffc4e120df78c0218867917916fd437e4d0ea49-filelists.sqlite.bz2
 ...
 </code></pre>
-
 <h2>Serving repo files</h2>
-
 <p>YUM repositories can be accessed over several protocols; for this post I'm
 going to use http. Switch to the directory containing <code>repodata</code> and <code>Packages</code>
 then run <code>python -m http.server</code>. This will spin up a web server:</p>
-
 <pre><code>$ python -m http.server
 Serving HTTP on 0.0.0.0 port 8000 ...
 </code></pre>
-
 <p><strong>Note</strong>: if you are using python 2.x run <code>python -m SimpleHTTPServer</code> instead.</p>
-
 <h2>Client configuration</h2>
-
 <p>The last thing to do is configure a CentOS client to use the local mirror.
 Create a config file called <code>/etc/yum.repos.d/CentOS-Base-Local.repo</code> with the
 following contents:</p>
-
 <pre><code>[base-local]
 name=CentOS-$releasever - Base (Local)
 baseurl=http://192.168.56.1:8000/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 </code></pre>
-
 <p>Running <code>yum repolist base-local</code> should give you output similar to the following:</p>
-
 <pre><code>repo id              repo name                         status
 
 base-local           CentOS-7 - Base (Local)           9,007
 </code></pre>
-
 <p>Once you're happy your local mirror is working you can disable the standard
 base repository by running <code>yum-config-manager --disable base</code>. Alternatively
 you can add <code>enabled=0</code> to <code>/etc/yum.repos.d/CentOS-Base.repo</code> in the <code>[base]</code>
@@ -142,9 +120,9 @@ section.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

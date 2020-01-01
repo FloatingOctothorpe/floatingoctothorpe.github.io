@@ -42,21 +42,16 @@
 <p>It's often very useful to be able to quickly send files over a network. One
 quick way to do this is to stand up a temporary HTTP server to send files. This
 can be done with Python's <a href="https://docs.python.org/3.6/library/http.server.html">http.server</a> module:</p>
-
 <pre><code>$ python -m http.server
 Serving HTTP on 0.0.0.0 port 8000 ...
 127.0.0.1 - - [01/Nov/2016 22:44:19] "GET / HTTP/1.1" 200 -
 </code></pre>
-
 <p><strong>Note</strong>: In earlier versions of Python (2.x), the module is called
 <code>SimpleHTTPServer</code>.</p>
-
 <h2>Sending files the other way</h2>
-
 <p>In the example above files are pulled via a <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.3">GET</a> request.
 Unfortunately Python's server implementation does not respond to
 <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.6">PUT</a> requests:</p>
-
 <pre><code>$ curl -X PUT --upload-file text.txt http://localhost:8000
 &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
         "http://www.w3.org/TR/html4/strict.dtd"&gt;
@@ -73,10 +68,8 @@ Unfortunately Python's server implementation does not respond to
     &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-
 <p>It is however fairly easy to extend the server implementation to add the
 missing method. The script below implements the <code>do_PUT</code> method:</p>
-
 <pre><code>#!/usr/bin/env python
 
 """Extend Python's built in HTTP server to save files
@@ -122,27 +115,20 @@ class HTTPRequestHandler(server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     server.test(HandlerClass=HTTPRequestHandler)
 </code></pre>
-
 <h3>Running the script</h3>
-
 <p>The <a href="/2017/http_put_server.py">script above</a> should work out of the box with either Python
 2 or Python 3. Once it's downloaded <code>cd</code> to the directory you want to upload
 files to and run it:</p>
-
 <pre><code>$ mkdir upload
 $ cd upload/
 $ python /tmp/http_put_server.py
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 </code></pre>
-
 <p>Files can then be uploaded to the directory using <code>curl</code> or <code>wget</code>:</p>
-
 <pre><code>$ curl -X PUT --upload-file test.txt http://localhost:8000
 Saved "test.txt"
 </code></pre>
-
 <h3>A quick note on security</h3>
-
 <p>The script above will blindly accept files without authentication, and no
 encryption is used in transit. For transferring files quickly across a private
 network this should be OK. However exposing the web server over the Internet is
@@ -152,9 +138,9 @@ almost certainly a terrible idea!</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

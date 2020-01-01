@@ -41,107 +41,78 @@
 
 <p><strong>Update</strong>: since originally writing this post, Python has been updated to
 create <code>Scripts/activate</code> by default (see <a href="https://bugs.python.org/issue22343">issue 22343</a>).</p>
-
 <p>A <a href="/2016/getting-started-with-virtualenv.html">few posts back</a> I went over using the <a href="https://docs.python.org/3/library/venv.html">venv</a>
 module to generate Python virtual environments. Unfortunately there are a
 couple of complications if you use <a href="https://www.cygwin.com/">Cygwin</a>.</p>
-
 <h2>Virtual environments under Windows</h2>
-
 <p>Assuming you are running Python 3.4 or greater, <code>venv</code> should be part of
 Python's standard library. Creating an environment works in the same way
 as <a href="https://en.wikipedia.org/wiki/Unix-like">Unix-like</a> systems:</p>
-
 <pre><code>python -m venv example_env
 </code></pre>
-
 <p>There are however a few subtle differences, for example <code>bin/</code> is called
 <code>Scripts/</code>. Environments are also activated/deactivated with either a batch or
 PowerShell script:</p>
-
 <pre><code>C:\Users\bob\Desktop&gt; example_env\Scripts\activate.bat
 (example_env) C:\Users\bob\Desktop&gt; example_env\Scripts\deactivate.bat
 C:\Users\bob\Desktop&gt;
 </code></pre>
-
 <p>This works fine if you use <code>cmd</code> or PowerShell. However the bash script to
 activate the environment is not present. This is a problem if you want to use
 Cygwin.</p>
-
 <pre><code>$ source example_env/Scripts/activate
 bash: example_env/Scripts/activate: No such file or directory
 </code></pre>
-
 <h2>Setting environment variables manually</h2>
-
 <p>You can work around this problem by manually setting environment variables:</p>
-
 <pre><code>$ export VIRTUAL_ENV="/c/Users/bob/Desktop/example_env"
 $ export PATH="${VIRTUAL_ENV}/Scripts:${PATH}"
 $ unset PYTHONHOME
 </code></pre>
-
 <p>Optionally you can also add the environment to the prompt:</p>
-
 <pre><code>$ export PS1="(example_env) ${PS1}"
 (example_env) $
 </code></pre>
-
 <p>Deactivating the environment is then just a case of reverting the environment
 variables you changed previously:</p>
-
 <pre><code>(example_env) $ export PS1='$ '
 $ export PATH="$(echo $PATH | sed "s|${VIRTUAL_ENV}/Scripts:||")"
 $ unset VIRTUAL_ENV
 </code></pre>
-
 <p>Although the method above works, it's not exactly ideal.</p>
-
 <h2>Copying the POSIX script with sed</h2>
-
 <p>The script templates for <code>venv</code> can be found in the Python <code>lib/venv/scripts/</code>
 directory. The templates are rendered with the following replacements:</p>
-
 <pre><code>text = text.replace('__VENV_DIR__', context.env_dir)
 text = text.replace('__VENV_NAME__', context.env_name)
 text = text.replace('__VENV_PROMPT__', context.prompt)
 text = text.replace('__VENV_BIN_NAME__', context.bin_name)
 text = text.replace('__VENV_PYTHON__', context.env_exe)
 </code></pre>
-
 <p>Of the variables above, only <code>__VENV_DIR__</code>, <code>__VENV_BIN_NAME__</code> and
 <code>__VENV_PROMPT__</code> are used in the POSIX activate script. The following
 <a href="http://manpages.org/sed">sed</a> command can be used to replace the variables and copy the
 template:</p>
-
 <pre><code>sed -e 's|__VENV_DIR__|/c/Users/bob/Desktop/example_env|g' \
     -e 's|__VENV_PROMPT__|(example_env) |g' \
     -e 's|__VENV_BIN_NAME__|Scripts|g' \
   /c/Python36/lib/venv/scripts/posix/activate &gt; /c/Users/bob/Desktop/example_env/Scripts/activate
 </code></pre>
-
 <p><strong>Note</strong>: an absolute Cygwin path to the environment is used.</p>
-
 <p>Once the activate script has been created you can activate/deactivate the
 environment like you would under any other POSIX system:</p>
-
 <pre><code>$ source /c/Users/bob/Desktop/example_env/Scripts/activate
 (example_env) $ deactivate
 $
 </code></pre>
-
 <h2>Adding activate with Python</h2>
-
 <p>Alternatively a <a href="/2017/cygwin_venv.py">short python script</a> can be used to generate
 the <code>activate</code> script:</p>
-
 <pre><code>$ ./cygwin_venv.py example_env/
 Created: "C:\Users\bob\Desktop\example_env\Scripts\activate"
 </code></pre>
-
 <p>This script uses the <code>ensure_directories</code> and <code>replace_variables</code> functions
 from the <code>venv</code> module to generate the <code>activate</code> script in the correct place.</p>
-
 <p><strong>Note</strong>: the script could have used the <code>setup_scripts</code> function from <code>venv</code>.
 To do this you have to set <code>os.name</code> to <code>posix</code> to ensure you copy the correct
 files. This is pretty hacky, and the resulting bash scripts will have windows
@@ -151,9 +122,9 @@ style line returns (<code>CRLF</code>), hence it was avoided.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -43,46 +43,35 @@
 title="internet service provider">ISP</abbr> will normally give you a dynamic
 IP address. For most users this is fine, however if you want to connect back to
 your home network this can be a problem.</p>
-
-<p>Following on from <a href="/2016/cloudflare-api-getting-started.html">last week&#39;s post</a>, this post is going to go
-over how to use <a href="https://api.cloudflare.com/">Cloudflare&#39;s API</a> to
+<p>Following on from <a href="/2016/cloudflare-api-getting-started.html">last week's post</a>, this post is going to go
+over how to use <a href="https://api.cloudflare.com/">Cloudflare's API</a> to
 dynamically update a DNS record.</p>
-
 <h2>Initial setup</h2>
-
 <p>To get started you will need to have already done the following:</p>
-
 <ol>
 <li>Registered a domain</li>
 <li>Setup a <a href="https://www.cloudflare.com/a/sign-up">Cloudflare account</a></li>
 <li>Created an A record you want to manage dynamically</li>
 <li>Make a note of your Cloudflare API key</li>
 </ol>
-
 <p>Once you've completed the steps above, you will need to decide where to run the
 update script. The script requires a <a href="https://www.python.org/downloads/">Python environment</a> and
 the <a href="http://docs.python-requests.org/en/master/">requests module</a>. On most Linux distributions such as
 CentOS, Debian and Ubuntu python will already be installed. There are a few
 ways you can <a href="http://docs.python-requests.org/en/master/user/install/">install the requests module</a>. In this
 instance I used Apt:</p>
-
 <pre><code>$ sudo apt-get update
 $ sudo apt-get install python-requests
 </code></pre>
-
 <h2>Update script installation</h2>
-
 <p>Once you have a done the initial setup steps above, you will need to get a copy
 of the update script. This can be done by cloning directly from Github:</p>
-
 <pre><code>$ git clone https://github.com/FloatingOctothorpe/cloudflare-dynamic-dns.git
 </code></pre>
-
 <p>Alternatively if you don't have git installed, you can download the script from
 the <a href="https://github.com/FloatingOctothorpe/cloudflare-dynamic-dns/releases">releases page</a>. The first time the update script is
 run you will be prompted for your authentication details, zone name and A
 record name:</p>
-
 <pre><code>$ python update.py
 CloudFlare registered email: alice@example.com
 Auth key: df4c90320bfa7ed984c5752ccb8f96e9d343c
@@ -91,48 +80,36 @@ A record name: f-o.example.com
 INFO:root:Saving new config to cloudflare-dynamic-dns.json
 INFO:root:testing.f-o.example.com already points to 203.0.113.120, nothing to do
 </code></pre>
-
 <p>Assuming the details you entered were correct, the script will run through the
 following steps:</p>
-
 <ol>
 <li>Check your current public IP using <a href="https://www.ipify.org/">ipify.org</a></li>
 <li>Prompt for configuration if no config is found</li>
 <li>Check your public IP address against the current DNS A record</li>
 <li>Update the DNS record using Cloudflare's API if required</li>
 </ol>
-
 <p>The first time <code>update.py</code> is run, a configuration file called
 <code>cloudflare-dynamic-dns.json</code> will be created. This will allow the script to
 run without prompting for configuration:</p>
-
 <pre><code>$ python update.py
 INFO:root:testing.f-o.example.com already points to 203.0.113.120, nothing to do
 </code></pre>
-
 <p><strong>Note</strong>: the generated configuration will contain your API key, however the
 config should not be world readable.</p>
-
 <pre><code>$ ls -l cloudflare_dns_update.json
 -rw------- 1 alice alice 152 Nov 15 21:29 cloudflare-dynamic-dns.json
 </code></pre>
-
 <h3>Scheduling</h3>
-
 <p>For the Dynamic DNS entry to be dynamic, the update script needs to be run
 routinely. One way to automate this is with a <a href="https://en.wikipedia.org/wiki/Cron">cron job</a> similar to
 the following:</p>
-
 <pre><code>*/15 * * * * cd /home/alice/cloudflare-dynamic-dns &amp;&amp; python update.py &gt; /dev/null
 </code></pre>
-
 <p>This cron job will run <code>update.py</code> every fifteen minutes. Note that the update
 script currently expects configuration in the current working directory, hence
 the <code>cd</code>. In the future I might add a <code>--config</code> option to avoid having to
 change directory.</p>
-
 <h2>Alternatives</h2>
-
 <p>If you would rather used better tested code you could consider using
 <a href="https://sourceforge.net/projects/ddclient/">ddclient</a> instead. Cloudflare provide <a href="https://www.cloudflare.com/technical-resources/#ddclient">setup
 instructions</a> on their website.</p>
@@ -141,9 +118,9 @@ instructions</a> on their website.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

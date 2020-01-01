@@ -41,52 +41,39 @@
 
 <p>Following on from <a href="/2017/client-ssl-certificate-authentication-with-apache.html">last weeks post</a>, this post is going to look
 at revoking client SSL certificates to invalidate them.</p>
-
 <h2>Why revoke certificates?</h2>
-
 <p>When certificates are used for client authentication, the private key is kept
 on the users device to decrypt messages and the public key is sent to the
 server. So if Alice wants to connect to Bob's server she will send her X.509
 certificate as part of the <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security#TLS_handshake">TLS handshake</a>:</p>
-
 <p><img class="pure-img" src="/2017/client-x509-auth-diagram.svg"
   alt="Diagram showing a user, Alice, talking to a server run by Bob with a
   certificate." /></p>
-
 <p>It is important that the private key remains confidential. If the key is
 compromised, the third party will be able to use the key to impersonate the
 user. For example if Mallory made a copy of Alice's private key she could use
 this to authenticate with Bob's server:</p>
-
 <p><img class="pure-img" src="/2017/client-x509-compromised-auth-diagram.svg"
   alt="Diagram showing an attacker, Mallory using Alice's key." /></p>
-
 <p>Once a private key is compromised any certificates associated with that key
 should be revoked to ensure they can no longer be used to authenticate. In the
 example above Bob could revoke Alice's original certificate, and then issue a
 new certificate to Alice. This will prevent Mallory using the original
 certificate to authenticate as Alice.</p>
-
 <h2>Creating a Certificate Revocation List (CRL)</h2>
-
 <p>Start by creating a <code>clrnumber</code> file. Like the <code>serial</code> file, this file is used
 to add a monotonically increasing sequence number to <a href="https://en.wikipedia.org/wiki/Certificate_revocation_list">CRL
 certificates</a> as they are generated:</p>
-
 <pre><code>echo 1000 &gt; /etc/httpd/conf/ca/crlnumber
 </code></pre>
-
 <p>A CRL certificate can then be generated using the following command:</p>
-
 <pre><code>openssl ca \
   -config /etc/httpd/conf/ca/openssl.cnf \
   -gencrl \
   -out /etc/httpd/conf/ca/crl.pem
 </code></pre>
-
 <p>The new certificate file will initially state that no certificates have been
 revoked:</p>
-
 <pre><code>$ openssl crl -in /etc/httpd/conf/ca/crl.pem -noout -text
 Certificate Revocation List (CRL):
         Version 2 (0x1)
@@ -99,51 +86,38 @@ Certificate Revocation List (CRL):
                 4096
 No Revoked Certificates.
 </code></pre>
-
 <p>To revoke a certificate, a command similar to the following can be used:</p>
-
 <pre><code>openssl ca \
   -config /etc/httpd/conf/ca/openssl.cnf \
   -revoke /etc/httpd/conf/ca/newcerts/1000.pem
 </code></pre>
-
 <p>Finally a new CRL certificate can be generated:</p>
-
 <pre><code>openssl ca \
   -config /etc/httpd/conf/ca/openssl.cnf \
   -gencrl \
   -out /etc/httpd/conf/ca/crl.pem
 </code></pre>
-
 <p>The certificate will now be listed as revoked:</p>
-
 <pre><code>$ openssl crl -in /etc/httpd/conf/ca/crl.pem -noout -text
 ...
 Revoked Certificates:
     Serial Number: 1000
         Revocation Date: Oct  8 17:36:38 2017 GMT
 </code></pre>
-
 <h2>Updating Apache</h2>
-
 <p>By default Apache will not look at the CRL certificate. As a result revoked
 certificates can still be used to authenticate! To correct this add the
 <a href="https://httpd.apache.org/docs/2.4/mod/mod_ssl.html#sslcarevocationfile">SSLCARevocationFile</a> and
 <a href="https://httpd.apache.org/docs/2.4/mod/mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck</a> directives to
 <code>/etc/httpd/conf.d/ssl.conf</code>:</p>
-
 <pre><code>SSLCARevocationFile /etc/httpd/conf/ca/crl.pem
 SSLCARevocationCheck chain
 </code></pre>
-
 <p>Then restart Apache to pick up the configuration change:</p>
-
 <pre><code>systemctl restart httpd.service
 </code></pre>
-
 <p>Apache should now reject authentication attempts which are made using revoked
 certificates:</p>
-
 <pre><code>$ curl  \
   --insecure \
   --cert /etc/httpd/conf/users/alice/cert.pem \
@@ -151,37 +125,38 @@ certificates:</p>
   https://localhost/test.txt
 curl: (58) SSL peer rejected your certificate as revoked.
 </code></pre>
-
 <p><strong>Note</strong>: if a new CRL certificate is issued, Apache needs to be restarted to
 pick up the change!</p>
-
 <h2>Other security measures</h2>
-
 <p>As well as checking for revoked certificates, below are a few security related
 points you should consider when using client certificate authentication:</p>
-
 <ul>
-<li><p>The certificate authority should ideally be hosted on a different server.
-This prevents the CA being compromised if the server running Apache is
-compromised.</p></li>
-<li><p>Add a passphrase to both client and CA private keys. This can be done with
-the following command:</p>
-
+<li>
+<p>The certificate authority should ideally be hosted on a different server.
+   This prevents the CA being compromised if the server running Apache is
+   compromised.</p>
+</li>
+<li>
+<p>Add a passphrase to both client and CA private keys. This can be done with
+   the following command:</p>
 <pre><code>openssl rsa -aes256 -in key.pem -out key_encrypted.pem
-</code></pre></li>
-<li><p>Consider using an intermediate CA and storing the private key for the root
-CA offline. For more information on setting up an OpenSSL CA have a look at
-the <a href="https://jamielinux.com/docs/openssl-certificate-authority/">OpenSSL certificate authority guide</a> by Jamie
-Nguyen.</p></li>
+</code></pre>
+</li>
+<li>
+<p>Consider using an intermediate CA and storing the private key for the root
+   CA offline. For more information on setting up an OpenSSL CA have a look at
+   the <a href="https://jamielinux.com/docs/openssl-certificate-authority/">OpenSSL certificate authority guide</a> by Jamie
+   Nguyen.</p>
+</li>
 </ul>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

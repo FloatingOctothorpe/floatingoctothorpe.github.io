@@ -44,103 +44,84 @@ written in <a href="https://golang.org/">Go</a>. As well as being free open sour
 available for a wide range of platforms including Windows, GNU/Linux and
 Android.  This post is going to quickly go over setting up Syncthing on a
 Raspberry Pi running <a href="https://www.raspbian.org/">Raspbian</a>.</p>
-
 <h2>Installation</h2>
-
 <p>Pre-compiles Debian packages for ARM can be installed from
 <a href="https://apt.syncthing.net/">apt.syncthing.net</a> with the following steps:</p>
-
 <ol>
-<li><p>Make sure <code>apt-transport-https</code> is available:</p>
-
+<li>
+<p>Make sure <code>apt-transport-https</code> is available:</p>
 <pre><code>dpkg -l apt-transport-https || sudo apt-get install apt-transport-https
-</code></pre></li>
-<li><p>Import the Syncthing PGP key into apt:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Import the Syncthing PGP key into apt:</p>
 <pre><code>curl -s https://syncthing.net/release-key.txt | sudo apt-key add -
-</code></pre></li>
-<li><p>Add the stable Syncthing channel to the apt sources list:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Add the stable Syncthing channel to the apt sources list:</p>
 <pre><code>echo "deb https://apt.syncthing.net/ syncthing stable" | \
   sudo tee /etc/apt/sources.list.d/syncthing.list
-</code></pre></li>
-<li><p>Finally install the <code>syncthing</code> package with apt:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Finally install the <code>syncthing</code> package with apt:</p>
 <pre><code>sudo apt-get update
 sudo apt-get install syncthing
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
-
 <h2>systemd configuration</h2>
-
 <p>At this point you should be able to run Syncthing as a normal user.
 Alternatively Syncthing can be started by systemd at boot. To do this, first
 create a user account to run Syncthing:</p>
-
 <pre><code>useradd --create-home syncthing
 </code></pre>
-
 <p>Next copy the systemd unit file from <code>/lib/systemd/system/</code>:</p>
-
 <pre><code>cp /lib/systemd/system/syncthing@.service \
    /etc/systemd/system/syncthing@syncthing.service
 </code></pre>
-
 <p><strong>Note</strong>: you should append the username of the user running the service after
 this <code>@</code>.</p>
-
 <p>Once the unit file is ready, reload systemd to pick up the change:</p>
-
 <pre><code>systemctl daemon-reload
 </code></pre>
-
 <p>Then enable and start the service:</p>
-
 <pre><code>systemctl enable syncthing@syncthing.service
 systemctl start syncthing@syncthing.service
 </code></pre>
-
 <p>At this point if everything has gone well the service should be up and running.
 You can check with <code>systemctl</code>:</p>
-
 <pre><code>systemctl status syncthing@syncthing.service
 </code></pre>
-
 <h2>Connecting to the Web UI</h2>
-
 <p>Once Syncthing is up and running, it will start running a local web server. The
 easiest way to connect if you're running a headless setup, is forwarding the
 local port with an SSH command similar to the following:</p>
-
 <pre><code>ssh -L 8384:localhost:8384 pi@raspberrypi
 </code></pre>
-
 <p>Once the port had been forwarded, you should be able to point a web browser at
 <a href="http://localhost:8384/">http://localhost:8384/</a> and get a web interface
 similar to the following:</p>
-
 <p><img class="pure-img" src="/2017/syncthing-web-ui.png"
   alt="Screenshot of the Syncthing web UI" /></p>
-
 <p>From here you can go ahead and setup shares, and any additional Syncthing
 configuration. For more information refer to the <a href="https://docs.syncthing.net/intro/gui.html">Syncthing
 docs</a>.</p>
-
 <h2>Iptables rules</h2>
-
 <p>Finally if you're running iptables, you will want to add rules to allow traffic
 to Syncthing. Syncthing uses two ports for replication:</p>
-
 <ul>
-<li><p><strong>22000/TCP</strong>: by default Syncthing listens for new connections on this
-port, and uses it to replicate files.</p></li>
-<li><p><strong>21027/UDP</strong>: this port is used for host discovery.</p></li>
+<li>
+<p><strong>22000/TCP</strong>: by default Syncthing listens for new connections on this
+   port, and uses it to replicate files.</p>
+</li>
+<li>
+<p><strong>21027/UDP</strong>: this port is used for host discovery.</p>
+</li>
 </ul>
-
 <p><strong>Note</strong>: by default Syncthing will try to use IPv4 and IPv6.</p>
-
 <p>Commands similar to the following can be used to add new iptables rules:</p>
-
 <pre><code>iptables -A INPUT -p tcp -m tcp --dport 22000 -j ACCEPT \
          -m comment --comment "Allow syncthing"
 iptables -A INPUT -p udp -m udp --dport 21027 -j ACCEPT \
@@ -151,12 +132,9 @@ ip6tables -A INPUT -p tcp -m tcp --dport 22000 -j ACCEPT \
 ip6tables -A INPUT -p udp -m udp --dport 21027 -j ACCEPT \
           -m comment --comment "Allow syncthing discovery"
 </code></pre>
-
 <p>After adding the rules, make sure you run <code>iptables-save</code> and <code>ip6tables-save</code>
 to make the rules persistent.</p>
-
 <h2>Further reading</h2>
-
 <p>If you want more information on Syncthing, the <a href="https://docs.syncthing.net/">official docs</a>
 are a good place to start. You can also view the entire code base, along with
 open issues, etc, on <a href="https://github.com/syncthing">Github</a>.</p>
@@ -165,9 +143,9 @@ open issues, etc, on <a href="https://github.com/syncthing">Github</a>.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

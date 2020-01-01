@@ -43,53 +43,37 @@
 There are however alternative methods. This post is going to go over
 configuring <a href="https://httpd.apache.org/">Apache</a> to authenticate users using Client
 <a href="https://en.wikipedia.org/wiki/X.509">X.509</a> certificates.</p>
-
 <p><strong>Note</strong>: the examples given in this post are for <a href="https://www.centos.org/">CentOS 7</a>, they
 will need to be adapted slightly for other Linux distributions.</p>
-
 <h2>Installing required packages</h2>
-
 <p>Start by installing Apache, the Apache <code>mod_ssl</code> module and OpenSSL using
 <code>yum</code>:</p>
-
 <pre><code>yum install -y httpd mod_ssl openssl
 </code></pre>
-
 <p>Once Apache is installed, enable and start the service with <code>systemctl</code>:</p>
-
 <pre><code>systemctl enable httpd.service
 systemctl start httpd.service
 </code></pre>
-
 <p>If everything goes well you should now be able to make a test file and request
 it with <code>curl</code>:</p>
-
 <pre><code>echo 'Hello World' &gt; /var/www/html/test.txt
 curl --insecure https://localhost/test.txt
 </code></pre>
-
 <p><strong>Note</strong>: the <code>--insecure</code> option is used because Apache will be using a
 default self signed certificate.</p>
-
 <h2>Setup a certificate authority</h2>
-
 <p>Start by making a copy of the <code>/etc/pki/CA/</code> directory, and restricting the
 permissions on the <code>private</code> directory:</p>
-
 <pre><code>cp -r /etc/pki/CA/ /etc/httpd/conf/ca
 chmod 700 /etc/httpd/conf/ca/private
 </code></pre>
-
 <p>Then take a copy of the default <code>openssl.cnf</code> configuration and update the CA
 path:</p>
-
 <pre><code>cp /etc/pki/tls/openssl.cnf /etc/httpd/conf/ca/openssl.cnf
 sed -i 's|/etc/pki/CA|/etc/httpd/conf/ca|' /etc/httpd/conf/ca/openssl.cnf
 </code></pre>
-
 <p>The <code>openssl req</code> command can then be used to generate a private key and a new
 CA certificate.</p>
-
 <pre><code>openssl req \
   -config /etc/httpd/conf/ca/openssl.cnf \
   -nodes \
@@ -103,21 +87,16 @@ CA certificate.</p>
   -subj '/C=GB/ST=England/O=Alice Ltd/OU=Alice Ltd Certificate Authority/CN=Alice Ltd Root CA' \
   -out /etc/httpd/conf/ca/cacert.pem
 </code></pre>
-
 <p><strong>Note</strong>: the <code>-nodes</code> option will remove the need to encrypt the private key
 with a passphrase. Skipping this option to use a passphrase would be better
 from a security point of view.</p>
-
 <p>Once the new CA certificate has been generated create an new index and serial
 file:</p>
-
 <pre><code>touch /etc/httpd/conf/ca/index.txt
 echo 1000 &gt; /etc/httpd/conf/ca/serial
 </code></pre>
-
 <p><code>/etc/httpd/conf/ca/</code> should now have a folder structure similar to the
 following:</p>
-
 <pre><code>.
 +-- cacert.pem
 +-- certs
@@ -129,17 +108,13 @@ following:</p>
 ¦   +-- cakey.pem
 +-- serial
 </code></pre>
-
 <p>The CA created with the steps above is fine as an example. However it does not
 do things like use an intermediary CA. For a more detailed guide on setting up
 a CA with OpenSSL I would recommend having a look at <a href="https://jamielinux.com/docs/openssl-certificate-authority/">OpenSSL certificate
 authority</a> by Jamie Nguyen.</p>
-
 <h2>Create a client certificate</h2>
-
 <p>Commands similar the following can be used to generate a private key and
 certificate signing request for a user:</p>
-
 <pre><code>CLIENT_NAME='alice'
 CLIENT_EMAIL="alice@example.com"
 mkdir -p "/etc/httpd/conf/users/${CLIENT_NAME}/"
@@ -149,24 +124,18 @@ openssl req -newkey rsa:4096 \
   -days 365 -nodes  \
   -subj "/C=GB/ST=England/O=Alice Ltd/CN=${CLIENT_NAME}/emailAddress=${CLIENT_EMAIL}"
 </code></pre>
-
 <p>The request can then be signed with the CA:</p>
-
 <pre><code>openssl ca \
   -config /etc/httpd/conf/ca/openssl.cnf \
   -in /etc/httpd/conf/users/alice/request.pem \
   -out "/etc/httpd/conf/users/${CLIENT_NAME}/cert.pem"
 </code></pre>
-
 <h2>Configure Apache</h2>
-
 <p>The following directives need to be set in <code>/etc/httpd/conf.d/ssl.conf</code>:</p>
-
 <pre><code>SSLCACertificateFile /etc/httpd/conf/ca/cacert.pem
 SSLVerifyClient require
 SSLVerifyDepth 1
 </code></pre>
-
 <p>The <a href="https://httpd.apache.org/docs/2.4/mod/mod_ssl.html#sslcacertificatefile">SSLCACertificateFile</a> directive tells
 Apache which CA certificate to use when verifying if client certificates are
 valid, the <a href="https://httpd.apache.org/docs/2.4/mod/mod_ssl.html#sslverifyclient">SSLVerifyClient</a> directive ensures
@@ -175,23 +144,17 @@ clients have to authenticate with a valid certificate, and the
 issuers in a certificate chain should be checked before giving up. For the
 examples in this post client certificates are always signed directly by the
 root CA, so <code>1</code> is fine.</p>
-
 <p>To avoid files being accessed over HTTP create
 <code>/etc/httpd/conf.d/ssl_required.conf</code> with the following contents:</p>
-
 <pre><code>&lt;Location '/'&gt;
   SSLRequireSSL
 &lt;/Location&gt;
 </code></pre>
-
 <p>Finally restart Apache using <code>systemctl</code> to load the new configuration:</p>
-
 <pre><code>systemctl restart httpd.service
 </code></pre>
-
 <p>If everything goes well, the previous <code>curl</code> command should now only work if a
 valid client certificate is used:</p>
-
 <pre><code>$ curl --insecure https://localhost/test.txt
 curl: (35) NSS: client certificate not found (nickname not specified)
 
@@ -202,9 +165,7 @@ $ curl \
   https://localhost/test.txt
 Hello World
 </code></pre>
-
 <h2>Future improvements</h2>
-
 <p>The configuration in this post skips over a few important topics such as
 certificate revocation. Next weeks post will look at some of these topics in
 more detail.</p>
@@ -213,9 +174,9 @@ more detail.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

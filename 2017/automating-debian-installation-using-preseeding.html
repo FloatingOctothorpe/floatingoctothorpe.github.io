@@ -43,95 +43,65 @@
 installation using a kickstart file. This post is going to look at a similar
 technique called preseeding which can be used to do the same thing for Debian
 based distributions.</p>
-
 <p><strong>Note</strong>: like the previous CentOS example, the example given in this post is a
 VM being run under <a href="https://www.virtualbox.org/">VirtualBox</a>.</p>
-
 <h2>Creating a preseed file</h2>
-
 <p>One way to generate a preseed file is using the
 <a href="https://www.debian.org/releases/stable/amd64/apbs03.html.en">debconf-get-selections</a> command. First make sure the
 <code>debconf-utils</code> package is installed:</p>
-
 <pre><code>apt-get install debconf-utils
 </code></pre>
-
 <p>Then create a new preseed file:</p>
-
 <pre><code>echo "#_preseed_V1" &gt; preseed.cfg
 debconf-get-selections --installer &gt;&gt; preseed.cfg
 debconf-get-selections &gt;&gt; preseed.cfg
 </code></pre>
-
 <p>Although you can make a preseed file this way the resulting file will still
 need manual intervention. Generally it's a better idea to start with the
 <a href="https://www.debian.org/releases/squeeze/example-preseed.txt">example configuration</a> provided by Debian:</p>
-
 <pre><code>wget -O preseed.cfg https://www.debian.org/releases/squeeze/example-preseed.txt
 </code></pre>
-
 <h3>Customising</h3>
-
 <p>Although the example configuration is a good starting point, there are several
 changes I had to make before the installation was completely automated. You
 will likely want to make different changes, however feel free to refer to the
 <a href="/2017/preseed.cfg">preseed config</a> used in this post.</p>
-
 <h4>Locale and keyboard layout</h4>
-
 <p>Set the locale and keyboard layout to match your location:</p>
-
 <pre><code>d-i debian-installer/locale string en_GB.UTF-8
 
 d-i console-keymaps-at/keymap select gb
 d-i keyboard-configuration/xkb-keymap select gb
 </code></pre>
-
 <h4>Mirror URL</h4>
-
 <p>Update the mirror URL to a suitable mirror</p>
-
 <pre><code>d-i mirror/http/hostname string ftp.uk.debian.org
 </code></pre>
-
 <p><strong>Note</strong>: a full list of mirrors can be found on
 <a href="https://www.debian.org/mirror/list">debian.org</a>.</p>
-
 <h4>User accounts</h4>
-
 <p>For the sake of simplicity this post is just going to create a <code>root</code> account
 and skip creating a non root user. This can be done with the following
 configuration:</p>
-
 <pre><code>d-i passwd/make-user boolean false
 d-i passwd/root-password password example
 d-i passwd/root-password-again password example
 </code></pre>
-
 <p><strong>Note</strong>: use the <code>passwd/root-password-crypted</code> option and a password hash
 instead of a clear text password if you're planning to keep the VM.</p>
-
 <h4>Timezone</h4>
-
 <p>Set a suitable timezone:</p>
-
 <pre><code>d-i time/zone string Europe/London
 </code></pre>
-
 <p><strong>Note</strong>: Wikipedia has a <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">list of tz database time zones</a>:</p>
-
 <h4>Disk configuration and Grub</h4>
-
 <p>For this post the following config was used to partition the VM's disk:</p>
-
 <pre><code>d-i partman-auto/init_automatically_partition select biggest_free
 d-i partman-auto/disk string /dev/sda
 d-i partman-auto/method string regular
 </code></pre>
-
 <p>Grub also needs to be installed on the disk, this can be done with the
 following config:</p>
-
 <pre><code># This is fairly safe to set, it makes grub install automatically to the MBR
 # if no other operating system is detected on the machine.
 d-i grub-installer/only_debian boolean true
@@ -140,61 +110,41 @@ d-i grub-installer/only_debian boolean true
 # determined safely in general, so this needs to be specified:
 d-i grub-installer/bootdev  string /dev/sda
 </code></pre>
-
 <h4>Software installation</h4>
-
 <p>Make sure the apt mirror is enabled, and select which packaged groups you want
 to install:</p>
-
 <pre><code>d-i apt-setup/use_mirror boolean true
 tasksel tasksel/first multiselect standard
 </code></pre>
-
 <p>Additional packages can also be installed if required:</p>
-
 <pre><code>d-i pkgsel/include string curl
 </code></pre>
-
 <h4>Debian popularity contest</h4>
-
 <p>Finally choose if you want to contribute statistics to the <a href="https://popcon.debian.org/">Debian popularity
 contest</a>:</p>
-
 <pre><code>popularity-contest popularity-contest/participate boolean false
 </code></pre>
-
 <h4>Remove the CD from apt</h4>
-
 <p>Before restarting the VM, make sure the cdrom repo is not configured in
 <code>/etc/apt/sources.list</code>:</p>
-
 <pre><code>d-i preseed/late_command string sed -i '/^deb cdrom:/d' /target/etc/apt/sources.list
 </code></pre>
-
 <p><strong>Note</strong>: the partitioned disk is mounted under <code>/target/</code> during installation.</p>
-
 <h2>Installation</h2>
-
 <p>There are a few ways you can get the preseed file to the VM being build. For
 this post the file is going to be served over HTTP:</p>
-
 <pre><code>$ python -m http.server 80
 Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
 </code></pre>
-
 <p>Once a temporary web server is running to serve the preseed config, boot the
 VM from a Debian ISO. Press <kbd>Tab</kbd> to edit the boot arguments and add
 the following:</p>
-
 <pre><code>hostname=preseed domain=localhost auto=true
 url=http://192.168.56.1/preseed.cfg
 </code></pre>
-
 <p>The Grub menu should now look similar to the following:</p>
-
 <p><img class="pure-img" src="/2017/virtual-box-debian-boot.png"
   alt="A Debian VM showing the grub boot menu during installation." /></p>
-
 <p>From here you should be able to hit <kbd>Enter</kbd> to start the installation.
 If everything goes well you should be able to make a cup of tea can come back
 to a completed Debian installation.</p>
@@ -203,9 +153,9 @@ to a completed Debian installation.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

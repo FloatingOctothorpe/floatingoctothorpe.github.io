@@ -41,57 +41,43 @@
 
 <p>It's been a little while since I last installed <a href="https://www.raspbian.org/">Raspbian</a> on a
 Raspberry Pi. One key change that passed me by was:</p>
-
 <blockquote>
-  <p>2016-11-25:</p>
-  
-  <ul>
-  <li>SSH disabled by default; can be enabled by creating a file with name "ssh"
-  in boot partition</li>
-  </ul>
+<p>2016-11-25:</p>
+<ul>
+<li>SSH disabled by default; can be enabled by creating a file with name "ssh"
+   in boot partition</li>
+</ul>
 </blockquote>
-
 <p>As a result, when I tried to connect via SSH I got the following message:</p>
-
 <pre><code>$ ssh 192.168.1.123
 ssh: connect to host 192.168.1.123 port 22: Connection refused
 </code></pre>
-
 <p>As the change log entry suggests, the quick fix to this problem is to create an
 empty file called <code>ssh</code> in the boot partition before starting the Raspberry Pi.
 If you're curious why this changed, it's worth reading the <a href="https://www.raspberrypi.org/blog/a-security-update-for-raspbian-pixel/">official blog post
 on the change</a>. The rest of this post is going to go over the steps
 required to set up a headless Raspberry Pi, now this change has been
 implemented.</p>
-
 <h2>Imaging an SD card</h2>
-
 <p>There are a few different ways to install Raspbian. The <a href="https://www.raspberrypi.org/documentation/installation/installing-images/">official Raspberry Pi
 docs</a> suggest using <a href="https://etcher.io/">Etcher</a>; by all means
 feel free to follow them, however I normally use <a href="https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html">dd</a>:</p>
-
 <pre><code>$ dd if=2017-11-29-raspbian-stretch-lite.img of=/dev/sdd bs=1M status=progress
 1855979520 bytes (1.9 GB) copied, 510.010932 s, 3.6 MB/s
 1772+0 records in
 1772+0 records out
 1858076672 bytes (1.9 GB) copied, 510.548 s, 3.6 MB/s
 </code></pre>
-
 <p><strong>Note</strong>: make sure you get the right device! Check <code>/proc/partitions</code> if
 you're not sure.</p>
-
 <h2>Enabling SSH</h2>
-
 <p>The next thing to do is create an empty file in the boot partition called
 <code>ssh</code>:</p>
-
 <p><img class="pure-img" src="/2018/raspberry-pi-ssh-boot.png"
   alt="Boot partition with an empty ssh file." /></p>
-
 <p>You should now be able to boot from the SD card. When the Raspberry Pi boots up
 it will then run the following systemd unit file which should enable and start
 <code>sshd</code>:</p>
-
 <pre><code>[Unit]
 Description=Turn on SSH if /boot/ssh is present
 ConditionPathExistsGlob=/boot/ssh{,.txt}
@@ -104,14 +90,10 @@ ExecStart=/bin/sh -c "update-rc.d ssh enable &amp;&amp; invoke-rc.d ssh start &a
 [Install]
 WantedBy=multi-user.target
 </code></pre>
-
 <p><strong>Note</strong>: if you're curious, the unit file can be found in
 <code>/lib/systemd/system/sshswitch.service</code>.</p>
-
 <h2>Changing the password</h2>
-
 <p>Once the Raspberry Pi has booted you should be able to log into it:</p>
-
 <pre><code>$ ssh pi@192.168.1.123
 The authenticity of host '192.168.1.123 (192.168.1.123)' can't be established.
 ECDSA key fingerprint is SHA256:vxSHK93pryNefDCsHoeVfO4tlo0HN/HhSWYUGb6bjUc.
@@ -119,10 +101,8 @@ Are you sure you want to continue connecting (yes/no)? yes
 Warning: Permanently added '192.168.1.123' (ECDSA) to the list of known hosts.
 pi@192.168.1.123's password:
 </code></pre>
-
 <p>Finally once you've logged in with the default <code>raspberry</code> password, you should
 used <a href="http://man7.org/linux/man-pages/man1/passwd.1.html">passwd</a> to reset the password:</p>
-
 <pre><code>pi@raspberrypi:~ $ passwd
 Changing password for pi.
 (current) UNIX password:
@@ -135,9 +115,9 @@ passwd: password updated successfully
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -39,20 +39,16 @@
 
 <time datetime="2017-07-21">21 July 2017</time>
 
-<p><a href="/2017/raspberry-pi-wifi-access-point.html">Last week&#39;s post</a> when over setting up a wireless access point
+<p><a href="/2017/raspberry-pi-wifi-access-point.html">Last week's post</a> when over setting up a wireless access point
 using <a href="https://w1.fi/hostapd/">hostapd</a>, however it didn't cover security. This post is
 going to go over adding encryption and authentication to an access point using
 <a href="https://en.wikipedia.org/wiki/Wi-Fi_Protected_Access">WPA2</a>.</p>
-
 <h2>WPA2 and Pre-shared Keys</h2>
-
 <p>WPA2 is one of the most widely used WiFi security protocols. A variety of
 different authentication methods can be used, however one of the simplist is a
 pre-shared key.</p>
-
 <p>Below is some example <code>hostapd</code> configuration which can be used to set up an
 access point using <code>WPA2-PSK</code>:</p>
-
 <pre><code># AP details
 interface=wlan0
 driver=nl80211
@@ -70,16 +66,12 @@ wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 ieee80211n=1
 </code></pre>
-
 <p><strong>Note</strong>: remember to change the pass phrase and restart the <code>hostapd</code> service
 before trying to connect.</p>
-
 <h3>Per device configuration</h3>
-
 <p>The configuration above uses the same key for every host that connects to the
 access point. The configuration can be tweaked slightly to look like the
 following:</p>
-
 <pre><code># AP details
 interface=wlan0
 driver=nl80211
@@ -97,22 +89,17 @@ wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 ieee80211n=1
 </code></pre>
-
 <p>In addition to the config above, a pre-shared key file called
 <code>/etc/hostapd/psk</code> also needs to be created. This file contains PSK/MAC address
 pairs. Initially a wild card mac address can be used, this will apply to all
 devices which connect to the access point:</p>
-
 <pre><code>00:00:00:00:00:00 change_me
 </code></pre>
-
 <p>Once the wild card mac address is working correctly, the key file can be
 updated to use different keys for specific mac addresses:</p>
-
 <pre><code>11:11:de:ad:be:ef first_psk
 22:22:de:ad:be:ef another_psk
 </code></pre>
-
 <p>This makes it easy to change device specific pre-shared keys without having to
 update every device simultaneously. It is however fairly easy to spoof a MAC
 address, therefore it is important the pre-shared keys are not compromised.</p>
@@ -121,9 +108,9 @@ address, therefore it is important the pre-shared keys are not compromised.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

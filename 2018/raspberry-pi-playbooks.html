@@ -43,70 +43,50 @@
 I've finally got around to porting most of my Raspberry Pi configuration to
 Ansible. This post is going to look at using those <a href="https://github.com/FloatingOctothorpe/pi-playbooks">Raspberry Pi
 playbooks</a>.</p>
-
 <h2>Installing Ansible</h2>
-
 <p>Ansible needs to be installed onto a control host, this can either be the
 Raspberry Pi itself, or a remote host with network access. On
 <a href="https://raspbian.org/">Raspbian</a> Ansible can be installed with <code>apt-get</code>:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install ansible
 </code></pre>
-
 <p>Unfortunately at the time of writing Raspbian ships with Ansible <code>2.2.1.0</code>.
 This version of Ansible is <a href="https://github.com/ansible/ansible/issues/25172">missing a feature</a> that was
 introduced in <code>2.3</code> which my playbooks depend on. Thankfully a later version of
 Ansible can be installed on <a href="https://www.centos.org/">CentOS</a> via <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a>:</p>
-
 <pre><code>yum install ansible
 </code></pre>
-
 <p>For more installation info, either have a look at my post on <a href="/2016/getting-started-with-ansible.html">getting started
 with Ansible</a>, or refer to the <a href="http://docs.ansible.com/ansible/intro_installation.html">Ansible
 docs</a> which cover installation on other platforms.</p>
-
 <h2>Configuring Ansible</h2>
-
 <p>Once Ansible is installed the next step is to configure an inventory file. If
 you're running Ansible locally a line similar to the following should work:</p>
-
 <pre><code>somehost ansible_user=pi ansible_become=true ansible_host=localhost ansible_connection=local
 </code></pre>
-
 <p>Alternatively if you're planning to run Ansible over SSH, config similar to the
 following should work:</p>
-
 <pre><code>somehost ansible_user=pi ansible_become=true ansible_host=192.168.56.103 ansible_ssh_pass=raspberry
 </code></pre>
-
 <p>You can also set up SSH keys to avoid having to hard code your password:</p>
-
 <pre><code>somehost ansible_user=pi ansible_become=true ansible_host=192.168.56.103
 </code></pre>
-
 <p>Once everything is set up, you should be able to use the
 <a href="http://docs.ansible.com/ansible/ping_module.html">ping</a> module to test Ansible:</p>
-
 <pre><code>$ ansible somehost -i inventory -m ping
 ein | SUCCESS =&gt; {
     "changed": false,
     "ping": "pong"
 }
 </code></pre>
-
 <h2>Running playbooks</h2>
-
 <p>Once Ansible is working, clone a copy of the playbooks with <code>git</code>:</p>
-
 <pre><code>git clone https://github.com/FloatingOctothorpe/pi-playbooks.git
 </code></pre>
-
 <p>The playbooks are split into separate <a href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html">Ansible roles</a>. The
 <code>enabled_roles</code> variable is used to control which roles should be applied. This
 can be set by creating a host specific variables file (e.g.
 <code>pi-playbooks/host_vars/somehost.yml</code>):</p>
-
 <pre><code>---
 enabled_roles:
   - 'apache'
@@ -115,34 +95,25 @@ enabled_roles:
 
 hostname: 'somehost.example.com'
 </code></pre>
-
 <p>In the example above, three roles will be applied. As well as specifying the
 roles, other variables can be set; for example <code>hostname</code> is used to specify
 what the system's hostname should be set to. Info on available variables can be
 found in the <code>tasks/main.yml</code> file for each role.</p>
-
 <p>Once you've created a file in <code>host_vars/</code> you should be able to run the
 <code>site.yml</code> playbook. Initially this can be run with the <code>--check</code> option to
 preview the changes that Ansible will make:</p>
-
 <pre><code>ansible-playbook -i inventory pi-playbooks/site.yml  -v --diff --check
 </code></pre>
-
 <p>Assuming the changes look OK, run Ansible again without the <code>--check</code> option to
 apply the changes:</p>
-
 <pre><code>ansible-playbook -i inventory pi-playbooks/site.yml  -v --diff
 </code></pre>
-
 <p>It's also possible to selectively run a role by explicitly overriding the
 <code>enabled_roles</code> variable:</p>
-
 <pre><code>ansible-playbook -i inventory pi-playbooks/site.yml  -v --diff \
   --extra-vars="enabled_roles=['vim']"
 </code></pre>
-
 <h2>Contributing</h2>
-
 <p>The playbooks are still a work in progress, and will likely be updated over
 time. Please feel free to fork the repo, or raise pull requests if you have
 suggested changes.</p>
@@ -151,9 +122,9 @@ suggested changes.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

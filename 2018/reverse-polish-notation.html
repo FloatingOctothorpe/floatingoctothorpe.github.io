@@ -43,66 +43,44 @@
 Language</a>. The majority of the exercises in the chapter focus on
 developing a calculator program, however the implementation uses <a href="https://en.wikipedia.org/wiki/Reverse_Polish_notation">Reverse
 Polish notation</a>, also known as postfix notation.</p>
-
 <p>There is an <a href="https://www.youtube.com/watch?v=7ha78yWRDlE">excellent YouTube video</a> on the topic,
 however this post is quickly going to go over some of the key points.</p>
-
 <h2>Infix notation</h2>
-
 <p>Even if you're not familiar with the name, you've almost certainly come across
 <a href="https://en.wikipedia.org/wiki/Infix_notation">Infix notation</a>. When infix notation is used operators are
 placed between operands. For example:</p>
-
 <pre><code>a + b
 </code></pre>
-
 <p>In the example above the operator, <code>+</code>, is placed between the two operands,
 <code>a</code>, and <code>b</code>. This becomes slightly more complex for expressions which contain
 multiple operators:</p>
-
 <pre><code>a + b * c
 </code></pre>
-
 <p>In the example above the <code>*</code> operator will be evaluated before <code>+</code> operator due
 to the <a href="https://en.wikipedia.org/wiki/Order_of_operations">order of operations</a>. If you want to change
 the order the operations are performed, you can use brackets:</p>
-
 <pre><code>(a + b) * c
 </code></pre>
-
 <p>This can make parsing expressions significantly more complex.</p>
-
 <h2>Postfix notation</h2>
-
 <p>As the name suggests, postfix notation places the operator after the operands.
 For example:</p>
-
 <pre><code>a b +
 </code></pre>
-
 <p>Like infix notation, it's also possible to include multiple operators:</p>
-
 <pre><code>a b c * +
 </code></pre>
-
 <p>The expression above is equivalent to <code>a + b * c</code>.</p>
-
 <h3>Replacing brackets</h3>
-
 <p>Unlike infix notation, the order operators are evaluated is based on position,
 and can be changed without brackets by repositioning the operators.  For
 example <code>(a + b) * c</code> can be expressed as follows</p>
-
 <pre><code>a b + c *
 </code></pre>
-
 <p>This is one of the main reasons postfix notation is easier than infix notation
 to evaluate programmatically.</p>
-
 <h3>Evaluating expressions</h3>
-
 <p>Expressions can be evaluated with the following pseudo code:</p>
-
 <pre><code>for each token in the postfix expression:
   if token is an operator:
     operand_2 &lt;- pop from the stack
@@ -113,23 +91,18 @@ to evaluate programmatically.</p>
     push token onto the stack
 result &lt;- pop from the stack
 </code></pre>
-
 <p><strong>Note</strong>: the algorithm above assumes each operator always takes two operands.</p>
-
 <p>For example the expression <code>1 2 3 * +</code> would be evaluated as follows:</p>
-
 <ol>
 <li>Push <code>1</code> onto the stack</li>
 <li>Push <code>2</code> onto the stack</li>
 <li>Push <code>3</code> onto the stack</li>
 <li>Remove <code>2</code> and <code>3</code> from the stack, multiply <code>2</code> and <code>3</code> and push the result
-(<code>6</code>) back onto the stack</li>
+    (<code>6</code>) back onto the stack</li>
 <li>Finally remove <code>1</code> and <code>6</code> from the stack, add them together, and put the
-result (<code>7</code>) back onto the stack</li>
+    result (<code>7</code>) back onto the stack</li>
 </ol>
-
 <p>The animation below illustrates these steps:</p>
-
 <p><img class="pure-img" src="/2018/rpn-evaluation-animation.gif"
   alt="Animation showing each step being evaluated." /></p>
       </article>
@@ -137,9 +110,9 @@ result (<code>7</code>) back onto the stack</li>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

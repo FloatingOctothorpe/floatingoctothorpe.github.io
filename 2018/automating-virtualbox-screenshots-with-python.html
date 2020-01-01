@@ -39,21 +39,17 @@
 
 <time datetime="2018-08-24">24 August 2018</time>
 
-<p>Following on from <a href="/2018/automating-virtualbox-screenshots-with-the-cli.html">last week&#39;s post</a>, this post is going to look
+<p>Following on from <a href="/2018/automating-virtualbox-screenshots-with-the-cli.html">last week's post</a>, this post is going to look
 at using the VirtualBox API to take screenshots.</p>
-
 <p>There are two ways the VirtualBox API can be called, either via a <a href="https://en.wikipedia.org/wiki/Component_Object_Model">Component
 Object Model (COM)</a>, or using a web service built using
 <a href="https://en.wikipedia.org/wiki/SOAP">SOAP</a>, so long as the <code>vboxwebsrv</code> process is started. This post is
 going to look at using the COM interface, however the calls should be very
 similar to the web service interface.</p>
-
 <h2>Setting up Python</h2>
-
 <p>The Python's standard library doesn't have any way to use COM interfaces,
 however the <a href="https://pypi.org/project/pywin32/">pywin32</a> module can be used to create COM objects.
 This can be installed using pip:</p>
-
 <pre><code>$ python -m venv vbox_venv
 $ source vbox_venv/Scripts/activate
 $ pip install pywin32
@@ -62,9 +58,7 @@ Collecting pywin32
 Installing collected packages: pywin32
 Successfully installed pywin32-223
 </code></pre>
-
 <p>Once <code>pywin32</code> is installed, you should be able to import <code>win32com.client</code>:</p>
-
 <pre><code>$ python
 Python 3.6.5 (v3.6.5:f59c0932b4, Mar 28 2018, 16:07:46) [MSC v.1900 32 bit (Intel)] on win32
 Type "help", "copyright", "credits" or "license" for more information.
@@ -72,94 +66,78 @@ Type "help", "copyright", "credits" or "license" for more information.
 &gt;&gt;&gt; win32com.client.__name__
 'win32com.client'
 </code></pre>
-
 <h2>Using the API</h2>
-
 <p>Once <code>pywin32</code> is setup, the next thing to do is start a new session. This can
 be done using <code>Dispatch</code>:</p>
-
 <pre><code>import win32com.client
 from win32com.client import constants
 
 vbox = win32com.client.Dispatch("VirtualBox.VirtualBox")
 session = win32com.client.Dispatch("VirtualBox.Session")
 </code></pre>
-
 <p>The <code>findMachine</code> function can then be used to find the virtual machine we want
 to screenshot:</p>
-
 <pre><code>machine = vbox.FindMachine("example_vm")
 </code></pre>
-
 <p><strong>Note</strong>: you can either search for machines by name or UUID.</p>
-
 <p>The VirtualBox API uses a locking mechanism to control access to virtual
 machines. Before calling the screenshot function, we need to create a lock
 using the <code>lockMachine</code> function:</p>
-
 <pre><code>machine.LockMachine(session, constants.LockType_Shared)
 </code></pre>
-
 <p>This function takes two parameters, the session to create the lock with, and
 the type of lock to create. The VirtualBox COM interface uses several
 enumerations to store constants, like the lock type, these can be accessed from
 <code>win32com.client.constants</code>.</p>
-
 <p>After successfully creating a lock it should be possible to use the
 <code>GetScreenResolution</code> and <code>TakeScreenShotToArray</code> functions to work out the
 require resolution and grab a screenshot:</p>
-
 <pre><code>display = session.Console.Display
 width, height, _, _, _, _= display.GetScreenResolution(0)
 screenshot = display.TakeScreenShotToArray(0, width, height, constants.BitmapFormat_PNG)
 </code></pre>
-
 <p>At this point we can now release our machine lock:</p>
-
 <pre><code>session.UnlockMachine()
 </code></pre>
-
 <p>Finally the screenshot data can be written out to a file:</p>
-
 <pre><code>with open('screenshot.png', 'wb') as output_png:
     output_png.write(screenshot.tobytes())
 </code></pre>
-
 <p>If everything goes well, this should create a new screenshot:</p>
-
 <pre><code>$ file screenshot.png
 screenshot.png: PNG image data, 720 x 400, 8-bit/color RGB, non-interlaced
 </code></pre>
-
 <p><strong>Note</strong>: the lines above can obviously be put together into a <a href="/2018/take_screenshot.py">short
 script</a>.</p>
-
 <h2>COM interfaces tips</h2>
-
 <p>I've not previously done much with COM interfaces, below are a few points I
 wish I knew at the start:</p>
-
 <ol>
-<li><p>The <a href="https://download.virtualbox.org/virtualbox/SDKRef.pdf">VirtualBox SDK docs</a> are very comprehensive, and cover all
-available functions in detail, although they can be a bit tricky to
-navigate.</p></li>
-<li><p>You can inspect available constants by calling
-<code>win32com.client.constants.__dict__["__dicts__"][0]</code> after you've called
-the <code>Dispatch</code> method.</p></li>
-<li><p>pywin32 comes with a simple object browser which can be used to browse
-available COM interface functions. You can access this by running:</p>
-
+<li>
+<p>The <a href="https://download.virtualbox.org/virtualbox/SDKRef.pdf">VirtualBox SDK docs</a> are very comprehensive, and cover all
+    available functions in detail, although they can be a bit tricky to
+    navigate.</p>
+</li>
+<li>
+<p>You can inspect available constants by calling
+    <code>win32com.client.constants.__dict__["__dicts__"][0]</code> after you've called
+    the <code>Dispatch</code> method.</p>
+</li>
+<li>
+<p>pywin32 comes with a simple object browser which can be used to browse
+    available COM interface functions. You can access this by running:</p>
 <pre><code>$ python vbox_venv/Lib/site-packages/win32com/client/combrowse.py
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

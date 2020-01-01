@@ -42,70 +42,53 @@
 <p>Following on from <a href="/2018/the-c-programming-language-chapter-1.html">last weeks post</a>, this post is going to go
 over some of the key points from chapter two of <a href="https://en.wikipedia.org/wiki/The_C_Programming_Language">The C Programming
 Language</a>.</p>
-
 <h2>Data types</h2>
-
 <p>Unlike many languages, C has a relatively small set of data types. The four
 main types covered in the chapter are:</p>
-
 <ul>
 <li><strong>char</strong>: a single byte capable of holding a single character in the local
- character set.</li>
+     character set.</li>
 <li><strong>int</strong>: an integer, the size of this type varies based on the target
- system architecture.</li>
+     system architecture.</li>
 <li><strong>float</strong>: <a href="https://en.wikipedia.org/wiki/Single-precision_floating-point_format">single precision</a> floating point.</li>
 <li><strong>double</strong>: <a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">double precision</a> floating point.</li>
 </ul>
-
 <p>A few common data types are absent from the above list, notably booleans.
 Instead of having a distinct boolean type, C uses zero and non-zero values.</p>
-
 <p>It's also worth briefly mentioning <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a>. C predates UTF-8 by
 quite a few years, and many of the examples given in the book assume
 <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> character encoding is being used. <a href="https://en.wikipedia.org/wiki/EBCDIC">EBCDIC</a> is
 briefly mentioned, however neither ASCII or EBCDIC have a character which
 requires more than a single byte. I suspect many of the examples given in the
 book may give interesting results if they are fed UTF-8...</p>
-
 <h2>printf and data types</h2>
-
 <p>Using <a href="http://man7.org/linux/man-pages/man3/printf.3.html">printf</a> requires a little thought when working with
 different sized data types. For example if you are printing a long integer,
 omitting the length field will prevent the correct value being printed:</p>
-
 <pre><code>printf("%d\n", LONG_MAX);  /* don't copy this */
 </code></pre>
-
 <p>Instead an <code>l</code> should be included to indicate the data type being printed is a
 long integer:</p>
-
 <pre><code>printf("%ld\n", LONG_MAX);
 </code></pre>
-
 <p>It's also important to remember to use <code>u</code> instead of <code>d</code> when printing signed
 integers:</p>
-
 <pre><code>printf("%d\n", UINT_MAX); /* will print -1 */
 printf("%u\n", UINT_MAX); /* will print 4294967295 */
 </code></pre>
-
 <h2>Prefix vs postfix operators</h2>
-
 <p>Integers can be incremented or decremented using the <code>++</code> or <code>--</code> operator, for
 example:</p>
-
 <pre><code>int x = 10;
 x++;
 printf("%d\n", x);  /* print the value of x, which should be 11 */
 x--;
 printf("%d\n", x);  /* print the value of x, which should now be 10 */
 </code></pre>
-
 <p>One key point is the increment and decrement operators can be used as either a
 prefix or postfix operator. The example above uses postfix operators, however
 you would get the same result with prefix operators. This is not always the
 case though:</p>
-
 <pre><code>int x;
 
 x = 0;
@@ -116,12 +99,9 @@ x = 0;
 x = ++x + 5;
 printf("%d\n", x);  /* print the value of x (6) */
 </code></pre>
-
 <p>In the example above <code>x</code> is printed twice, however the final value will differ
 base on the type of increment operator being used.</p>
-
 <h2>Bitwise operators</h2>
-
 <p>Unlike some of the other concepts in the chapter, I rarely use bitwise
 operators when working with other languages. I suspect I will likely revisit
 this section at some point in the future.</p>
@@ -130,9 +110,9 @@ this section at some point in the future.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

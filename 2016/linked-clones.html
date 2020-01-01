@@ -45,24 +45,18 @@ shares an existing disk image. This significantly reduces the space required
 when running multiple virtual machines. For the example in this post the base
 installation used <code>1022M</code> of disk space, however the linked clone used just
 <code>37M</code> of additional space.</p>
-
 <h2>Setup</h2>
-
 <p>Before creating a linked clone, a base image needs to be created. There are
 many ways you could go about doing this. For this post I'm going to kickstart a
 <a href="https://www.centos.org">CentOS</a> virtual machine as described in a <a href="/2016/kickstarting-a-centos-vm.html">previous
 post</a>. However you build the system, end result should look
 something like this:</p>
-
 <p><img class="pure-img" src="/2016/virtual-box-pre-clone.png" alt="VirtualBox
  showing a single VM before a clone is created." /></p>
-
 <h2>Clone script</h2>
-
 <p>Although it's possible to manually create a linked clone, in the long run it's
 quicker to automate the process. VirtualBox provides a command line tool called
 VBoxManager. The bash script below uses VBoxManager to create a linked clone:</p>
-
 <pre><code>#!/bin/bash
 #
 # Create and start a linked clone in VirtualBox. This script assumes a base
@@ -91,26 +85,20 @@ fi
 
 exit 0
 </code></pre>
-
 <p><strong>Note</strong>: this script is designed to run on Windows under a
 <a href="https://www.cygwin.com/">Cygwin</a> environment. It should be trivial to adapt it to work
 under a different operating system. You may also need to tweak the variables
 set at the top of the script before running it.</p>
-
 <h2>Running the clone script</h2>
-
 <p>Running the script will run through the following steps:</p>
-
 <ol>
 <li>Check the base virtual machine exists.</li>
 <li>Create a snapshot of the base image if no snapshot exists.</li>
 <li>Create a linked clone using the snapshot.</li>
 <li>Power on the linked clone.</li>
 </ol>
-
 <p>The steps above should take a few seconds. Assuming everything was successful
 you should see a new virtual machine:</p>
-
 <p><img class="pure-img" src="/2016/virtual-box-post-clone.png" alt="VirtualBox
  showing the created linked clone." /></p>
       </article>
@@ -118,9 +106,9 @@ you should see a new virtual machine:</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

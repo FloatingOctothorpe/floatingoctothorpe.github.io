@@ -41,7 +41,6 @@
 
 <p>If you regularly rebuild Linux servers you will almost certainly come across a
 message that looks something like the following when you try to login via ssh:</p>
-
 <pre><code>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -56,17 +55,12 @@ Offending ECDSA key in /home/example/.ssh/known_hosts:39
 ECDSA host key for example has changed and you have requested strict checking.
 Host key verification failed.
 </code></pre>
-
 <h2>Quickly removing old entries</h2>
-
 <p>You can quickly remove old host entries using <a href="http://man.openbsd.org/ssh-keygen">ssh-keygen</a>:</p>
-
 <pre><code>ssh-keygen -R "example"
 </code></pre>
-
 <p>Alternatively I've had the following bash function in my <code>.bashrc</code> for a little
 while now:</p>
-
 <pre><code>ssh-del-knownhost() {
   last_cmd="$(history|grep '^ *[0-9]* *ssh '|sed 's/^ *[0-9]* *//'| tail -n 1)"
   if [ ! "$last_cmd" ]; then
@@ -83,43 +77,33 @@ while now:</p>
     bash -x
 }
 </code></pre>
-
 <p>The above function essentially runs through the following steps:</p>
-
 <ol>
 <li>Check <code>history</code> for the last used ssh command.</li>
 <li>Run the command to make sure it displays a warning message.</li>
 <li>Extract the path to the <code>known_hosts</code> file and the line number of the
-offending entry.</li>
+    offending entry.</li>
 <li>Use <code>sed</code> to remove the offending entry</li>
 </ol>
-
 <p>Running the function looks something like this:</p>
-
 <pre><code>$ ssh-del-knownhost
 + sed -i 39d /home/example/.ssh/known_hosts
 </code></pre>
-
 <h2>Checking new entries</h2>
-
 <p>Once you've removed any old entries you should get a message that looks
 something like this when you try to connect:</p>
-
 <pre><code>$ ssh example
 The authenticity of host 'example (127.0.0.1)' can't be established.
 ECDSA key fingerprint is c0:87:77:8f:e8:5c:26:11:53:4d:7b:1b:7a:04:e9:06.
 Are you sure you want to continue connecting (yes/no)?
 </code></pre>
-
 <p>If you completely trust your network you can just type <code>yes</code> and carry on with
 what you were doing. If you want to be a little more paranoid you can run the
 following command directly on the server and compare the fingerprint before
 accepting it.</p>
-
 <pre><code>$ ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key.pub
 256 c0:87:77:8f:e8:5c:26:11:53:4d:7b:1b:7a:04:e9:06   (ECDSA)
 </code></pre>
-
 <p><strong>Note</strong>: the file you need to check will depend on how OpenSSH has been
 configured on the server and which public key encryption algorithm you are
 using.</p>
@@ -128,9 +112,9 @@ using.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

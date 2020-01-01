@@ -44,35 +44,33 @@ while ago I stumbled upon an old TrueCrypt volume, unfortunately I couldn't
 remember the exact passphrase! Thankfully I was able to use <a href="http://www.openwall.com/john/">John the
 Ripper</a> to find the password and recover my old data. This post is
 going to go through the steps required to do this.</p>
-
 <h2>Installing John the Ripper</h2>
-
 <p>There are a few different versions of John the Ripper, unfortunately the
 official release doesn't support TrueCrypt volumes, therefore the example in
 this post is going to use the community-enhanced <a href="https://github.com/magnumripper/JohnTheRipper">Jumbo version of John the
 Ripper</a>. On <a href="https://www.centos.org/">CentOS</a> it can be downloaded
 and compiled with the following steps:</p>
-
 <ol>
-<li><p>Install packages for building John the Ripper:</p>
-
+<li>
+<p>Install packages for building John the Ripper:</p>
 <pre><code>yum -y group install "Development Tools"
 yum install git openssl-devel
-</code></pre></li>
-<li><p>Clone the source code from GitHub:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Clone the source code from GitHub:</p>
 <pre><code>git clone https://github.com/magnumripper/JohnTheRipper.git
-</code></pre></li>
-<li><p>Configure and compile the code:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Configure and compile the code:</p>
 <pre><code>cd JohnTheRipper/src/
 ./configure &amp;&amp; make -s clean &amp;&amp; make -sj4
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
-
 <p>If everything goes well you should now be able to run <code>john</code> from the <code>run/</code>
 directory:</p>
-
 <pre><code>$ ./JohnTheRipper/run/john
 John the Ripper 1.8.0.12-jumbo-1-bleeding-f460ab8 2017-12-29 11:52:26 +0100 OMP [linux-gnu 64-bit x86_64 AVX AC]
 Copyright (c) 1996-2017 by Solar Designer and others
@@ -83,21 +81,15 @@ Usage: john [OPTIONS] [PASSWORD-FILES]
 --wordlist[=FILE] --stdin  wordlist mode, read words from FILE or stdin
                   --pipe   like --stdin, but bulk reads, and allows rules
 </code></pre>
-
 <p><strong>Note</strong>: for additional instructions refer to
 <a href="https://github.com/magnumripper/JohnTheRipper/blob/bleeding-jumbo/doc/INSTALL">docs/INSTALL</a>.</p>
-
 <h2>Extracting hashes</h2>
-
 <p>The jumbo version of John the Ripper comes with a Python script called
 <a href="https://github.com/magnumripper/JohnTheRipper/blob/2a18678301/run/truecrypt2john.py">truecrypt2john.py</a>. This can be used to extract
 hashes from a TrueCrypt volume with a command similar to the following:</p>
-
 <pre><code>./truecrypt2john.py test.tc &gt; truecrypt_hashes.txt
 </code></pre>
-
 <p>The resulting file will look something like the following:</p>
-
 <pre><code>test.tc:truecrypt_RIPEMD_160$4262f638a43476577cf42b55f2a7bcfc53ae336e28cd5cbe272bad900d0e4de84fe22b99dcce74082b93784de904ed87e10ecf5fdbeb90d16f9e2f43c71613dc6de8236c57dfab25d1e236fc33983052778f911406afb1f77a0890ed76e9e096387a225d699c319eb373d12a9c180321478707ee72f5b79d971767101971997a48e678d7bdc0f7395c38e8f57e159c52214681a43dcdeffddb464059099929f56442b4aa79db8fee1333afe75d137a215c06586490751fcc79857aaf0da88d57bfa74b8e1d3bce4c6ffbea4afeac37f45cdc779156991569d369b5ad60310c20359c24057bb2d10b63775adb492d17f382816af0ceba1bd497367061deeea59d5435b8296fd737e82cdf910d8915e4b1b8f2f9b5eb0541e67c90ecd60fe5d1f5422c6a14ac1ed0f9d223cc06892110742c1d83dc397a8f9dc7efc2bcd310b7292b89cde4da55b0619b384b7bc6f181952a4a279ff218d63a6f2e842d04a22fa0f2dd138cffcc6072fa650f2a12aed44255bf4ecfe34ff88a7dc34474ba70ad9da22e42db121c67b9ded79af9dafda04e6b3bf00b763ac3fbc7a3301e727272492dc14d3fe840c13c285666912f044712504154631b78b2821aadcd383331bb3240d88a066c2df9fd258757131458365811ca2544f7dbde03cb6020a5d0d29b978d34a296be00850a7fad7f60302f4cefc0065f22c10540ca66e94ae8494b59b2:normal::::test.tc
 test.tc:truecrypt_SHA_512$4262f638a43476577cf42b55f2a7bcfc53ae336e28cd5cbe272bad900d0e4de84fe22b99dcce74082b93784de904ed87e10ecf5fdbeb90d16f9e2f43c71613dc6de8236c57dfab25d1e236fc33983052778f911406afb1f77a0890ed76e9e096387a225d699c319eb373d12a9c180321478707ee72f5b79d971767101971997a48e678d7bdc0f7395c38e8f57e159c52214681a43dcdeffddb464059099929f56442b4aa79db8fee1333afe75d137a215c06586490751fcc79857aaf0da88d57bfa74b8e1d3bce4c6ffbea4afeac37f45cdc779156991569d369b5ad60310c20359c24057bb2d10b63775adb492d17f382816af0ceba1bd497367061deeea59d5435b8296fd737e82cdf910d8915e4b1b8f2f9b5eb0541e67c90ecd60fe5d1f5422c6a14ac1ed0f9d223cc06892110742c1d83dc397a8f9dc7efc2bcd310b7292b89cde4da55b0619b384b7bc6f181952a4a279ff218d63a6f2e842d04a22fa0f2dd138cffcc6072fa650f2a12aed44255bf4ecfe34ff88a7dc34474ba70ad9da22e42db121c67b9ded79af9dafda04e6b3bf00b763ac3fbc7a3301e727272492dc14d3fe840c13c285666912f044712504154631b78b2821aadcd383331bb3240d88a066c2df9fd258757131458365811ca2544f7dbde03cb6020a5d0d29b978d34a296be00850a7fad7f60302f4cefc0065f22c10540ca66e94ae8494b59b2:normal::::test.tc
 test.tc:truecrypt_WHIRLPOOL$4262f638a43476577cf42b55f2a7bcfc53ae336e28cd5cbe272bad900d0e4de84fe22b99dcce74082b93784de904ed87e10ecf5fdbeb90d16f9e2f43c71613dc6de8236c57dfab25d1e236fc33983052778f911406afb1f77a0890ed76e9e096387a225d699c319eb373d12a9c180321478707ee72f5b79d971767101971997a48e678d7bdc0f7395c38e8f57e159c52214681a43dcdeffddb464059099929f56442b4aa79db8fee1333afe75d137a215c06586490751fcc79857aaf0da88d57bfa74b8e1d3bce4c6ffbea4afeac37f45cdc779156991569d369b5ad60310c20359c24057bb2d10b63775adb492d17f382816af0ceba1bd497367061deeea59d5435b8296fd737e82cdf910d8915e4b1b8f2f9b5eb0541e67c90ecd60fe5d1f5422c6a14ac1ed0f9d223cc06892110742c1d83dc397a8f9dc7efc2bcd310b7292b89cde4da55b0619b384b7bc6f181952a4a279ff218d63a6f2e842d04a22fa0f2dd138cffcc6072fa650f2a12aed44255bf4ecfe34ff88a7dc34474ba70ad9da22e42db121c67b9ded79af9dafda04e6b3bf00b763ac3fbc7a3301e727272492dc14d3fe840c13c285666912f044712504154631b78b2821aadcd383331bb3240d88a066c2df9fd258757131458365811ca2544f7dbde03cb6020a5d0d29b978d34a296be00850a7fad7f60302f4cefc0065f22c10540ca66e94ae8494b59b2:normal::::test.tc
@@ -105,19 +97,15 @@ test.tc:truecrypt_RIPEMD_160$df8414aa8854a2a931c0e53c9849c37789119c2824f70d29dc5
 test.tc:truecrypt_SHA_512$df8414aa8854a2a931c0e53c9849c37789119c2824f70d29dc52accb39b8af9572d7fb021cd20961c5137bdda1a61c9856c2439a2b7646d17991236f549a358fab0b819934ebeb7340e4f7bd6fbf97953ea4ec90f4bbd12dcac2bde020c434fe5c08c926464eb0317a3ffabfbde45d4121f70dca3eaa0cc750fc193b2e433dd1e7d6f9e8b9a7c09cb3d9f0b106d20f5872ff0d00d4a6ea8e6bf646aa844ce740591fb3a95e807fdd32e83cb73ac8ef1066115f0ef8ca16c07021c3fd6a312644cfcca5dd631ffa0ee0b9fdf5e72b0d62c041eb26fc1d9795c11cf25bbc0e6d60793f7b89c899b63913daa92b1923e2b7019bdb103322a54ac29f63245b9019d359ba32125bcdb14b63566d0388591b7f766414df4ff749334c102134d0874735d6efb8ecd70562a4b5b7faa1961e31ba2b5e27cbb535c6e68fa8335658d960a3fb2b6347071622cb2995957de6cc982233fe887c13f445f67b3581bacbc6c20bda82182f3a4f012cbcdae6ab68643591d7c2dc9b960516be671a3a8cfdfd67debdc87f97f66f88a15f38a917023d1cbc574b68e4085af097a6193ab8bff4ef272c292af449ba24b0dbe86c0bdcd5b2fd1675dd8d162392ad48f534c0502db495fde2f4785dc5be939533a014e2aff470c80fe36deeb9ff73a79548c6386510dc288a1000d99056b8d5e7ffcd6fb00d609f6db075ea03665dc360b72c96610f9c:hidden::::test.tc
 test.tc:truecrypt_WHIRLPOOL$df8414aa8854a2a931c0e53c9849c37789119c2824f70d29dc52accb39b8af9572d7fb021cd20961c5137bdda1a61c9856c2439a2b7646d17991236f549a358fab0b819934ebeb7340e4f7bd6fbf97953ea4ec90f4bbd12dcac2bde020c434fe5c08c926464eb0317a3ffabfbde45d4121f70dca3eaa0cc750fc193b2e433dd1e7d6f9e8b9a7c09cb3d9f0b106d20f5872ff0d00d4a6ea8e6bf646aa844ce740591fb3a95e807fdd32e83cb73ac8ef1066115f0ef8ca16c07021c3fd6a312644cfcca5dd631ffa0ee0b9fdf5e72b0d62c041eb26fc1d9795c11cf25bbc0e6d60793f7b89c899b63913daa92b1923e2b7019bdb103322a54ac29f63245b9019d359ba32125bcdb14b63566d0388591b7f766414df4ff749334c102134d0874735d6efb8ecd70562a4b5b7faa1961e31ba2b5e27cbb535c6e68fa8335658d960a3fb2b6347071622cb2995957de6cc982233fe887c13f445f67b3581bacbc6c20bda82182f3a4f012cbcdae6ab68643591d7c2dc9b960516be671a3a8cfdfd67debdc87f97f66f88a15f38a917023d1cbc574b68e4085af097a6193ab8bff4ef272c292af449ba24b0dbe86c0bdcd5b2fd1675dd8d162392ad48f534c0502db495fde2f4785dc5be939533a014e2aff470c80fe36deeb9ff73a79548c6386510dc288a1000d99056b8d5e7ffcd6fb00d609f6db075ea03665dc360b72c96610f9c:hidden::::test.tc
 </code></pre>
-
 <p>There are multiple hashes for a single volume because it's not possible to
 tell which hashing algorithm was used. If you do remember which algorithm was
 used it's worth deleting the unused hashes as this will make running <code>john</code>
 quicker.</p>
-
 <h2>Generating a wordlist</h2>
-
 <p>Once you've run <code>truecrypt2john</code>, the hard part is coming up with a wordlist.
 In my case I knew the passphrase was a combination of a few passwords joined
 together. I used the following script to generate a wordlist with every
 possible two or three word combination:</p>
-
 <pre><code>#!/usr/bin/env python
 
 from __future__ import print_function
@@ -141,23 +129,17 @@ for length in range(2, 4):
     for pw in itertools.permutations(words, length):
         print(''.join(pw))
 </code></pre>
-
 <p>Running the script generated a wordlist with 810 possible passphrases:</p>
-
 <pre><code>$ python generate_wordlist.py &gt; truecrypt_wordlist.txt
 $ wc truecrypt_wordlist.txt
   810   810 10170 truecrypt_wordlist.txt
 </code></pre>
-
 <p><strong>Note</strong>: if you just want a list of dictionary words you can use
 <code>/usr/share/dict/words</code>, assuming you've got the <code>words</code> package installed. You
 could also look at using a wordlist generation tool like <a href="https://sourceforge.net/projects/crunch-wordlist/">crunch</a>.</p>
-
 <h2>Running john</h2>
-
 <p>Once you've got a wordlist, <code>john</code> can be used to try to brute force the
 password:</p>
-
 <pre><code>$ ./john --wordlist=truecrypt_wordlist.txt  truecrypt_hashes.txt
 Warning: detected hash type "tc_aes_xts", but the string is also recognized as "tc_ripemd160"
 Use the "--format=tc_ripemd160" option to force loading these as that type instead
@@ -171,24 +153,21 @@ zerofiveone      (test.tc)
 Use the "--show" option to display all of the cracked passwords reliably
 Session completed
 </code></pre>
-
 <p>If everything goes well the <code>--show</code> option will print any matches:</p>
-
 <pre><code>$ ./john --show truecrypt_hashes.txt
 test.tc:zerofiveone:normal::::test.tc
 
 1 password hash cracked, 5 left
 </code></pre>
-
 <p><strong>Note</strong>: for obvious reasons this post doesn't use real passwords!</p>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

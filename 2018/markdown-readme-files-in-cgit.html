@@ -44,43 +44,31 @@ file. This post is quickly going to go over configuring <a href="https://git.zx2
 render markdown readmes. This post assumes you've already installed and
 configured cgit, if you need any more info on doing this, please have a look at
 my <a href="/2017/setting-up-cgit-on-debian.html">previous post on cgit</a>.</p>
-
 <h2>Setting the readme file</h2>
-
 <p>The first thing to do is tell cgit where to find the readme file, this is done
 with the readme option in <code>/etc/cgitrc</code>:</p>
-
 <pre><code>readme=master:README.md
 </code></pre>
-
 <p>The configuration above tells cgit to look in the master branch for a file
 called <code>README.md</code> when creating the about page for a repository. It's also
 possible to omit the branch:</p>
-
 <pre><code>readme=:README.md
 </code></pre>
-
 <p>While this will display the contents of <code>README.md</code>, the text will not be
 converted to HTML:</p>
-
 <p><img class="pure-img" src="/2018/cgit-about-page-plain.png"
   alt="Markdown readme being rendered as plain text by cgit" /></p>
-
 <p><strong>Note</strong>: the <code>readme</code> option can be specified multiple times if you want to
 handle different possible filenames:</p>
-
 <pre><code>readme=:README.md
 readme=:README.text
 </code></pre>
-
 <h2>Adding an about filter</h2>
-
 <p>The <code>about-filter</code> option can be used to specify a script which should be used
 to format the readme file. The about filter will be given the readme contents
 via stdin and the filename as the first argument. stdout will be then be added
 to the about page for the repository. A very simple filter might look something
 like the following:</p>
-
 <pre><code>#!/bin/sh
 if echo "$1" | grep -qi '\.md$'; then
   markdown -
@@ -88,19 +76,14 @@ else
   cat -
 fi
 </code></pre>
-
 <p>cgit comes with a standard about filter which can be configured as follows in
 <code>/etc/cgitrc</code>:</p>
-
 <pre><code>about-filter=/usr/lib/cgit/filters/about-formatting.sh
 </code></pre>
-
 <p>This script will call <code>/usr/lib/cgit/filters/html-converters/md2html</code> for
 markdown files. If everything goes well the about page should now be rendered:</p>
-
 <p><img class="pure-img" src="/2018/cgit-about-page.png"
   alt="Markdown readme being rendered by cgit" /></p>
-
 <p><strong>Note</strong>: the <code>md2html</code> script is written in Python 3 and assumes you have
 <code>python3-markdown</code> installed.</p>
       </article>
@@ -108,9 +91,9 @@ markdown files. If everything goes well the about page should now be rendered:</
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

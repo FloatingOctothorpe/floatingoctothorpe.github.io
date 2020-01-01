@@ -42,16 +42,12 @@
 <p><a href="https://www.gnu.org/software/tar/">GNU Tar</a> has a reputation for being <a href="https://xkcd.com/1168/">slightly awkward to
 use</a>. Despite this, <code>tar</code> is one of the most frequently used archive
 commands, and is installed by default on most Linux distributions.</p>
-
 <p>A very common use for <code>tar</code> is creating regular backups. However if you backup
 a directory which changes infrequently, this can lead to a large number of
 duplicate files being stored. This post is going to look at using incremental
 tar files to get around this problem.</p>
-
 <h2>A simple tar backup</h2>
-
 <p>A very simple backup script might look something like the following:</p>
-
 <pre><code>#!/bin/sh
 #
 # Create a daily backup of /home/someuser
@@ -63,11 +59,9 @@ PATH='/sbin:/bin:/usr/sbin:/usr/bin'
 
 tar -cjf "$(date +'/var/home_backups/%Y-%m-%d_someuser_home.tar.bz2')" /home/someuser
 </code></pre>
-
 <p>Each time the script above is run, a full date stamped tar archive will be
 created. If the script is run daily (e.g. via <a href="https://en.wikipedia.org/wiki/Cron">cron</a>),
 <code>/var/home_backups</code> will look something like the following after a few days:</p>
-
 <pre><code>+-- /var/home_backups
     +-- 2018-01-21_someuser_home.tar.bz2
     +-- 2018-01-22_someuser_home.tar.bz2
@@ -76,41 +70,35 @@ created. If the script is run daily (e.g. via <a href="https://en.wikipedia.org/
     +-- 2018-01-25_someuser_home.tar.bz2
     +-- 2018-01-26_someuser_home.tar.bz2
 </code></pre>
-
 <p>Unless the contents of <code>/home/someuser</code> changes rapidly, each archive will
 contain duplicate files.</p>
-
 <h2>Using incremental tar files</h2>
-
 <p>Instead of always using full backups, tar can create incremental backups. This
 involves two steps:</p>
-
 <ol>
-<li><p>First create a full backup and a snapshot file:</p>
-
+<li>
+<p>First create a full backup and a snapshot file:</p>
 <pre><code>tar --listed-incremental full_backup.snar -cjf full_backup.tar.bz2 /home/someuser
 </code></pre>
-
 <p>This will create two files, a full backup of the directory
 (<code>full_backup.tar.bz2</code>), and a snapshot file (<code>full_backup.snar</code>). The
 snapshot file will contain timestamps and file metadata. The snapshot file
-format is described in the <a href="https://www.gnu.org/software/tar/manual/html_section/tar_95.html">tar docs</a>.</p></li>
-<li><p>Subsequent backups can then use the snapshot files to create an incremental
-tar archive which will skip unmodified files:</p>
-
+format is described in the <a href="https://www.gnu.org/software/tar/manual/html_section/tar_95.html">tar docs</a>.</p>
+</li>
+<li>
+<p>Subsequent backups can then use the snapshot files to create an incremental
+    tar archive which will skip unmodified files:</p>
 <pre><code>cp full_backup.snar increment.snar
 tar --listed-incremental increment.snar -cjf incremental_backup.tar.bz2 /home/someuser
 rm increment.snar
 </code></pre>
-
 <p><strong>Note</strong>: by default the snapshot file is overwritten when an incremental
 backup is created. If you want to create multiple incremental backups from
-the base archive, make sure you make a copy of the snapshot file.</p></li>
+the base archive, make sure you make a copy of the snapshot file.</p>
+</li>
 </ol>
-
 <p>Using the steps above, the example script can be updated to something similar
 to the following:</p>
-
 <pre><code>#!/bin/sh
 #
 # Create a daily backup of /home/someuser
@@ -131,11 +119,9 @@ else
       -cjf /var/home_backups/full_backup.tar.bz2 /home/someuser
 fi
 </code></pre>
-
 <p>This script will initially create a full backup when it is first run.
 Subsequent backups will then be incremental backups based on the initial full
 backup:</p>
-
 <pre><code>+-- /var/home_backups
     +-- 2018-01-21_someuser_home.tar.bz2
     +-- 2018-01-21_someuser_home.tar.bz2
@@ -147,21 +133,16 @@ backup:</p>
     +-- full_backup.snar
     +-- full_backup.tar.bz2
 </code></pre>
-
 <h2>Restoring incremental backups</h2>
-
 <p>To restore an incremental backup, the base archive needs to be extracted,
 followed by the incremental backup:</p>
-
 <pre><code>tar --listed-incremental /dev/null -xf /var/home_backups/full_backup.tar.bz2
 tar --listed-incremental /dev/null -xf /var/home_backups/2018-01-25_someuser_home.tar.bz2
 </code></pre>
-
 <p>The <code>--listed-incremental</code> option is required to ensure files deleted before
 the final incremental file was created, are not present in the restored folder.
 To achieve this tar stores additional metadata for directories in each archive.
 The metadata can be viewed by using two verbose (<code>-v</code>) options:</p>
-
 <pre><code>$ tar --incremental -tvvf /var/home_backups/2018-01-26_someuser_home.tar.bz2
 drwx------ someuser/someuser 71 2018-01-26 22:36 home/someuser/
 N .bash_logout
@@ -176,7 +157,6 @@ Y wibble
 -rw-r--r-- someuser/someuser 1048576 2018-01-26 22:36 home/someuser/file.2
 -rw-r--r-- someuser/someuser      94 2018-01-26 22:36 home/someuser/wibble
 </code></pre>
-
 <p><strong>Note</strong>: the snapshot file is not required to restore incremental backup
 files because the metadata embedded in the archive is sufficient.</p>
       </article>
@@ -184,9 +164,9 @@ files because the metadata embedded in the archive is sufficient.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

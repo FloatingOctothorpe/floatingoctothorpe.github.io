@@ -43,138 +43,103 @@
 SSH, however public-key cryptography relies on you keeping your private key
 private. There are a few ways you can achieve this when working with
 <a href="https://www.openssh.com/">OpenSSH</a>.</p>
-
 <h2>File permissions</h2>
-
 <p>Private key files should never be world readable, the parent directory should
 also be restricted to prevent anyone other than the owner accessing the files
 in the directory:</p>
-
 <pre><code>$ ls -ld ~/.ssh/ ~/.ssh/id_rsa
 drwx------. 2 bob bob   38 Jun  6 22:27 /home/bob/.ssh/
 -rw-------. 1 bob bob 1679 Jun  6 22:27 /home/bob/.ssh/id_rsa
 </code></pre>
-
 <p>If for any reason your private key has read access for group or other, you will
 probably get a message similar to the following when trying to use the key:</p>
-
 <pre><code>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 Permissions 0664 for '/home/bob/.ssh/id_rsa' are too open.
 </code></pre>
-
 <p>File permissions can be restricted with <a href="http://man7.org/linux/man-pages/man1/chmod.1.html">chmod</a>:</p>
-
 <pre><code>$ chmod -v 0700 ~/.ssh/ ; chmod -v 0600 ~/.ssh/id_rsa
 mode of '/home/bob/.ssh/' retained as 0700 (rwx------)
 mode of '/home/bob/.ssh/id_rsa' changed from 0664 (rw-rw-r--) to 0600 (rw-------)
 </code></pre>
-
 <p><strong>Note</strong>: As well as thinking about file permissions on the key, you should
 also consider file permissions on disk backups.</p>
-
 <h2>Adding a passphrase</h2>
-
 <p>Setting restrictive file permissions is a good start, however if someone does
 manage to get read access to your key, they will be able to use it unless it's
 encrypted with a passphrase.</p>
-
 <h3>Setting a passphrase</h3>
-
 <p>When you create a new public/private key pair with
 <a href="https://man.openbsd.org/ssh-keygen">ssh-keygen</a> you will normally be prompted for a passphrase:</p>
-
 <pre><code>$ ssh-keygen
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/bob/.ssh/id_rsa):
 Enter passphrase (empty for no passphrase):
 </code></pre>
-
 <p>Alternatively, if you already have a private key you can encrypt the key with a
 passphrase using the <code>-p</code> option:</p>
-
 <pre><code>$ ssh-keygen -p -f ~/.ssh/id_rsa
 Key has comment '/home/bob/.ssh/id_rsa'
 Enter new passphrase (empty for no passphrase):
 </code></pre>
-
 <p>When doing this it's important to think about the complexity of the passphrase.
 If you use a simple passphrase, an attacker could easily guess the passphrase
 and unlock the key, assuming they have read access to the key in the first
 place. The <a href="https://man.openbsd.org/ssh-keygen">ssh-keygen man page</a> has the following advice on
 picking a passphrase:</p>
-
 <blockquote>
-  <p>Good passphrases are 10-30 characters long, are not simple sentences or
-  otherwise easily guessable (English prose has only 1-2 bits of entropy per
-  character, and provides very bad passphrases), and contain a mix of upper and
-  lowercase letters, numbers, and non-alphanumeric characters.</p>
+<p>Good passphrases are 10-30 characters long, are not simple sentences or
+otherwise easily guessable (English prose has only 1-2 bits of entropy per
+character, and provides very bad passphrases), and contain a mix of upper and
+lowercase letters, numbers, and non-alphanumeric characters.</p>
 </blockquote>
-
 <p>As well as picking a good passphrase, it's also important to consider which key
 format you want to use.</p>
-
 <h3>Cracking passphrases and private key formats</h3>
-
 <p>Tools such as <a href="http://www.openwall.com/john/">John the Ripper</a> can be used to try to brute force a
 passphrase. This involves two steps, the first step is to extract the hash
 using <code>ssh2john</code>:</p>
-
 <pre><code>$ ./ssh2john.py /home/bob/.ssh/id_rsa &gt; id_rsa.hash
 </code></pre>
-
 <p>Once the hash has been extracted, <code>john</code> can be used to try to brute force the
 passphrase:</p>
-
 <pre><code>$ ./john id_rsa.hash
 Using default input encoding: UTF-8
 Loaded 1 password hash (SSH [RSA/DSA/EC/OPENSSH (SSH private keys) 32/64])
 </code></pre>
-
 <p>After loading the hash <code>john</code> will start to guess the passphrase. At
 the time of writing the default encryption algorithum for SSH keys is
 <code>MD5/3DES</code>. With a single CPU core <code>john</code> is able to make just under one
 million guesses per second:</p>
-
 <pre><code>0g 0:00:00:20  3/3 0g/s 899538p/s 899538c/s 899538C/s berete1
 </code></pre>
-
 <p>If you want to make an attacker's life difficult you should consider using the
 new private key format which was introduced in <a href="https://www.openssh.com/txt/release-6.5">OpenSSH
 6.4</a>. This key format uses a <a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>
 KDF to protect the key which is significantly slower to brute force. Using
 <code>john</code> on the same CPU I was only able to make just over 7 guesses per second:</p>
-
 <pre><code>0g 0:00:00:07  1/3 0g/s 7.627p/s 7.627c/s 7.627C/s rsaid
 </code></pre>
-
 <p>You can switch your key to the new format with the following command:</p>
-
 <pre><code>ssh-keygen -o -p -f ~/.ssh/id_rsa
 </code></pre>
-
 <p><strong>Note</strong>: the <code>-a</code> option can also be used to specify how many rounds should be
 used.</p>
-
 <h2>Rotating keys</h2>
-
 <p>The last thing to consider is rotating your keys. This effectively boils down
 to the following steps:</p>
-
 <ol>
 <li>Generate a new private key.</li>
 <li>Copy the corresponding public key to each remote location you want to
-authenticate with.</li>
+    authenticate with.</li>
 <li>Check you can access each location using your new private key.</li>
 <li>Remove your old public key from all remote locations.</li>
 <li>Finally remove your private key.</li>
 </ol>
-
 <p>How easy or difficult this will be depends on how many different places you've
 setup your public key. A very simple example might look something like the
 following:</p>
-
 <pre><code># Generate a new private key
 ssh-keygen -f ~/.ssh/id_rsa_new
 
@@ -197,9 +162,9 @@ mv ~/.ssh/id_rsa_new.pub ~/.ssh/id_rsa.pub
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

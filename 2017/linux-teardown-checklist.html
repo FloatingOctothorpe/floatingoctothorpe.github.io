@@ -43,13 +43,10 @@
 development. Unfortunately this also means it's very easy to have a large
 number of unused hosts and old VM images. This post is going to go through
 places to check before completely deleting a Linux host.</p>
-
 <h2>Shell history</h2>
-
 <p>Assuming the host is headless, shell history is one of the best places to look
 for information on what a host was used for. The <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-History-Builtins.html">history</a>
 shell built-in can be used to show recently run commands:</p>
-
 <pre><code>$ history
 1  shutdown -h now
 2  python
@@ -60,15 +57,11 @@ shell built-in can be used to show recently run commands:</p>
 7  yum install opencv-python
 ...
 </code></pre>
-
 <p><strong>Note</strong>: if multiple users have been set up, make sure you check the history
 for each user account.</p>
-
 <h2>Services and listening ports</h2>
-
 <p><a href="http://man7.org/linux/man-pages/man8/ss.8.html">ss</a> can be used to quickly identify listening services which might
 have associated data you want to backup:</p>
-
 <pre><code>$ ss --numeric --tcp --udp --listening --process
 Netid State      Recv-Q Send-Q  Local Address:Port   Peer Address:Port
 udp   UNCONN     0      0                   *:38680             *:*      users:(("dhclient",pid=649,fd=20))
@@ -79,10 +72,8 @@ tcp   LISTEN     0      100         127.0.0.1:25                *:*      users:(
 tcp   LISTEN     0      128                :::22               :::*      users:(("sshd",pid=927,fd=4))
 tcp   LISTEN     0      100               ::1:25               :::*      users:(("master",pid=1023,fd=14))
 </code></pre>
-
 <p>On systems using <a href="https://www.freedesktop.org/wiki/Software/systemd/">systemd</a>, <a href="https://www.freedesktop.org/software/systemd/man/systemctl.html">systemctl</a> can also
 be used to identify enabled services:</p>
-
 <pre><code>$ systemctl list-unit-files --state enabled
 UNIT FILE                                   STATE
 accounts-daemon.service                     enabled
@@ -95,91 +86,112 @@ dbus-org.freedesktop.nm-dispatcher.service  enabled
 display-manager.service                     enabled
 ...
 </code></pre>
-
 <h2>System configuration</h2>
-
 <p>System configuration can normally be found in <code>/etc/</code>. The exact files you want
 to backup will obviously depend on the system, however below are a few
 locations you may want to check for configuration:</p>
-
 <ul>
-<li><p><code>/etc/fstab</code>: file system mount points.</p></li>
-<li><p><code>/etc/network/</code>: on Debian systems network configuration is normally kept
-here.</p></li>
-<li><p><code>/etc/sysconfig/network</code> and <code>/etc/sysconfig/network-scripts/</code>: on Red Hat
-based systems network configuration is normally kept here.</p></li>
-<li><p><code>/etc/hosts</code>: static host entries.</p></li>
-<li><p><code>/etc/resolv.conf</code>: DNS configuration.</p></li>
-<li><p><code>/etc/sysconfig/iptables</code>: on Red Hat base systems, persistent iptables
-rules are stored here. You may also want to run
-<a href="http://man7.org/linux/man-pages/man8/iptables-save.8.html">iptables-save</a> to dump the rules from memory.</p></li>
-<li><p><code>/etc/sudoers</code> and <code>/etc/sudoers.d/</code>: sudo rules.</p></li>
-<li><p><code>/etc/profile</code> and <code>/etc/profile.d/</code>: global shell login scripts.</p></li>
-<li><p><code>/etc/apt/sources.list</code> and <code>/etc/apt/sources.list.d/</code>: repository
-configuration for Apt on Debian based systems.</p></li>
-<li><p><code>/etc/yum.conf</code> and <code>/etc/yum.repos.d/</code>: Yum configuration on Red Hat based
-systems.</p></li>
+<li>
+<p><code>/etc/fstab</code>: file system mount points.</p>
+</li>
+<li>
+<p><code>/etc/network/</code>: on Debian systems network configuration is normally kept
+   here.</p>
+</li>
+<li>
+<p><code>/etc/sysconfig/network</code> and <code>/etc/sysconfig/network-scripts/</code>: on Red Hat
+   based systems network configuration is normally kept here.</p>
+</li>
+<li>
+<p><code>/etc/hosts</code>: static host entries.</p>
+</li>
+<li>
+<p><code>/etc/resolv.conf</code>: DNS configuration.</p>
+</li>
+<li>
+<p><code>/etc/sysconfig/iptables</code>: on Red Hat base systems, persistent iptables
+   rules are stored here. You may also want to run
+   <a href="http://man7.org/linux/man-pages/man8/iptables-save.8.html">iptables-save</a> to dump the rules from memory.</p>
+</li>
+<li>
+<p><code>/etc/sudoers</code> and <code>/etc/sudoers.d/</code>: sudo rules.</p>
+</li>
+<li>
+<p><code>/etc/profile</code> and <code>/etc/profile.d/</code>: global shell login scripts.</p>
+</li>
+<li>
+<p><code>/etc/apt/sources.list</code> and <code>/etc/apt/sources.list.d/</code>: repository
+   configuration for Apt on Debian based systems.</p>
+</li>
+<li>
+<p><code>/etc/yum.conf</code> and <code>/etc/yum.repos.d/</code>: Yum configuration on Red Hat based
+   systems.</p>
+</li>
 </ul>
-
 <h2>User accounts and home directories</h2>
-
 <p>Home directories are an obvious place to check for files which you might want
 to recover before deleting a system. Initially just listing the directories in
 <code>/home</code> is a good way to work out where you need to check:</p>
-
 <pre><code>$ ls /home/
 alice
 </code></pre>
-
 <p>It's also worth checking entries in <code>/etc/passwd</code> for any non-standard home
 directory locations.</p>
-
 <p>Once you've got a list of user home directories, have a look through each
 directory. When looking through the files, make sure you don't forget to look
 at hidden files. Below are a few hidden files you might want to consider
 backing up:</p>
-
 <ul>
-<li><p><code>.ssh/</code>: SSH configuration including private keys is normally stored in
-<code>~/.ssh</code>. It's also worth making a note of any accounts using
-<code>~/.ssh/authorized_keys</code> to allow remote users to connect.</p></li>
-<li><p><code>.bashrc</code> and <code>.bash_profile</code>: If you've setup any useful custom aliases you
-might want to back them up. Bash configuration may also point you at
-software being used on the system. For example if <code>PGDATA</code> is being set,
-there is a good chance there may be a <a href="https://www.postgresql.org/">PostgreSQL</a> database
-you might need to back up.</p></li>
-<li><p><code>.vimrc</code> and <code>.vim/</code>: If you use Vim, check for useful configuration you
-might want to carry over to another system.</p></li>
-<li><p><code>.gnupg/</code>: Check the GPG configuration directory for any keys you might want
-to keep.</p></li>
+<li>
+<p><code>.ssh/</code>: SSH configuration including private keys is normally stored in
+   <code>~/.ssh</code>. It's also worth making a note of any accounts using
+   <code>~/.ssh/authorized_keys</code> to allow remote users to connect.</p>
+</li>
+<li>
+<p><code>.bashrc</code> and <code>.bash_profile</code>: If you've setup any useful custom aliases you
+   might want to back them up. Bash configuration may also point you at
+   software being used on the system. For example if <code>PGDATA</code> is being set,
+   there is a good chance there may be a <a href="https://www.postgresql.org/">PostgreSQL</a> database
+   you might need to back up.</p>
+</li>
+<li>
+<p><code>.vimrc</code> and <code>.vim/</code>: If you use Vim, check for useful configuration you
+   might want to carry over to another system.</p>
+</li>
+<li>
+<p><code>.gnupg/</code>: Check the GPG configuration directory for any keys you might want
+   to keep.</p>
+</li>
 </ul>
-
 <h2>Data</h2>
-
 <p>Besides users home directories, the following places may contain data that
 might be worth backing up:</p>
-
 <ul>
-<li><p><code>/var/lib/</code>: this directory is used to hold variable state information. It's
-often used by services to store data, for example
-<a href="https://www.postgresql.org/">PostgreSQL</a> often stores database files under
-<code>/var/lib/pgsql/data/</code>.</p></li>
-<li><p><code>/srv/</code>: data for services is sometimes kept here.</p></li>
-<li><p><code>/var/www/html</code>: This is the default document root for <a href="https://httpd.apache.org/">Apache</a>.</p></li>
-<li><p><code>/var/spool/mail/</code>: user emails are normally stored here.</p></li>
-<li><p><code>/var/log</code>: you many want to check system logs for useful info.</p></li>
+<li>
+<p><code>/var/lib/</code>: this directory is used to hold variable state information. It's
+   often used by services to store data, for example
+   <a href="https://www.postgresql.org/">PostgreSQL</a> often stores database files under
+   <code>/var/lib/pgsql/data/</code>.</p>
+</li>
+<li>
+<p><code>/srv/</code>: data for services is sometimes kept here.</p>
+</li>
+<li>
+<p><code>/var/www/html</code>: This is the default document root for <a href="https://httpd.apache.org/">Apache</a>.</p>
+</li>
+<li>
+<p><code>/var/spool/mail/</code>: user emails are normally stored here.</p>
+</li>
+<li>
+<p><code>/var/log</code>: you many want to check system logs for useful info.</p>
+</li>
 </ul>
-
 <h2>Package manager</h2>
-
 <p>Before removing a system, it's often useful making a list of packages which
 were installed. This can be helpful when trying to locate configuration you
 might want to backup, or if you decide to re-create the system.</p>
-
 <h3>Yum and RPM</h3>
-
 <p>For CentOS systems <code>yum history</code> can be used to review Yum transactions:</p>
-
 <pre><code>$ yum history
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
@@ -193,10 +205,8 @@ ID     | Login user               | Date and time    | Action(s)      | Altered
      2 | root &lt;root&gt;              | 2016-12-11 18:24 | Install        |   63
      1 | System &lt;unset&gt;           | 2016-09-29 14:06 | Install        |  312
 </code></pre>
-
 <p>You can also use <code>yum history info</code> to get more information on a specific
 transaction:</p>
-
 <pre><code>$ yum history info 4
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
@@ -216,18 +226,13 @@ Packages Altered:
     Install epel-release-7-8.noarch @/epel-release-7-8.noarch
 history info
 </code></pre>
-
 <p>Yum will also log transaction information to <code>/var/log/yum.log</code>:</p>
-
 <pre><code>$ grep epel /var/log/yum.log
 Dec 11 19:04:06 Installed: epel-release-7-8.noarch
 </code></pre>
-
 <p>For more information on using <code>yum</code> refer to the <a href="http://man7.org/linux/man-pages/man8/yum.8.html">Yum man page</a>.</p>
-
 <p>You may also want to produce a list of installed packages, this can be done
 with the <a href="http://ftp.rpm.org/max-rpm/rpm.8.html">rpm</a> command:</p>
-
 <pre><code>$ rpm -qa | sort
 abattis-cantarell-fonts-0.0.16-3.el7.noarch
 accountsservice-0.6.35-9.el7.x86_64
@@ -239,11 +244,9 @@ adwaita-icon-theme-3.14.1-1.el7.noarch
 aic94xx-firmware-30-6.el7.noarch
 ...
 </code></pre>
-
 <p>As well as listing packages, the <code>rpm</code> command can also be used to find
 modified files. This is useful for identifying configuration that may have been
 customised:</p>
-
 <pre><code>$ rpm -Va
 .......T.    /lib/modules/3.10.0-229.el7.x86_64/modules.devname
 .......T.    /lib/modules/3.10.0-229.el7.x86_64/modules.softdep
@@ -260,9 +263,7 @@ S.5....T.  c /etc/plymouth/plymouthd.conf
 S.5....T.  c /etc/sysconfig/authconfig
 ...
 </code></pre>
-
 <p>The characters at the start of each line denote the following:</p>
-
 <ul>
 <li><code>S</code>: file Size differs</li>
 <li><code>M</code>: Mode differs (includes permissions and file type)</li>
@@ -274,22 +275,17 @@ S.5....T.  c /etc/sysconfig/authconfig
 <li><code>T</code>: mTime differs</li>
 <li><code>P</code>: caPabilities differ</li>
 </ul>
-
 <h3>Apt and dpkg</h3>
-
 <p>Debian based systems like Ubuntu use the Apt package management system.
 Unfortunately Apt doesn't have a direct equivalent to <code>yum history</code>, however
 the following log files should provide details on when packages were installed,
 updated, and removed:</p>
-
 <ul>
 <li><code>/var/log/apt/history.log</code></li>
 <li><code>/var/log/dpkg.log</code></li>
 </ul>
-
 <p>To produce a list of installed Debian packages the <a href="http://man7.org/linux/man-pages/man1/dpkg-deb.1.html">dpkg</a> command
 can be used:</p>
-
 <pre><code>$ dpkg -l
 Desired=Unknown/Install/Remove/Purge/Hold
 | Status=Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig-pend
@@ -306,12 +302,9 @@ ii  apt                           1.4.7                          amd64        co
 ii  base-files                    9.9+deb9u1                     amd64        Debian base system miscellaneous files
 ...
 </code></pre>
-
 <h2>Cron Jobs</h2>
-
 <p>Have a quick look in the following directories for any cron jobs you might have
 set up:</p>
-
 <ul>
 <li><code>/var/spool/cron/</code></li>
 <li><code>/etc/cron.daily/</code></li>
@@ -320,15 +313,12 @@ set up:</p>
 <li><code>/etc/cron.monthly/</code></li>
 <li><code>/etc/cron.d/</code></li>
 </ul>
-
 <h2>SSH keys and config</h2>
-
 <p>As well as checking in <code>~/.ssh</code> for each user, you may also want to backup the
 host's SSH keys. If you're rebuilding a host these can be reused to keep the
 same host fingerprint. This will prevent conflicting <code>known_hosts</code> entries when
 connecting to the system. The public and private keys can normally be found in
 <code>/etc/ssh/</code>:</p>
-
 <pre><code>$ ls -l /etc/ssh/ssh_host*
 -rw-r-----. 1 root ssh_keys  227 Sep 29  2016 /etc/ssh/ssh_host_ecdsa_key
 -rw-r--r--. 1 root root      162 Sep 29  2016 /etc/ssh/ssh_host_ecdsa_key.pub
@@ -342,9 +332,9 @@ connecting to the system. The public and private keys can normally be found in
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -42,16 +42,12 @@
 <p>Time can be a pretty tricky thing for programs to manage. In fact there is a
 <a href="https://en.wikipedia.org/wiki/Time_formatting_and_storage_bugs">long list of time related bugs</a> on Wikipedia. Dealing with
 time is tricky for a several of reasons.</p>
-
 <h2>Time zones</h2>
-
 <p>Countries use one (or more) <a href="https://en.wikipedia.org/wiki/Time_zone">time zones</a>, however time zones
 are not always straightforward. For example did you know that <a href="https://en.wikipedia.org/wiki/Indian_Standard_Time">Indian standard
 time</a> is <code>5:30</code> ahead of <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>?</p>
-
 <p>Time zones also regularly change, for example the most recent changes made to
 the <code>tzdata</code> package on CentOS are:</p>
-
 <pre><code>* Wed Nov 23 2016 Patsy Franklin &lt;pfrankli@redhat.com&gt; - 2016j-1
 - Rebase to tzdata-2016ij
   - Saratov region of Russia is moving from +03 offset to +04 offset
@@ -62,54 +58,40 @@ the <code>tzdata</code> package on CentOS are:</p>
   - Cyprus is now split into two time zones as of 2016-10-30
   - Tonga will reintroduce DST on 2016-11-06
 </code></pre>
-
 <h2>Daylight savings time</h2>
-
 <p>At the time of writing just over seventy countries use <a href="https://en.wikipedia.org/wiki/Daylight_saving_time">daylight savings
 time</a>. This can result in some interesting logs similar
 to the following:</p>
-
 <pre><code>[1:55:47] INFO some message before the clocks went back
 [1:02:22] INFO a message after the clocks went back
 </code></pre>
-
 <h2>Leap seconds</h2>
-
 <p>The speed the earth rotates at isn't constant, as a result <a href="https://en.wikipedia.org/wiki/Leap_second">leap
 seconds</a> have periodically been added to UTC, most recently
 at the end of 2016. To make matters worse, leap seconds are irregularly spaced
 due to the irregularity of the Earth's rotation.</p>
-
 <h2>Testing with datefudge</h2>
-
 <p><a href="https://packages.qa.debian.org/d/datefudge.html">datefudge</a> is a great tool for testing time based bugs. On
 CentOS 7 it can be installed from EPEL:</p>
-
 <pre><code>yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install -y datefudge
 </code></pre>
-
 <p>Once datefudge is installed, it can be used to simulate running a program at a
 different time. For example if you want to simulate running a program while the
 while the clocks change in the UK you could do the following:</p>
-
 <pre><code>$ datefudge 2016-10-30T00:59:58z bash -c 'while true; do date; sleep 1; done'
 Sun 30 Oct 01:59:58 BST 2016
 Sun 30 Oct 01:59:59 BST 2016
 Sun 30 Oct 01:00:00 GMT 2016
 Sun 30 Oct 01:00:01 GMT 2016
 </code></pre>
-
 <p>The <code>--static</code> option can also be used to freeze time for the application:</p>
-
 <pre><code>$ datefudge --static 2016-10-30T00:59:58z bash -c 'while true; do date; sleep 1; done'
 Sun 30 Oct 01:59:58 BST 2016
 Sun 30 Oct 01:59:58 BST 2016
 Sun 30 Oct 01:59:58 BST 2016
 </code></pre>
-
 <p>You can also watch last year's leap second being added:</p>
-
 <pre><code>$ datefudge 2016-12-31T23:59:58z bash -c 'while true; do date; sleep 1; done'
 Sat 31 Dec 23:59:58 GMT 2016
 Sat 31 Dec 23:59:59 GMT 2016
@@ -117,7 +99,6 @@ Sat 31 Dec 23:59:60 GMT 2016
 Sun  1 Jan 00:00:00 GMT 2017
 Sun  1 Jan 00:00:01 GMT 2017
 </code></pre>
-
 <p><strong>Note</strong>: the default set of CentOS time zone files do not correct for leap
 seconds. To replicate the behaviour above you can copy
 <code>/usr/share/zoneinfo/right/Europe/London</code> to <code>/etc/localtime</code> as described in
@@ -127,9 +108,9 @@ seconds. To replicate the behaviour above you can copy
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

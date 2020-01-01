@@ -41,15 +41,12 @@
 
 <p>Setting up a WiFi access point on <a href="https://www.raspbian.org/">Raspbian</a> is actually pretty
 straight forward. This post is going to run though the steps to do this.</p>
-
 <h2>Checking the wireless interface</h2>
-
 <p>Later versions of the Raspberry Pi, such as the <a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b/">Raspberry Pi 3 model
 B</a> have a built in WiFi interface. However USB
 interfaces can also be used. It is important that the interface supports <abbr
 title="Access Point">AP</abbr> mode. You can check this with the <a href="https://linux.die.net/man/8/iw">iw</a>
 command:</p>
-
 <pre><code>pi@raspberrypi:~ $ iw list
 Wiphy phy0
         max # scan SSIDs: 10
@@ -74,18 +71,13 @@ Wiphy phy0
                  * P2P-GO
                  * P2P-device
 </code></pre>
-
 <h2>Configuring a static IP</h2>
-
 <p>Once you're happy the interface supports access point mode, the next step is to
 set up a static IP address. This can be done with the following command:</p>
-
 <pre><code>ip addr add 192.168.0.1/24 dev wlan0
 </code></pre>
-
 <p>You can verify the IP address is assigned correctly with the <a href="http://man7.org/linux/man-pages/man8/ip.8.html">ip</a>
 command:</p>
-
 <pre><code>$ ip addr show wlan0
 3: wlan0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc pfifo_fast state DOWN group default qlen 1000
     link/ether b8:27:de:ad:be:ef brd ff:ff:ff:ff:ff:ff
@@ -94,130 +86,95 @@ command:</p>
     inet6 fe80::e4e7:5d3:e5c9:eaab/64 scope link tentative
        valid_lft forever preferred_lft forever
 </code></pre>
-
 <p>To make this configuration persistent, create <code>/etc/network/interfaces.d/wlan0</code>
 with the following content:</p>
-
 <pre><code>auto wlan0
 iface wlan0 inet static
     address 192.168.0.1
     netmask 255.255.255.0
 </code></pre>
-
 <p>You will also want to add the following to <code>/etc/dhcpcd.conf</code> to prevent
 <code>dhcpcd</code> trying to assign an IP address to the interface via DHCP:</p>
-
 <pre><code># Use a static address for wlan0
 interface wlan0
 static ip_address=192.168.0.1/24
 </code></pre>
-
 <h2>Setup Hostapd</h2>
-
 <p>Hostapd (Host access point daemon) can be used to put the WiFi interface into
 AP mode. The first thing to do is install the package:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install hostapd
 </code></pre>
-
 <p>Once Hostapd is installed, create <code>/etc/hostapd/hostapd.conf</code> with contents
 similar to the following:</p>
-
 <pre><code>interface=wlan0
 driver=nl80211
 ssid="Pi AP"
 channel=1
 macaddr_acl=0
 </code></pre>
-
 <p><strong>Note</strong>: <code>/usr/share/doc/hostapd/examples/hostapd.conf.gz</code> has additional
 information on valid configuration options, including enabling encryption.</p>
-
 <p>Update <code>/etc/default/hostapd</code> to reference the new config:</p>
-
 <pre><code>sed -i \
   's|^#DAEMON_CONF=.*|DAEMON_CONF=/etc/hostapd/hostapd.conf|' \
   /etc/default/hostapd
 </code></pre>
-
 <p>And restart the <code>hostapd</code> service:</p>
-
 <pre><code>systemctl restart hostapd.service
 </code></pre>
-
 <p>If everything goes well Hostapd should be running, and you should be able to
 see the access point from other WiFi devices.</p>
-
 <h2>Running a DHCP server</h2>
-
 <p>Most devices will try to use DHCP when connecting to the access point to obtain
 an IP address. To handle this <a href="http://www.thekelleys.org.uk/dnsmasq/doc.html">dnsmasq</a> can be used to handle
 DHCP requests. First install the <code>dnsmasq</code> package:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install dnsmasq
 </code></pre>
-
 <p>Once the package is installed, create a new config file called
 <code>/etc/dnsmasq.d/wifi</code> with the following content:</p>
-
 <pre><code>interface=wlan0
 dhcp-range=192.168.0.50,192.168.0.150,255.255.255.0,12h
 domain-needed
 </code></pre>
-
 <p>Then reload the <code>dnsmasq</code> service:</p>
-
 <pre><code>systemctl restart dnsmasq.service
 </code></pre>
-
 <p><strong>Note</strong>: make sure iptables allows UDP connections on port 67 and 53.</p>
-
 <h2>Forwarding traffic</h2>
-
 <p>You should now be able to connect a device, however you will likely want to
 forward traffic outside the network. Start by allowing IPv4 forwarding:</p>
-
 <pre><code>echo 1 &gt; /proc/sys/net/ipv4/ip_forward
 </code></pre>
-
 <p>To make this rule persistent create a new config file for sysctl:</p>
-
 <pre><code>echo 'net.ipv4.ip_forward = 1' &gt; /etc/sysctl.d/10-ip_forward.conf
 </code></pre>
-
 <p>Iptables rules can then be added to forward outbound traffic:</p>
-
 <pre><code>iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
 </code></pre>
-
 <p>To make the rules above persistent create a config file:</p>
-
 <pre><code>iptables-save &gt; /etc/network/iptables
 </code></pre>
-
 <p>Finally create a script called <code>/etc/network/if-pre-up.d/iptables</code> with the
 following contents to load the rules at boot:</p>
-
 <pre><code>#!/bin/sh
 #
 # Load iptables rules before the network comes online.
 #
 /sbin/iptables-restore &lt; /etc/network/iptables
 </code></pre>
-
 <p><strong>Note</strong>: don't forget to add execute permissions to the script.</p>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

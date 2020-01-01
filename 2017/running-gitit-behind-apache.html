@@ -44,65 +44,54 @@ started with Gitit, this post is going to look at using <a href="https://httpd.a
 to proxy requests to <a href="https://github.com/jgm/gitit">Gitit</a>. Doing this allows you to use Apache
 for SSL/TLS and removes the need to include the Gitit port when accessing the
 wiki.</p>
-
 <h2>Installing Apache</h2>
-
 <p>On <a href="https://www.debian.org/">Debian</a> Apache can be installed using <a href="https://wiki.debian.org/Apt">apt</a>:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install apache2
 </code></pre>
-
 <p>Apache should now be enabled and running, you can check this with <code>systemctl</code>:</p>
-
 <pre><code>$ systemctl is-enabled apache2.service
 enabled
 $ systemctl is-active apache2.service
 active
 </code></pre>
-
 <h3>SSL/TLS support</h3>
-
 <p>By default Apache is not set up for HTTPS on Debian. To enable HTTPS support
 run through the following steps:</p>
-
 <ol>
-<li><p>Enable the <a href="https://httpd.apache.org/docs/current/mod/mod_ssl.html">mod_ssl</a> module with
-<a href="https://manpages.debian.org/jessie/apache2/a2enmod.8.en.html">a2enmod</a>:</p>
-
+<li>
+<p>Enable the <a href="https://httpd.apache.org/docs/current/mod/mod_ssl.html">mod_ssl</a> module with
+    <a href="https://manpages.debian.org/jessie/apache2/a2enmod.8.en.html">a2enmod</a>:</p>
 <pre><code>a2enmod ssl
-</code></pre></li>
-<li><p>Generate a self signed certificate:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Generate a self signed certificate:</p>
 <pre><code>make-ssl-cert generate-default-snakeoil --force-overwrite
 </code></pre>
-
 <p><strong>Note</strong>: if you already have signed certificates, deploy them to the
-server instead.</p></li>
-<li><p>Enable the default SSL site configuration using <a href="https://manpages.debian.org/jessie/apache2/a2ensite.8.en.html">a2ensite</a>:</p>
-
+server instead.</p>
+</li>
+<li>
+<p>Enable the default SSL site configuration using <a href="https://manpages.debian.org/jessie/apache2/a2ensite.8.en.html">a2ensite</a>:</p>
 <pre><code>a2ensite default-ssl.conf
 </code></pre>
-
 <p><strong>Note</strong>: if you are using custom certificates you will either need to
 modify <code>/etc/apache2/sites-available/default-ssl.conf</code>, or create and
-enable an alternative site configuration.</p></li>
-<li><p>Finally use <code>systemctl</code> to reload the Apache configuration:</p>
-
+enable an alternative site configuration.</p>
+</li>
+<li>
+<p>Finally use <code>systemctl</code> to reload the Apache configuration:</p>
 <pre><code>systemctl reload apache2.service
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
-
 <h2>Re-configuring Gitit to listen locally</h2>
-
 <p>Because Gitit will only be accessed via Apache, we can configure it to bind to
 <code>127.0.0.1</code>. Start by creating a default configuration file:</p>
-
 <pre><code>gitit --print-default-config &gt; /etc/gitit
 </code></pre>
-
 <p>Then update the systemd unit file to use the new config:</p>
-
 <pre><code>$ cat /etc/systemd/system/gitit.service
 [Unit]
 Description=Gitit wiki
@@ -117,37 +106,27 @@ Group=gitit
 [Install]
 WantedBy=multi-user.target
 </code></pre>
-
 <p>Finally change the address option to <code>address: 127.0.0.1</code> in <code>/etc/gitit</code> and
 restart Gitit.</p>
-
 <pre><code>sed -i 's/^address: .*$/address: 127.0.0.1/' /etc/gitit
 systemctl daemon-reload
 systemctl restart gitit.service
 </code></pre>
-
 <p><strong>Note</strong>: <code>systemctl daemon-reload</code> is required because
 <code>/etc/systemd/system/gitit.service</code> is cached by systemd.</p>
-
 <p>If everything goes well Gitit should now be binding to <code>127.0.0.1</code>. This can be
 verified using this <a href="http://man7.org/linux/man-pages/man8/ss.8.html">ss</a> command:</p>
-
 <pre><code>$ ss --listen 'sport = :5001'
 Netid  State      Recv-Q Send-Q  Local Address:Port Peer Address:Port
 tcp    LISTEN     0      10      127.0.0.1:5001     *:*
 </code></pre>
-
 <h2>Using ProxyPass</h2>
-
 <p>Start by enabling the <a href="https://httpd.apache.org/docs/current/mod/mod_proxy.html">mod_proxy</a> and
 <a href="https://httpd.apache.org/docs/current/mod/mod_proxy_html.html">mod_proxy_html</a> modules:</p>
-
 <pre><code>a2enmod proxy proxy_http
 </code></pre>
-
 <p>Then create <code>/etc/apache2/conf-available/gitit.conf</code> with contents similar to
 the following:</p>
-
 <pre><code>ProxyRequests Off
 
 &lt;Proxy *&gt;
@@ -158,34 +137,25 @@ the following:</p>
 ProxyPass / http://127.0.0.1:5001/
 ProxyPassReverse / http://127.0.0.1:5001/
 </code></pre>
-
 <p>Update the <code>reset-password-message</code> option in <code>/etc/gitit</code> to use
 <code>https://$hostname$$resetlink$</code> instead of
 <code>http://$hostname$:$port$$resetlink$</code>.</p>
-
 <pre><code>sed -i \
   's|http://\$hostname\$:\$port\$\$resetlink\$|https://$hostname$$resetlink$|' \
   /etc/gitit
 </code></pre>
-
 <p>Finally enable the new Apache configuration, then restart Gitit and Apache:</p>
-
 <pre><code>a2enconf gitit
 systemctl restart apache2.service gitit.service
 </code></pre>
-
 <p>If everything goes well, Apache should now be forwarding HTTP traffic to Gitit:</p>
-
 <p><img class="pure-img" src="/2017/gitit-apache-diagram.svg"
   alt="Diagram showing HTTP traffice between a client, Apache and Gitit" /></p>
-
 <h3>Using /wiki/</h3>
-
 <p>If you're using Apache for more than just Gitit, the configuration above isn't
 ideal because all requests are being routed to Gitit. One way around this is to
 change the wiki URL from <code>/</code> to <code>/wiki/</code> with configuration similar to the
 following:</p>
-
 <pre><code>ProxyRequests Off
 
 &lt;Proxy *&gt;
@@ -203,28 +173,22 @@ ProxyPass /wiki/ http://127.0.0.1:5001/
   RequestHeader unset Accept-Encoding
 &lt;/Location&gt;
 </code></pre>
-
 <p>With this configuration requests for <code>https://&lt;hostname&gt;/wiki/*</code> are mapped to
 <code>http://127.0.0.1:5001/*</code>. The <a href="https://httpd.apache.org/docs/2.4/mod/mod_proxy_html.html#proxyhtmlurlmap">ProxyHTMLULRMap</a>
 directive is used to rewrite links before they are pass on to the client from
 Apache. To use this directive make sure the
 <a href="https://httpd.apache.org/docs/current/mod/mod_headers.html">mod_headers</a> and
 <a href="https://httpd.apache.org/docs/current/mod/mod_proxy_html.html">mod_proxy_html</a> modules are loaded:</p>
-
 <pre><code>a2enmod headers proxy_html
 </code></pre>
-
 <p>Once the Apache configuration is ready, make the following changes to
 <code>/etc/gitit</code>:</p>
-
 <ol>
 <li>Set <code>compress-responses</code> to <code>no</code></li>
 <li>Update the <code>reset-password-message</code> to use
-<code>https://$hostname$/wiki$resetlink$</code></li>
+    <code>https://$hostname$/wiki$resetlink$</code></li>
 </ol>
-
 <p>Finally restart Gitit and Apache to pick up the changes:</p>
-
 <pre><code>systemctl restart apache2.service gitit.service
 </code></pre>
       </article>
@@ -232,9 +196,9 @@ Apache. To use this directive make sure the
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

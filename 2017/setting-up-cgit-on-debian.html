@@ -46,51 +46,35 @@ repositories on a <a href="https://www.raspberrypi.org/">Raspberry PI</a> throug
 <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git">Linux kernel</a>. This post is quickly going to go over
 setting up cgit on <a href="https://www.debian.org/">Debian</a> , however cgit is packaged for several
 different distributions.</p>
-
 <h2>Installing cgit</h2>
-
 <p>cgit can be installed from the Debian repositories using <code>apt</code>:</p>
-
 <pre><code>apt-get install cgit
 </code></pre>
-
 <p>For the example in this post I'm going to use <a href="http://pygments.org/">Pygments</a> for
 syntax highlighting, and <a href="https://httpd.apache.org/">Apache</a> as the web server, however
 alternatives can be used. I'm also going to install Git. Again packages can be
 installed using <code>apt</code>:</p>
-
 <pre><code>apt-get install python3-pygments apache2 git
 </code></pre>
-
 <h2>Creating a test repository</h2>
-
 <p>For the example in this post, repositories are going to be stored in
 <code>/var/git/</code>.</p>
-
 <pre><code>mkdir /var/git
 chown root:www-data /var/git
 chmod 750 /var/git
 </code></pre>
-
 <p><strong>Note</strong>: on Debian the Apache process is run as the <code>www-data</code> user. This user
 to be able to read repository files, however write access is not required.</p>
-
 <p><a href="https://git-scm.com/docs/git-init">git init</a> can be used to create a bare git repository in the
 directory:</p>
-
 <pre><code>git init --bare /var/git/example.git
 </code></pre>
-
 <p>It's also worth updating the repository description:</p>
-
 <pre><code>echo 'Hello world' &gt; /var/git/example.git/description
 </code></pre>
-
 <h2>Configuring Apache and cgit</h2>
-
 <p>On Debian the <code>cgit</code> package deploys the following configuration to
 <code>/etc/apache2/conf-available/cgit.conf</code>:</p>
-
 <pre><code>ScriptAlias /cgit/ "/usr/lib/cgit/cgit.cgi/"
 RedirectMatch ^/cgit$ /cgit/
 Alias /cgit-css "/usr/share/cgit/"
@@ -100,10 +84,8 @@ Alias /cgit-css "/usr/share/cgit/"
    Require all granted
 &lt;/Directory&gt;
 </code></pre>
-
 <p>This config, along with <a href="https://httpd.apache.org/docs/current/mod/mod_cgid.html">mod_cgid</a>, can be enabled using
 <a href="https://manpages.debian.org/stretch/apache2/a2enconf.8.en.html">a2enconf</a> and <a href="https://manpages.debian.org/stretch/apache2/a2enmod.8.en.html">a2enmod</a>:</p>
-
 <pre><code>$ a2enconf cgit
 Enabling conf cgit.
 To activate the new configuration, you need to run:
@@ -114,10 +96,8 @@ Enabling module cgid.
 To activate the new configuration, you need to run:
   systemctl restart apache2
 </code></pre>
-
 <p>The actual configuration for cgit lives in <code>/etc/cgitrc</code>. For this post I used
 the following configuration:</p>
-
 <pre><code># use default logo and CSS
 css=/cgit-css/cgit.css
 logo=/cgit-css/cgit.png
@@ -134,24 +114,17 @@ source-filter=/usr/lib/cgit/filters/syntax-highlighting.py
 # specify repository folder
 scan-path=/var/git
 </code></pre>
-
-<p><strong>Note</strong>: refer to the <a href="https://man.cx/?page=cgitrc&amp;amp;do%5Bgo%5D=go">cgitrc man page</a> for more info on valid
+<p><strong>Note</strong>: refer to the <a href="https://man.cx/?page=cgitrc&amp;do%5Bgo%5D=go">cgitrc man page</a> for more info on valid
 options.</p>
-
 <p>Finally Apache can be restarted to pick up the configuration changes:</p>
-
 <pre><code>  systemctl restart apache2
 </code></pre>
-
 <p>If everything goes well you should now be able to go to <code>http://somehost/cgit/</code>
 in a web browser and get a page similar to the following:</p>
-
 <p><img class="pure-img" src="/2017/cgit-screenshot.png"
   alt="Screenshot of the cgit web interface" /></p>
-
 <p>It should also be possible to clone the <code>example.git</code> repository created
 earlier over HTTP:</p>
-
 <pre><code>git clone http://somehost/cgit/example.git
 </code></pre>
       </article>
@@ -159,9 +132,9 @@ earlier over HTTP:</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

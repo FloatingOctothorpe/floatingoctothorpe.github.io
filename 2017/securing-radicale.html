@@ -41,54 +41,40 @@
 
 <p>Following on from the <a href="/2017/getting-started-with-radicale.html">previous post</a>, this post is going to
 look at securing <a href="http://radicale.org/">Radicale</a>.</p>
-
 <h2>Encrypting network traffic</h2>
-
 <p>Radicale can use <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS/SSL</a> to encrypt all network traffic between the
 server and client. For this post, the example is going to use a self-signed
 certificate. However you can obviously used a certificate signed by an external
 CA.</p>
-
 <p>The <a href="https://www.openssl.org/docs/manmaster/man1/req.html">OpenSSL req</a> command can be used to generate a private
 key and self signed certificate:</p>
-
 <pre><code>openssl req -x509 -newkey rsa:4096 \
   -keyout /etc/radicale/key.pem \
   -out /etc/radicale/cert.pem \
   -days 365 -nodes  \
   -subj '/C=GB/ST=State/L=Locality/O=Organization/OU=Organization unit/CN=raspberrypi'
 </code></pre>
-
 <p>Once the private key has been generated, it's a good idea to update permissions
 on the key, as by default it will be world readable:</p>
-
 <pre><code>chmod 640 /etc/radicale/cert.pem
 chown root:radicale /etc/radicale/cert.pem
 </code></pre>
-
 <p>The next step is to add the following configuration to the server section of
 the Radicale config (<code>/etc/radicale/config</code>):</p>
-
 <pre><code>[server]
 ssl = True
 certificate = /etc/radicale/cert.pem
 key = /etc/radicale/key.pem
 </code></pre>
-
 <p><strong>Note</strong>: if you used an external CA and have a certificate chain, it should be
 added at the end of the certificate file.</p>
-
 <p>Finally restart the Radicale service:</p>
-
 <pre><code>systemctl restart radicle.service
 </code></pre>
-
 <h3>Ciphers and protocols</h3>
-
 <p>It's also possible to tweak the <code>cipher</code> and <code>protocol</code> options. By default
 Radicale only uses TLSv1 or greater and "strong" ciphers. The Nmap
 <a href="https://nmap.org/nsedoc/scripts/ssl-enum-ciphers.html">ssl-enum-ciphers script</a> can be used to verify this:</p>
-
 <pre><code>$ nmap --script +ssl-enum-ciphers -p 5232 raspberrypi
 
 Starting Nmap 6.47 ( http://nmap.org ) at 2017-05-11 22:22 UTC
@@ -107,49 +93,36 @@ PORT     STATE SERVICE
 |       NULL
 |_  least strength: strong
 </code></pre>
-
 <p>For most users the defaults should be fine, however you can explicitly set
 <code>ciphers</code> and <code>protocols</code> in the <code>server</code> section of the config. For example to
 only use <a href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a>, the following would be added to the config:</p>
-
 <pre><code>[server]
 ciphers = AES
 </code></pre>
-
 <p>Radicale uses the Python <code>ssl</code> module, so for more information please refer to
 the sections on <a href="https://docs.python.org/2/library/ssl.html#cipher-selection">cipher selection</a> and <a href="https://docs.python.org/2/library/ssl.html#protocol-versions">protocol
 versions</a> in the Python documentation.</p>
-
 <h2>Adding authentication</h2>
-
 <p>The <code>auth</code> section is used to configure authentication. Radicale supports a few
 different authentication methods, one of the easiest to configure is
 <code>htpasswd</code>.  First make sure <code>htpasswd</code> is available, if it's missing you can
 install the <code>apache2-utils</code> package:</p>
-
 <pre><code>apt-get install apache2-utils python-passlib
 </code></pre>
-
 <p>Use <code>htpasswd</code> to create a new <code>htpasswd</code> file:</p>
-
 <pre><code>htpasswd -s -c /etc/radicale/users username
 </code></pre>
-
 <p><strong>Note</strong>: <code>htpasswd</code> can use a few <a href="https://httpd.apache.org/docs/2.4/misc/password_encryptions.html">different hashing
 algorithms</a>. Unfortunately the Raspbian version of
 Radicale (v0.9), doesn't support <code>BCRYPT</code> or <code>MDR-APR1</code> which is why <code>-s</code> is
 used for <code>SHA1</code>. Support for both <code>BCRYPT</code> and <code>MDR-APR1</code> was introduced in
 <a href="http://radicale.org/news/#2015-09-14@15:27:38">Version 1.0</a> though...</p>
-
 <p>Once <code>/etc/radicale/htpasswd</code> has been created update the file permissions and
 ownership:</p>
-
 <pre><code>chmod 640 /etc/radicale/htpasswd
 chown root:radicale /etc/radicale/htpasswd
 </code></pre>
-
 <p>Add the following to <code>/etc/radicale/config</code>:</p>
-
 <pre><code>[auth]
 type = htpasswd
 htpasswd_filename = /etc/radicale/users
@@ -158,12 +131,9 @@ htpasswd_encryption = sha1
 [rights]
 type = authenticated
 </code></pre>
-
 <p>Finally restart Radicale to pick up the configuration change:</p>
-
 <pre><code>systemctl restart radicle.service
 </code></pre>
-
 <p><strong>Note</strong>: the <code>authenticated</code> option allows authenticated users to read and
 write all collections managed by Radicale. Refer to the Radicale <a href="http://radicale.org/rights/">rights
 management docs</a> for information on more granular
@@ -173,9 +143,9 @@ permissions.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

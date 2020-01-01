@@ -43,27 +43,21 @@
 Ansible playbooks. This post is going to go over writing a playbook to
 configure <a href="http://www.zeroflux.org/projects/knock">knockd</a>. The configuration is going to mirror the setup
 from my <a href="/2016/running-knockd.html">previous post</a> on knockd.</p>
-
 <h2>Playbook anatomy</h2>
-
 <p>In essence playbooks are YAML files which contain a list of Ansible tasks to
 run on one or more hosts. A very simple example might look something like the
 following:</p>
-
 <pre><code>---
 - hosts: pi
   tasks:
   - name: Run uptime
     command: /usr/bin/uptime
 </code></pre>
-
 <p>The <code>hosts</code> key tells Ansible which group from the inventory it should connect
 to and the <code>tasks</code> key contains one or more tasks to run. At a basic level, a
 task is just a call to an Ansible module.</p>
-
 <p>Playbooks are run with the <code>ansible-playbook</code> command. Running the playbook
 above produces output similar to the following:</p>
-
 <pre><code>$ ansible-playbook --verbose example.yaml
 Using /etc/ansible/ansible.cfg as config file
 
@@ -78,30 +72,22 @@ changed: [192.168.1.129] =&gt; {"changed": true, "cmd": ["/usr/bin/uptime"], "de
 PLAY RECAP *********************************************************************
 192.168.1.129              : ok=2    changed=1    unreachable=0    failed=0
 </code></pre>
-
 <p>If your interested the <a href="http://docs.ansible.com/ansible/playbooks_intro.html">Ansible playbook
 documentation</a> more detail.</p>
-
 <h2>Installing knockd</h2>
-
 <p>The first task was to get <code>knockd</code> installed. This was just a case of calling
 the <a href="http://docs.ansible.com/ansible/package_module.html">package module</a>:</p>
-
 <pre><code>tasks:
   - name: ensure knockd package is installed
     package: name=knockd state=present
 </code></pre>
-
 <p>It's worth pointing out the package module actually calls the <a href="http://docs.ansible.com/ansible/apt_module.html">apt
 module</a> to get knockd installed. This reminded me
 slightly of <a href="https://docs.puppet.com/guides/provider_development.html">Resource Providers</a> in Puppet.</p>
-
 <h2>Setting up iptables</h2>
-
 <p>The obvious place to start with iptables is the <a href="http://docs.ansible.com/ansible/iptables_module.html">iptables
 module</a>. My first attempt at using the module
 looked something like this:</p>
-
 <pre><code>tasks:
   - name: allow local network traffic
     iptables: chain=INPUT in_interface=lo jump=ACCEPT
@@ -123,29 +109,23 @@ looked something like this:</p>
   - name: reject all network traffic in the FORWARD chain
     iptables: chain=FORWARD jump=REJECT
 </code></pre>
-
 <p>Unfortunately there are a few issues with this configuration:</p>
-
 <ol>
 <li>Configuration made with the iptables module is not persistent.</li>
 <li>The iptables module cannot create custom chains. To get around this the
-command module is used, although this command will fail on subsiquent runs.</li>
+    command module is used, although this command will fail on subsiquent runs.</li>
 <li>There are quite a few tasks...</li>
 </ol>
-
 <p>None of these problems are deal breakers, however I ended up just copying the
 iptables configuration across using the <a href="http://docs.ansible.com/ansible/copy_module.html">copy module</a>
 instead:</p>
-
 <pre><code>tasks:
   - name: install iptables configuration
     copy: owner=root group=root mode=0644 src=iptables.rules dest=/etc/network/iptables
 </code></pre>
-
 <p>To make the configuration persistent I added two additional tasks to install
 the <code>if-pre-up.d</code> script and ran it to load the iptables rules using
 <code>iptables-restore</code>.</p>
-
 <pre><code>tasks:
   - name: install iptables configuration
     copy: owner=root group=root mode=0644 src=iptables.rules dest=/etc/network/iptables
@@ -154,14 +134,11 @@ the <code>if-pre-up.d</code> script and ran it to load the iptables rules using
   - name: load iptables rules
     command: /etc/network/if-pre-up.d/iptables
 </code></pre>
-
 <h3>Using handlers</h3>
-
 <p>The tasks above work fine, however the <code>load iptables rules</code> task will be
 called every time Ansible runs. Really it should only be called if the iptables
 configuration is updated. This can be achieved by changing the
 <code>load iptables rules</code> task into a handler task:</p>
-
 <pre><code>tasks:
   - name: install script to load iptables configuration
     copy: owner=root group=root mode=0755 src=load_iptables.sh dest=/etc/network/if-pre-up.d/iptables
@@ -174,13 +151,10 @@ handlers:
   - name: reload iptables rules
     command: /etc/network/if-pre-up.d/iptables
 </code></pre>
-
 <h2>Configuring knockd</h2>
-
 <p>The last thing to do was get the knockd configuration in place and start the
 service. The tasks below use the copy, replace and service modules to populate
 <code>/etc/knockd.conf</code>, update <code>/etc/default/knockd</code> and enable the service:</p>
-
 <pre><code>tasks:
   - name: install knockd configuration
     copy: owner=root group=root mode=0640 src=knockd.conf dest=/etc/knockd.conf
@@ -197,13 +171,10 @@ handlers:
   - name: restart knockd
     service: name=knockd state=restarted
 </code></pre>
-
 <h3>Using templates</h3>
-
 <p>Instead of leaving the knockd ports hard-coded in <code>knockd.conf</code> I decided to use the
 <a href="http://docs.ansible.com/ansible/template_module.html">template module</a> and define the ports inside the
 playbook:</p>
-
 <pre><code>vars:
   knockd_ports:
     - 4438
@@ -215,12 +186,10 @@ tasks:
     notify:
       - restart knockd
 </code></pre>
-
 <p>The options passed to the module are identical with the exception of the
 <code>src</code> option. Instead of pointing directly to the file, a <a href="http://jinja.pocoo.org/">jinja2
 template</a> is used. The content of the template looks something like
 this:</p>
-
 <pre><code>[options]
         UseSyslog
 
@@ -230,11 +199,8 @@ this:</p>
         command     = /sbin/iptables -A KNOCKD -s %IP% -p tcp --dport 22 -j ACCEPT
         tcpflags    = syn
 </code></pre>
-
 <h2>All together</h2>
-
 <p>Below is the complete playbook:</p>
-
 <pre><code>---
 - hosts: pi
   vars:
@@ -268,10 +234,8 @@ this:</p>
     - name: restart knockd
       service: name=knockd state=restarted
 </code></pre>
-
 <p>Running from beginning to end takes just over two minutes on a completely new
 <a href="https://www.raspbian.org/">Raspbian</a> image:</p>
-
 <pre><code>[ansible@control ~]$ time ansible-playbook knockd.yaml
 
 PLAY [pi] **********************************************************************
@@ -311,13 +275,10 @@ real    2m13.090s
 user    0m18.306s
 sys     0m6.078s
 </code></pre>
-
 <h2>Closing thoughts</h2>
-
 <p>Again I've been fairly impressed with Ansible. Writing a playbook was pretty
 straightforward and the <a href="http://docs.ansible.com/ansible/modules_by_category.html">module documentation</a> makes it
 easy to quickly create tasks.</p>
-
 <p>It's worth pointing out that playbook above is fairly monolithic, and certainly
 doesn't follow all <a href="http://docs.ansible.com/ansible/playbooks_best_practices.html">Ansible best practices</a>. In
 the future I would like to look at using features like <a href="http://docs.ansible.com/ansible/playbooks_roles.html">Ansible
@@ -327,9 +288,9 @@ roles</a> to improve this.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

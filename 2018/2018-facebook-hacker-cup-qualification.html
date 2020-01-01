@@ -37,52 +37,41 @@
       <article>
 <h1>2018 Facebook Hacker Cup qualification</h1>
 
-<p><!-- timestamp here -->
-When you think of Facebook, there is a good chance the first thing that comes
+<time datetime="2018-07-13">13 July 2018</time>
+
+<p>When you think of Facebook, there is a good chance the first thing that comes
 to mind isn't programming contests. However Facebook do run an annual contest
 called the <a href="https://en-gb.facebook.com/hackercup/">Hacker Cup</a> which is worth having a look at if you're
 interested in programming.</p>
-
 <p>This post is going to go through a solution to the <a href="https://www.facebook.com/hackercup/problem/1632703893518337/">tourist
 problem</a> from this years qualification round. If you've not
 done so already, have a go at solving the problem first. If you don't mind
 spoilers feel free to read on.</p>
-
 <h2>The problem</h2>
-
 <p>For reference below is an abridged summary of the problem for a single case:</p>
-
 <blockquote>
-  <p>The Facebook campus has <strong>N</strong> different attractions, numbered from 1 to <strong>N</strong>
-  in decreasing order of popularity. Alex visits <strong>K</strong> attractions each time he
-  visits, starting with the attraction he's visited the least and breaking ties
-  by visiting the most popular attraction first. Which attractions does Alex
-  visit on visit number <strong>V</strong>?</p>
+<p>The Facebook campus has <strong>N</strong> different attractions, numbered from 1 to <strong>N</strong>
+in decreasing order of popularity. Alex visits <strong>K</strong> attractions each time he
+visits, starting with the attraction he's visited the least and breaking ties
+by visiting the most popular attraction first. Which attractions does Alex
+visit on visit number <strong>V</strong>?</p>
 </blockquote>
-
 <p>The variables above are constrained as follows:</p>
-
 <blockquote>
-  <p><strong>1</strong> &lt;= <strong>K</strong> &lt;= <strong>N</strong> &lt;= <strong>50</strong></p>
-  
-  <p><strong>1</strong> &lt;= <strong>V</strong> &lt;= <strong>10<sup>12</sup></strong></p>
+<p><strong>1</strong> &lt;= <strong>K</strong> &lt;= <strong>N</strong> &lt;= <strong>50</strong></p>
+<p><strong>1</strong> &lt;= <strong>V</strong> &lt;= <strong>10<sup>12</sup></strong></p>
 </blockquote>
-
 <h2>Working through an example</h2>
-
 <p>The following is one of the example cases:</p>
-
 <pre><code>4 3 3
 LikeSign
 Arcade
 SweetStop
 SwagStore
 </code></pre>
-
 <p>In the example above there are four attractions (<strong>N</strong> = 4), Alex visits 3
 attractions per visit (<strong>K</strong> = 3), and we need to work out which attractions he
 sees on the third visit (<strong>V</strong> = 3).</p>
-
 <p>On the first visit Alex will visit the three most popular attractions
 (<code>LikeSign</code>, <code>Arcade</code>, and <code>SweetStop</code>) because he's not seen any attractions
 yet. On the second visit he will visit the <code>SwagStore</code> because he's not been
@@ -91,10 +80,8 @@ Finally on his third visit he will visit the <code>SweetStop</code> and <code>Sw
 he's seen each attraction an equal number of times, followed by the most
 popular attraction (<code>LikeSign</code>) to make the number of attractions on his visit
 3.</p>
-
 <p>A good way to visualise this is to imagine a repeating list of the attractions
 being grouped by each visit:</p>
-
 <pre><code>           _
 LikeSign    |
 Arcade      |-- visit 1
@@ -112,54 +99,41 @@ Arcade      |
 SweetStop   |-- visit...
 ...
 </code></pre>
-
 <p>Once you've got the attractions for the visit, they need to be output from most
 to least popular, e.g.:</p>
-
 <pre><code>Case #4: LikeSign SweetStop SwagStore
 </code></pre>
-
 <h2>Repeating patterns</h2>
-
 <p>The key to solving this problem is considering how big <strong>V</strong> can be, (Alex
 obviously likes visiting Facebook campuses). For very large values of <strong>V</strong>,
 iterating through each visit is going to be very slow, and trying to generate
 an array which is <strong>V</strong> * <strong>N</strong> long to answer the problem will need at least
 one terabyte of memory if the attraction names are long, and <strong>V</strong> and <strong>N</strong>
 are near the top end of their constraints.</p>
-
 <p>Thankfully there is a quicker way. Alex's visits very quickly begin to follow a
 repeating pattern. In the case above, on Alex's 5<sup>th</sup> visit he will
 simply repeat his first visit:</p>
-
 <pre><code>           _
 LikeSign    |
 Arcade      |-- visit 5
 SweetStop  _|
 </code></pre>
-
 <p>This pattern will repeat every <strong>K</strong> * <strong>N</strong> attractions.</p>
-
 <h2>Writing a solution</h2>
-
 <p>Once you've worked out the pattern repeats, the modulus operator can be used to
 work out where in the repeating pattern you are, and therefore which
 attractions Alex will visit. This can be done with <a href="https://www.python.org/">Python</a> code
 similar to the following:</p>
-
 <pre><code>def solve_case(n, k, v, attractions):
     """ Return the attractions for visit v"""
     attractions = attractions.copy() * 2
     offset = (k * (v - 1)) % n
     return attractions[offset:(offset + k)]
 </code></pre>
-
 <p><strong>Note</strong>: the attractions list is copied and duplicated to handle visits which
 include attractions from both the end and start of the list.</p>
-
 <p>Once the function above is written, the input file can be parse to produce the
 correct output with a script similar to the following:</p>
-
 <pre><code>import sys
 
 def solve_case(n, k, v, attractions):
@@ -188,9 +162,9 @@ with open(sys.argv[1]) as input_file:
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

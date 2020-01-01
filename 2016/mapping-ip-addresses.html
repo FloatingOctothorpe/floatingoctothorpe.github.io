@@ -42,48 +42,36 @@
 <p>For the <a href="/2016/running-knockd.html">previous post</a> I generated a map of IP
 addresses. This post is quickly going to go over how the data was collected and
 mapped.</p>
-
 <h2>Collecting data</h2>
-
 <p>First add an iptables rule to log all unwanted traffic. This rule should be in
 the <code>input</code> chain just above any <code>DROP</code> or <code>REJECT</code> rules:</p>
-
 <pre><code>iptables -A INPUT ! -s 192.168.0.0/16 \
          -j LOG --log-prefix "iptables: " \
          -m limit --limit 15/min \
          -m state --state NEW \
          -m comment --comment "Log rejected traffic"
 </code></pre>
-
 <p>Log messages are sent to the syslog daemon. To split them into a separate log
 file, create a file called <code>/etc/rsyslog.d/iptables.conf</code> with the following
 contents and restart rsyslog:</p>
-
 <pre><code>:msg, contains, "iptables: " -/var/log/iptables.log
 &amp; ~
 </code></pre>
-
 <p><strong>Note</strong>: You may want to add a logrotate rule for <code>/var/log/iptables.log</code>.</p>
-
 <h2>Geolocation</h2>
-
 <p><a href="http://freegeoip.net/">freegeoip.net</a> makes it very easy to get location data for IP
 addresses. The script below creates a file called <code>locations.csv</code> with location
 info for each IP address:</p>
-
 <pre><code>#!/bin/sh
 for ip in $(grep -wE 'DPT=(443|80|22)' iptables.log | sed -r 's/^.* SRC=([^ ]+).*$/\1/' |sort -u)
 do
   curl "http://freegeoip.net/csv/${ip}" &gt;&gt; locations.csv
 done
 </code></pre>
-
 <h2>Mapping data</h2>
-
 <p>The script below generates a csv file with latitude, longitude and a dummy
 value. This data can then be uploaded to <a href="http://www.openheatmap.com/">OpenHeatMap</a> to plot the
 locations:</p>
-
 <pre><code>#!/bin/sh
 echo 'lat,long,value' &gt; ip-address-point-data.csv
 for ip in $(grep -wE 'DPT=(80|443|22)' iptables.log |  sed -r 's/^.* SRC=([^ ]+).*$/\1/')
@@ -91,17 +79,12 @@ do
   echo "$(grep  "$ip" locations.csv | cut  -d, -f 9-10 ),1";
 done &gt;&gt; ip-address-point-data.csv
 </code></pre>
-
 <p>The end result should look something like the following:</p>
-
 <p><img class="pure-img" src="/2016/unwanted-connections-map.png"
   alt="Map showing the location of unwanted connections" /></p>
-
 <h2>Data by country</h2>
-
 <p>Instead of plotting point data, IP addresses can be grouped by country. The
 following script does this:</p>
-
 <pre><code>#!/bin/sh
 for ip in $(grep -wE 'DPT=(80|443|22)' iptables.log |  sed -r 's/^.* SRC=([^ ]+).*$/\1/')
 do
@@ -111,10 +94,8 @@ done | sort | uniq -c | awk 'BEGIN{print "country,value"} {print substr($0, inde
 # Remove "Republic of" prefix for OpenHeatMap
 sed -i 's/^Republic of //' country-data.csv
 </code></pre>
-
 <p>After being passed through <a href="http://www.openheatmap.com/">OpenHeatMap</a> the end result is the
 following map:</p>
-
 <p><img class="pure-img" src="/2016/unwanted-connections-by-country-map.png"
   alt="Map showing the location of unwanted connections" /></p>
       </article>
@@ -122,9 +103,9 @@ following map:</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

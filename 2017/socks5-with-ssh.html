@@ -44,36 +44,25 @@ a password database I found out that there was an IP whitelist. More
 importantly the public IP I was using was not on the whitelist so I couldn't
 get the file! Thankfully SSH has a useful feature that let me work around this
 using a Raspberry Pi I have running in my home network.</p>
-
 <h2>Setting up a proxy</h2>
-
 <p>The following command can be used to set up a <a href="https://en.wikipedia.org/wiki/SOCKS">SOCKS proxy</a>:</p>
-
 <pre><code>ssh -N -D 1080 remotehost
 </code></pre>
-
 <p>The <code>-D</code> option tells ssh to listen locally on TCP port 1080; and the <code>-N</code>
 option is used to keep the SSH connection open. For more information on SSH
-options, refer to the <a href="https://www.freebsd.org/cgi/man.cgi?query=ssh&amp;amp;sektion=1">SSH man page</a>.</p>
-
+options, refer to the <a href="https://www.freebsd.org/cgi/man.cgi?query=ssh&amp;sektion=1">SSH man page</a>.</p>
 <p>Once SSH is listening locally on port 1080, applications like Firefox can use
 the proxy. Connections made via the proxy will be forwarded though the SSH
 connection and appear to come from the remote host:</p>
-
 <p><img class="pure-img" src="/2017/ssh-socks-proxy.svg"
   alt="SOCKS proxy connection diagram"/></p>
-
 <p><strong>Note</strong>: so long as the port you're listening on is not below 1024, you should
 be able to do this as an unprivileged user.</p>
-
 <h2>Configuring Firefox</h2>
-
 <p>To configure Firefox, open <code>about:preferences</code>, select Network from the
 Advanced section and enter the SOCKS proxy details:</p>
-
 <p><img class="pure-img" src="/2017/firefox-proxy-settings.png"
   alt="Firefox proxy settings screenshot"/></p>
-
 <p>Once Firefox is configured to use the proxy, HTTP requests will go via the
 remote host.</p>
       </article>
@@ -81,9 +70,9 @@ remote host.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

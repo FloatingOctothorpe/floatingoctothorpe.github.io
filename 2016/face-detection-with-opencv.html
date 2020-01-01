@@ -44,92 +44,67 @@ now. OpenCV (open source computer vision), is a library mainly aimed at
 real-time computer vision. It can be used for a wide range of tasks including
 gesture recognition, motion tracking and augmented reality. For this post I'm
 going to go through doing basic face detection.</p>
-
 <p>Face detection is trying to answer the question, is there a face and if so
 where? This is distinct from facial recognition, which is trying to answer the
 question, who does this face belong to? With that out the way onto some code.</p>
-
 <h2>Installing OpenCV</h2>
-
 <p>OpenCV is available from the <a href="https://www.centos.org/">CentOS</a> repositories. As a result it
 can just be installed with the package manager:</p>
-
 <pre><code>yum install opencv opencv-python
 </code></pre>
-
 <p><strong>Note</strong>: at the time of writing CentOS provides OpenCV version 2.4.5. If you
 need a later version, it can be <a href="http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_setup/py_setup_in_fedora/py_setup_in_fedora.html#install-opencv-python-in-fedora">installed from
 source</a>.</p>
-
 <h2>Loading an image</h2>
-
 <p>Before doing any face detection we first need to load an image. This is just a
 case of importing the <code>cv2</code> module and calling <a href="http://docs.opencv.org/2.4/modules/highgui/doc/reading_and_writing_images_and_video.html#imread">imread</a> to
 load an image:</p>
-
 <pre><code>import cv2
 img = cv2.imread('cat.jpg')
 </code></pre>
-
 <p>If you are working in a graphical environment you display the loaded image
 using <a href="http://docs.opencv.org/2.4/modules/highgui/doc/user_interface.html#imshow">imshow</a>:</p>
-
 <pre><code>cv2.imshow('Cat', img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 </code></pre>
-
 <p><strong>Note</strong>: <a href="http://docs.opencv.org/2.4/modules/highgui/doc/user_interface.html#waitkey">waitKey</a> is used to keep the image on screen
 until a key is pressed. <a href="http://docs.opencv.org/2.4/modules/highgui/doc/user_interface.html#destroyallwindows">destroyAllWindows</a> is
 then used to remove the window.</p>
-
 <p>Assuming you have a suitable cat image in place, the output should look
 something like this:</p>
-
 <p><img class="pure-img" src="/2016/opencv-load-image.jpg"
   alt="Cat image opened with OpenCV" /></p>
-
 <p><small>Photograph by and copyright &copy; of David Corby. This image is
 licensed under the Creative Commons <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">Attribution-Share Alike 3.0
 Unported</a> license and can be found on <a href="https://commons.wikimedia.org/wiki/File:Kittyply_edit1.jpg">Wikimedia
 Commons</a>.</small></p>
-
 <h2>Detecting faces</h2>
-
 <p>To detect faces we need to use a <a href="https://en.wikipedia.org/wiki/Haar-like_features">Haar</a> classifier
 cascade. OpenCV provides a number of classifiers, including a classifier for
 face detection. This can be loaded using the <a href="http://docs.opencv.org/2.4/modules/objdetect/doc/cascade_classification.html">Cascade
 Classification</a> class:</p>
-
 <pre><code>import cv2
 
 face_cascade_xml = \
   '/usr/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml'
 face_cascade = cv2.CascadeClassifier(face_cascade_xml)
 </code></pre>
-
 <p>Haar classifier cascades work on <code>CV_8Y</code> (gray scale) images. Colour images can
 be converted using <a href="http://docs.opencv.org/2.4/modules/imgproc/doc/miscellaneous_transformations.html#cvtcolor">cvtColor</a>:</p>
-
 <pre><code>img = cv2.imread('face.jpg')
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 </code></pre>
-
 <p>Once we have a gray scale version of the image,
 <a href="http://docs.opencv.org/2.4/modules/objdetect/doc/cascade_classification.html#cascadeclassifier-detectmultiscale">detectMultiScale</a> can be use to return a list of
 rectangles that match the cascade:</p>
-
 <pre><code>faces = face_cascade.detectMultiScale(gray)
 </code></pre>
-
 <p><strong>Note</strong>: additional parameters like <code>scaleFactor</code> and <code>minNeighbors</code> can be
-passed to control how sensitive the detection is.</p>
-
+passed to control how sensitive the detection is. </p>
 <h2>Showing results</h2>
-
 <p>Once we have a list of matches, they can be plotted using the OpenCV
 <a href="http://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html#rectangle">rectangle</a> function:</p>
-
 <pre><code>for (x, y, width, height) in faces:
     cv2.rectangle(img, (x, y), (x + width, y + height), (0, 255, 0), 1)
 
@@ -137,13 +112,10 @@ cv2.imshow('Faces (%d)' % len(faces), img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 </code></pre>
-
 <p>If everything goes well, running the <a href="/2016/detect_faces.py">final script</a> should now
 highlight faces:</p>
-
 <p><img class="pure-img" src="/2016/opencv-detect-face.jpg"
   alt="Photograph of Kinga Philipps, with face detection rectangle drawn by OpenCV." /></p>
-
 <p><small>Photograph by and copyright &copy; of Kinga Philipps. This image is
 licensed under the Creative Commons <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">Attribution-Share Alike 3.0
 Unported</a> license and can be found on <a href="https://commons.wikimedia.org/wiki/File:Kingaphilipps.jpg">Wikimedia
@@ -153,9 +125,9 @@ Commons</a>.</small></p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

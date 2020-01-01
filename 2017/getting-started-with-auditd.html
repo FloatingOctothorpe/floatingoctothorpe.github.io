@@ -42,18 +42,13 @@
 <p>Since 2.6 Linux has had an <a href="https://people.redhat.com/sgrubb/audit/">audit framework</a> available. It
 allows you to monitor system calls and filesystem access which can be a very
 useful additional layer of security.</p>
-
 <h2>Installation</h2>
-
 <p>The main components which make up the audit framework are the kernel level code
 and a daemon process called <code>auditd</code>. Under <a href="https://www.centos.org">CentOS</a> 7 all you
 need to do to get <code>auditd</code> up and running is install the <code>audit</code> package:</p>
-
 <pre><code>yum install -y audit
 </code></pre>
-
 <p>Once the <code>audit</code> package is installed the <code>auditd</code> daemon should be running:</p>
-
 <pre><code>$ systemctl status auditd
 * auditd.service - Security Auditing Service
    Loaded: loaded (/usr/lib/systemd/system/auditd.service; enabled; vendor preset: enabled)
@@ -71,19 +66,15 @@ Feb 04 16:20:35 localhost.localdomain auditd[1187]: Started dispatcher: /sbin/au
 Feb 04 16:20:35 localhost.localdomain auditd[1187]: Init complete, auditd 2.6.5 listening for events (startup state enable)
 Feb 04 16:20:35 localhost.localdomain systemd[1]: Started Security Auditing Service.
 </code></pre>
-
 <p><strong>Note</strong>: by default <code>auditd</code> will log events to <code>/var/log/audit/audit.log</code>.
 Although the <code>max_log_file</code> and <code>num_logs</code> options in <code>/etc/audit/auditd.conf</code>
 will limit how much space can be used by logs, it's normally a good idea to
 make <code>/var/log/audit</code> a separate filesystem.</p>
-
 <h2>Default rules</h2>
-
 <p>Without any additional configuration <code>auditd</code> will log several standard events.
 The <a href="https://linux.die.net/man/8/aureport">aureport</a> and <a href="https://linux.die.net/man/8/ausearch">ausearch</a> commands can be
 used to query the events. For example if you want to see recent authentication
 events you can use the <code>--auth</code> option:</p>
-
 <pre><code>$ aureport  --auth
 
 Authentication Report
@@ -100,10 +91,8 @@ Authentication Report
 8. 05/02/17 14:30:02 root 10.0.2.2 ssh /usr/sbin/sshd no 295
 9. 05/02/17 14:30:04 root gateway ssh /usr/sbin/sshd yes 296
 </code></pre>
-
 <p>Or if you want to find out when a tool like <code>tcpdump</code> was used to perform a
 packet capture, you can search for <code>ANOM_PROMISCUOUS</code> events:</p>
-
 <pre><code>$ ausearch --message ANOM_PROMISCUOUS
 ---- 
 time-&gt;Sun Feb  5 14:45:00 2017
@@ -112,61 +101,44 @@ type=ANOM_PROMISCUOUS msg=audit(1486305900.162:474): dev=enp0s3 prom=0 old_prom=
 time-&gt;Sun Feb  5 14:44:59 2017
 type=SYSCALL msg=audit(1486305899.049:473): arch=c000003e syscall=54 success=yes exit=0 a0=3 a1=107 a2=1 a3=7ffcdd1ff030 items=0 ppid=11488 pid=11491 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=25 comm="tcpdump" exe="/usr/sbin/tcpdump" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
 </code></pre>
-
 <h2>Adding rules</h2>
-
 <p>Auditd can also be given custom rules to record addition events. Audit rules
 can be controlled using the <a href="https://linux.die.net/man/8/auditctl">auditctl</a> command, however to get
 persistent rules you need to write them to a configuration file. Rules are
 normally stored under <code>/etc/audit/rules.d/</code>, and should normally only be
 accessible by the root user:</p>
-
 <pre><code>$ ls -l /etc/audit/rules.d/somerules.rules
 -rw-------. 1 root root 39 Feb  5 14:12 /etc/audit/rules.d/somerules.rules
 </code></pre>
-
 <p><code>auditd</code> needs to reload it's configuration before it starts using any new
 rules:</p>
-
 <pre><code>$ augenrules --load
 </code></pre>
-
 <p><strong>Note</strong>: <code>RefuseManualStop=yes</code> is set in the systemd unit file so running
 <code>systemctl restart auditd.service</code> will fail.</p>
-
 <h3>Monitoring file access</h3>
-
 <p>Configuring <code>auditd</code> to monitor filesystem access is relatively
 straightforward. For example if you want to monitor files under <code>/etc/</code> being
 changed you could use a rule similar to the following:</p>
-
 <pre><code>-w /etc/ -p wa -k system_configuration
 </code></pre>
-
 <p>This rule will produce an audit message if any files under <code>/etc/</code> are written
 to (<code>w</code>) or have any attributes changed (<code>a</code>). For example updating <code>/etc/motd</code>
 will produce log entries similar to the following:</p>
-
 <pre><code>23 key="system_configuration"
 type=CWD msg=audit(1486305706.792:409):  cwd="/root"
 type=PATH msg=audit(1486305706.792:409): item=0 name="/etc/" inode=4194369 dev=fd:00 mode=040755 ouid=0 ogid=0 rdev=00:00 obj=system_u:object_r:etc_t:s0 objtype=PARENT
 type=PATH msg=audit(1486305706.792:409): item=1 name="/etc/motd" inode=4195234 dev=fd:00 mode=0100644 ouid=0 ogid=0 rdev=00:00 obj=system_u:object_r:etc_t:s0 objtype=NORMAL
 </code></pre>
-
 <h3>Monitoring system calls</h3>
-
 <p><code>auditd</code> can also monitor arbitrary system calls. For example if you want to
 monitor when the hostname of a server is changed, you could audit the
 <a href="https://linux.die.net/man/2/sethostname">sethostname</a> system call:</p>
-
 <pre><code>-a always,exit -F arch=b64 -S sethostname -k set-hostname
 </code></pre>
-
 <p><strong>Note</strong>: <code>-F arch=b64</code> is set to limit the rule to 64 bit system calls.</p>
-
 <p>This will produce log messages similar to the following if commands like
 <code>hostname</code> are called:</p>
-
 <pre><code>$ ausearch --key set-hostname
 ---- 
 time-&gt;Tue Feb  7 23:34:03 2017
@@ -180,9 +152,9 @@ type=SYSCALL msg=audit(1486510448.375:60): arch=c000003e syscall=170 success=yes
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -44,76 +44,52 @@ thousands of <a href="https://pypi.python.org/">third party packages</a>. Thankf
 <a href="https://virtualenv.pypa.io/en/stable/">virtualenv</a> makes it easy to work with isolated environments.
 This is great because it allows you to easily have different versions of the
 same library installed concurrently.</p>
-
 <h2>What is a virtual environment?</h2>
-
 <p>In Python a "virtual environment" is a directory containing it's own Python
 binary, and optionally it's own set of Python packages. Each environment can be
 updated independently without affecting the other.</p>
-
 <h2>Virtualenv for Python 2</h2>
-
 <p>On CentOS <code>virtualenv</code> is available from the package manager:</p>
-
 <pre><code>yum install python-virtualenv
 </code></pre>
-
 <p>Alternatively you can use <a href="https://pip.pypa.io/en/stable/">pip</a> to install <code>virtualenv</code>:</p>
-
 <pre><code>pip install virtualenv
 </code></pre>
-
 <p><strong>Note</strong>: the <a href="https://virtualenv.pypa.io/en/stable/installation/">virtualenv installation docs</a>
 explicitly warn against using pip before version 1.3 and virtualenv before
 version 1.9. This is because downloads from PyPI will not be over SSL.</p>
-
 <h2>Virtualenv for Python 3</h2>
-
 <p>The Python 3 standard library (v3.3 and up) comes with the
 <a href="https://docs.python.org/3/library/venv.html">venv</a> modules that can be used to create virtual
 environments. It can be called by running the following:</p>
-
 <pre><code>python -m venv
 </code></pre>
-
 <p>Instead of:</p>
-
 <pre><code>virtualenv
 </code></pre>
-
 <p><strong>Note</strong>: <code>venv</code> and <code>virtualenv</code> are not identical. <code>virtualenv</code> predates
 <code>venv</code> and relies on a number of hacks which aren't required for later versions
 of Python due to the changes made for <a href="https://www.python.org/dev/peps/pep-0405/">PEP 405</a>.</p>
-
 <h2>Creating a virtual environment</h2>
-
 <p>To create a new virtual environment, just run the <code>virtualenv</code> command followed
 by a destination directory:</p>
-
 <pre><code>[bob@virtualenv ~]$ virtualenv my-first-env
 New python executable in my-first-env/bin/python
 Installing Setuptools...............done.
 Installing Pip......................done.
 </code></pre>
-
 <p>This will create a directory containing the virtual environment:</p>
-
 <pre><code>[bob@virtualenv ~]$ ls -ld my-first-env/
 drwxrwxr-x. 5 bob bob 52 Nov 29 22:39 my-first-env/
 </code></pre>
-
 <p>To start using the environment source the <code>activate</code> script:</p>
-
 <pre><code>[bob@virtualenv ~]$ source my-first-env/bin/activate
 (my-first-env)[bob@virtualenv ~]$
 </code></pre>
-
 <h2>Installing packages</h2>
-
 <p>Once you've activated your environment additional packages can be installed
 using <code>pip</code>. New packages will only be installed in the environment you're
 working in and won't affect other environments or system libraries:</p>
-
 <pre><code>(my-first-env)[bob@virtualenv ~]$ pip install bottle
 Downloading/unpacking bottle
   Downloading bottle-0.12.10.tar.gz (69kB): 69kB downloaded
@@ -132,23 +108,17 @@ pip (1.4.1)
 setuptools (0.9.8)
 wsgiref (0.1.2)
 </code></pre>
-
 <p><strong>Note</strong>: you don't need to be <code>root</code> to install packages in a virtual
 environment.</p>
-
 <h2>Switching environments</h2>
-
 <p>Say you now need to work on an application which uses a legacy version of the
 <a href="https://bottlepy.org">bottle</a> module. First run <code>deactivate</code> to leave your old
 environment behind:</p>
-
 <pre><code>(my-first-env)[bob@virtualenv ~]$ deactivate
 [bob@virtualenv ~]$
 </code></pre>
-
 <p>Then create a new environment, activate it and use <code>pip</code> to install an older
 version of the module:</p>
-
 <pre><code>[bob@virtualenv ~]$ virtualenv old-bottle
 New python executable in old-bottle/bin/python
 Installing Setuptools............................done.
@@ -172,53 +142,39 @@ pip (1.4.1)
 setuptools (0.9.8)
 wsgiref (0.1.2)
 </code></pre>
-
 <p>At this point you can quickly switch between different versions of the <code>bottle</code>
 module by changing environments:</p>
-
 <pre><code>(my-first-env)[bob@virtualenv ~]$ python -c 'import bottle;print bottle.__version__'
 0.12.10
 (my-first-env)[bob@virtualenv ~]$ source old-bottle/bin/activate
 (old-bottle)[bob@virtualenv ~]$ python -c 'import bottle;print bottle.__version__'
 0.11.7
 </code></pre>
-
 <h2>Removing environments</h2>
-
 <p>Because environments are just directories, they can be easily removed with
 <code>rm</code>:</p>
-
 <pre><code>[bob@localhost ~]$ rm -rf old-env/
 </code></pre>
-
 <p><strong>Note</strong>: if you are using the environment, make sure you run <code>deactivate</code>
 before you remove it.</p>
-
 <h2>Using requirements.txt files</h2>
-
 <p>Python projects will normally list the packages they require in a file called
 <code>requirements.txt</code>. This is just a text file which might look something like
 this:</p>
-
 <pre><code>bottle&gt;=0.12.0
 requests==2.12.1
 </code></pre>
-
 <p>To install the packages in a requirements file use the <code>-r</code> or <code>--requirement</code>
 option:</p>
-
 <pre><code>(testing)[bob@virtualenv ~]$ pip install --requirement requirements.txt
 </code></pre>
-
 <p>The easiest way to create a requirements file is to use <code>pip freeze</code>:</p>
-
 <pre><code>(testing)[bob@virtualenv ~]$ pip freeze  --local &gt; requirements.txt
 (testing)[bob@virtualenv ~]$ cat requirements.txt
 bees==0.01
 bottle==0.12.10
 requests==2.12.1
 </code></pre>
-
 <p><strong>Note</strong>: the <code>--local</code> option is used to work around a bug in Python 2.7
 (<a href="http://bugs.python.org/issue12218">issue 12218</a>). It shouldn't be required in later versions
 of Python.</p>
@@ -227,9 +183,9 @@ of Python.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

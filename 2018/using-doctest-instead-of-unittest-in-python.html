@@ -41,30 +41,23 @@
 
 <p>One of the points in <a href="https://www.python.org/dev/peps/pep-0020/">The Zen of Python</a> is there should ideally be one
 way to do things:</p>
-
 <pre><code>$ python -m this|grep  'only one'
 There should be one-- and preferably only one --obvious way to do it.
 </code></pre>
-
 <p>Despite this, there is actually another module for writing automated tests in
-the standard library.  Following on from <a href="/2018/test-driven-development-with-python.html">last week&#39;s post</a>,
+the standard library.  Following on from <a href="/2018/test-driven-development-with-python.html">last week's post</a>,
 this post is going to look at using <a href="https://docs.python.org/3.6/library/doctest.html">doctest</a> to replace
 <a href="https://docs.python.org/3.6/library/unittest.html">unittest</a>.</p>
-
 <h2>An quick intro to doctest</h2>
-
 <p>The example from last week's post created two functions:</p>
-
 <pre><code>def add(*args):
     return sum(args)
 
 def multiply(*args):
     return reduce((lambda x, y: x * y), args
 </code></pre>
-
 <p>As the name suggests, tests are added directly to the doc string of the
 function being tested. For example:</p>
-
 <pre><code>def add(*args):
     """Return the sum of all arguments
 
@@ -74,18 +67,14 @@ function being tested. For example:</p>
     """
     return sum(args)
 </code></pre>
-
 <p>The <a href="https://docs.python.org/3.7/library/doctest.html#doctest.testmod">doctest.testmod</a> function can then be used to
 run the example, and compare the expected output by adding code similar to the
 following:</p>
-
 <pre><code>if __name__ == "__main__":
     import doctest
     doctest.testmod()
 </code></pre>
-
 <p>And then running the Python script:</p>
-
 <pre><code>$ python example.py  -v
 Trying:
     add(2, 2)
@@ -100,20 +89,15 @@ ok
 1 passed and 0 failed.
 Test passed.
 </code></pre>
-
 <p><strong>Note</strong>: the <code>-v</code> options is required to show verbose output for passing
 tests. By default if a test passes no output is shown.</p>
-
 <p>Adding additional tests is just a case of adding more examples to the
-doc string. For reference feel free to compare the <a href="/2018/tdd_calc_example.py">example from last week&#39;s
+doc string. For reference feel free to compare the <a href="/2018/tdd_calc_example.py">example from last week's
 post</a> with a <a href="/2018/doctest_calc_example.py">modified version</a> which uses
 <code>doctest</code>.</p>
-
 <h2>Return codes</h2>
-
 <p>By default running a script which calls <code>doctes.testmod()</code> will always return a
 zero exit code, even if tests fail:</p>
-
 <pre><code>$ cat example.py
 def example():
     """This test will fail:
@@ -143,18 +127,14 @@ Got:
 $ echo $?
 0
 </code></pre>
-
 <p>To get around this <a href="https://docs.python.org/3.6/library/constants.html?highlight=exit#exit">exit</a> can be called explicitly if any
 tests fail:</p>
-
 <pre><code>if __name__ == "__main__":
     import doctest
     if doctest.testmod().failed &gt; 0:
         exit(1)
 </code></pre>
-
 <h2>Further reading</h2>
-
 <p>If you're interested in learning more about <code>doctest</code> I would recommend reading
 the <a href="https://docs.python.org/3.6/library/doctest.html">Official doctest docs</a> and having a look at <a href="https://pymotw.com/3/doctest/">Testing
 Through Documentation</a> by Doug Hellmann.</p>
@@ -163,9 +143,9 @@ Through Documentation</a> by Doug Hellmann.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

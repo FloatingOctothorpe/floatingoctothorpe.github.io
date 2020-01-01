@@ -40,7 +40,6 @@
 <time datetime="2016-07-29">29 July 2016</time>
 
 <p>It's often nice to have colour output when writing shell scripts. For example:</p>
-
 <pre><code>#!/bin/sh
 PATH='/sbin:/bin:/usr/sbin:/usr/bin'
 
@@ -51,9 +50,7 @@ success() {
 
 success 'Test example...'
 </code></pre>
-
 <p>This should give output similar to the following:</p>
-
 <pre style="background-color: #111; color: white; width: 25em;font-family: monospace; font-size: 1.2em;">
 $ ./example.sh
 Test example...                   [ <span style="color: green;">OK</span> ]
@@ -61,16 +58,11 @@ Test example...                   [ <span style="color: green;">OK</span> ]
 
 <p><strong>Note</strong>: The code above uses <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI escape codes</a> to
 change the colour of the output.</p>
-
 <h2>Redirected output</h2>
-
 <p>This becomes a problem if you try to redirect the output:</p>
-
 <pre><code>$ ./example.sh &gt; script_output
 </code></pre>
-
 <p>If you do this the <code>script_output</code> file will have the ANSI escape codes in it:</p>
-
 <pre><code>$ xxd -g 1 -c 12 script_output
 00000000: 54 65 73 74 20 65 78 61 6d 70 6c 65  Test example
 0000000c: 2e 2e 2e 20 20 20 20 20 20 20 20 20  ...
@@ -78,10 +70,8 @@ change the colour of the output.</p>
 00000024: 5b 1b 5b 33 32 6d 20 4f 4b 20 1b 5b  [.[32m OK .[
 00000030: 6d 5d 0a                             m].
 </code></pre>
-
 <p>An easy way around this is to check if the <code>stdout</code> file descriptor is pointing
 at a tty. The <code>-t</code> option in <a href="http://man7.org/linux/man-pages/man1/test.1.html">test</a> lets you do this.</p>
-
 <pre><code>#!/bin/sh
 PATH='/sbin:/bin:/usr/sbin:/usr/bin'
 
@@ -97,16 +87,15 @@ success() {
 
 success 'Test example...'
 </code></pre>
-
 <p><strong>Note</strong>: The <code>test</code> command uses the <a href="http://man7.org/linux/man-pages/man3/isatty.3.html">isatty</a> system call to achieve this.</p>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

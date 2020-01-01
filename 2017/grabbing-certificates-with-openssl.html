@@ -43,13 +43,11 @@
 Sockets Layer">SSL</abbr> are widely used to encrypt network traffic. One key
 part of the protocol is verifying the identity of a server, this is done with
 <a href="https://en.wikipedia.org/wiki/X.509">X.509 certificates</a>.</p>
-
 <p>To verify certificates a client normally need a copy of the certificate.
 Alternatively if a certificate authority the client trusts was used to sign the
 certificate, the CA certificate can be used. If a client such as
 <a href="https://curl.haxx.se/">curl</a> is unable to verify a certificate you will get an error
 similar to the following:</p>
-
 <pre><code>$ curl  https://localhost.localdomain
 curl: (60) Issuer certificate is invalid.
 More details here: http://curl.haxx.se/docs/sslcerts.html
@@ -65,13 +63,10 @@ If this HTTPS server uses a certificate signed by a CA represented in
 If you'd like to turn off curl's verification of the certificate, use
  the -k (or --insecure) option.
 </code></pre>
-
 <h2>OpenSSL s_client</h2>
-
 <p><a href="https://www.openssl.org/docs/manmaster/man1/s_client.html">s_client</a> is a useful <a href="https://www.openssl.org/">OpenSSL</a> command which can
 be used to debug TLS/SSL connections. The <code>-connect</code> and <code>-showcert</code> options
 can be used to display certificates:</p>
-
 <pre><code>$ openssl s_client -showcerts -connect localhost.localdomain:443
 CONNECTED(00000003)
 depth=0 C = --, ST = SomeState, L = SomeCity, O = SomeOrganization, OU = SomeOrganizationalUnit, CN = localhost.localdomain, emailAddress = root@localhost.localdomain
@@ -110,17 +105,13 @@ sNJwWNecBpZQ9NNHKzwe8XVNZsTMvBCLqdrNbSzlsh6GT1JUrvOMgmoN7qLwPNt0
 -----END CERTIFICATE-----
 ...
 </code></pre>
-
 <p><a href="https://www.gnu.org/software/sed/manual/sed.html">sed</a> can be used to limit the output from OpenSSL when saving the
 certificate:</p>
-
 <pre><code>echo | openssl s_client -showcerts -connect localhost:443 2&gt; /dev/null | \
   sed -n '/^-----BEGIN CERTIFICATE-----$/,/^-----END CERTIFICATE-----$/p' \
   &gt; localhost.pem
 </code></pre>
-
 <p>Once you have a copy of the cert you can pass it to clients like <code>curl</code>:</p>
-
 <pre><code>$ curl --cacert localhost.pem https://localhost.localdomain/
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -128,14 +119,11 @@ certificate:</p>
     &lt;title&gt;Hello world&lt;/title&gt;
     ...
 </code></pre>
-
 <h3>Working with proxies</h3>
-
-<p>OpenSSL recently added support for connecting through web proxies (see <a href="https://rt.openssl.org/Ticket/Display.html?id=2651&amp;amp;user=guest&amp;amp;pass=guest">ticket
+<p>OpenSSL recently added support for connecting through web proxies (see <a href="https://rt.openssl.org/Ticket/Display.html?id=2651&amp;user=guest&amp;pass=guest">ticket
 2651</a>). Unfortunately this feature hasn't made it into
 CentOS 7 yet. It is however fairly straightforward to compile a later version
 of OpenSSL:</p>
-
 <pre><code>sudo yum groupinstall "Development tools"
 curl -O https://www.openssl.org/source/openssl-1.1.0d.tar.gz
 tar xzf openssl-1.1.0d.tar.gz
@@ -143,13 +131,10 @@ cd openssl-1.1.0d/
 ./configure
 make
 </code></pre>
-
 <p>Assuming everything compiles correctly, you should now be able to use the
 <code>-proxy</code> option with <code>s_client</code>:</p>
-
 <pre><code>LD_LIBRARY_PATH=. ./apps/openssl s_client -proxy localhost:3128 -connect example.com:443
 </code></pre>
-
 <p><strong>Note</strong>: after compiling, OpenSSL can be installed by running
 <code>sudo make install</code>; however use caution when replacing key system libraries
 like OpenSSL!</p>
@@ -158,9 +143,9 @@ like OpenSSL!</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

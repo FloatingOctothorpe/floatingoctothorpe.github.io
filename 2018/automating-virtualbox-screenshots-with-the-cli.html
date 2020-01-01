@@ -41,53 +41,38 @@
 
 <p><a href="https://www.virtualbox.org/">VirtualBox</a> makes it really easy to capture VM screenshots.
 To do this you can just select "Take Screenshot..." from the "Input" menu:</p>
-
 <p><img class="pure-img" src="/2018/virtualbox-take-screenshot.png"
   alt="Screenshot showing the VirtualBox Input menu" /></p>
-
 <p>VirtualBox also has both a command line interface (CLI) and several APIs which
 can be used to interact with running VMs. This post is quickly going to go over
 capturing screenshots using the CLI.</p>
-
 <h2>The VirtualBox CLI</h2>
-
 <p>The VirtualBox CLI is called using the <a href="https://www.virtualbox.org/manual/ch08.html">VBoxManage</a> command.
 On most Linux distributions this should already be in your path if you have
 VirtualBox installed. On windows you may need to add the VirtualBox
 installation directory to your path, by default this should be 
 <code>c:\Program Files\Oracle\VirtualBox\</code>.  To verify everything is working
 correctly you should be able to run <code>VBoxManage --version</code>:</p>
-
 <pre><code>$ VBoxManage --version
 5.2.12r122591
 </code></pre>
-
 <h3>Finding VMs</h3>
-
 <p>Assuming <code>VBoxManage</code> is working correctly you will need to work out the name
 of the VM you want to take a screenshot of. To do this you can use the <code>list</code>
 command:</p>
-
 <pre><code>$ VBoxManage list runningvms
 "example" {8531ca29-8e38-4ebc-8c26-c7385ae6f91d}
 "foobar" {097c4801-3d59-438f-bb3c-e3a3ada96d87}
 </code></pre>
-
 <p>This will list a name and UUID for each VM which is currently running.</p>
-
 <h3>Creating a screenshot</h3>
-
 <p>Once you know the UUID or name of the virtual machine, you can take a
 screenshot using the <code>controlvm</code> command.</p>
-
 <pre><code>$ VBoxManage controlvm 'example' screenshotpng example_screenshot.png
 </code></pre>
-
 <p><strong>Note</strong>: <code>'example'</code> could be replace with the UUID
 (<code>{8531ca29-8e38-4ebc-8c26-c7385ae6f91d}</code>) in the command above.</p>
-
 <p>If everything is working correctly you should now have a PNG screenshot:</p>
-
 <pre><code>$ file example_screenshot.png
 example_screenshot.png: PNG image data, 720 x 400, 8-bit/color RGB, non-interlaced
 </code></pre>
@@ -96,9 +81,9 @@ example_screenshot.png: PNG image data, 720 x 400, 8-bit/color RGB, non-interlac
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

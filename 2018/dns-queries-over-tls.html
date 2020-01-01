@@ -42,12 +42,9 @@
 <p>Following on from my <a href="/2018/caching-dns-queries-with-unbound.html">previous post on Unbound</a>, this post is
 going to look at encrypting DNS traffic using <abbr title="Transport Layer
 Security">TLS</abbr>.</p>
-
 <h2>Standard DNS traffic</h2>
-
 <p>DNS traffic is normally sent unencrypted over port 53. <a href="https://www.tcpdump.org/tcpdump_man.html">tcpdump</a>
 can be used to demonstrate this:</p>
-
 <pre><code>$ tcpdump -nX host 1.1.1.1 or host 1.0.0.1
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
 listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
@@ -63,57 +60,43 @@ listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
         0x0030:  0363 6f6d 0000 0100 01c0 0c00 0100 0100  .com............
         0x0040:  000d 9b00 045d b8d8 22                   .....].."
 </code></pre>
-
 <p>In the example above two packets are displayed, the request sent to look up
 <code>example.com</code>, followed by the response from the remote DNS server. Anyone with
 access to the network will be able to read both the request and response.</p>
-
 <h2>Encrypting traffic</h2>
-
 <p>In the <a href="/2018/caching-dns-queries-with-unbound.html">previous post</a> on Unbound, the following configuration
 was used to forward traffic to CloudFlare's DNS servers:</p>
-
 <pre><code>forward-zone:
         name: "."
         forward-addr: 1.1.1.1
         forward-addr: 1.0.0.1
 </code></pre>
-
 <p>CloudFlare's DNS servers can also be <a href="https://developers.cloudflare.com/1.1.1.1/dns-over-tls/">accessed via TLS</a>.
 To do this the configuration above can be modified as follows:</p>
-
 <pre><code>forward-zone:
         name: "."
         forward-addr: 1.1.1.1@853#cloudflare-dns.com
         forward-addr: 1.0.0.1@853#cloudflare-dns.com
         forward-ssl-upstream: yes
 </code></pre>
-
 <p>In the configuration above <code>@853</code> specifies the port and <code>#cloudflare-dns.com</code>
 specifies the hostname which should be validated when the TLS connection is
 established. Unfortunately name verification was only recently added (<a href="https://www.nlnetlabs.nl/bugs-script/show_bug.cgi?id=658">bug
 658</a>); so if you're using an earlier version of Unbound
 <code>#cloudflare-dns.com</code> will be ignored.</p>
-
 <p>Once the Unbound configuration has been updated, restart the service with the
 following command:</p>
-
 <pre><code>systemctl restart unbound.service
 </code></pre>
-
 <p>Any queries made by unbound will now be sent over an encrypted TLS connection,
 <code>tcpdump</code> can be used to verify this:</p>
-
 <pre><code>10.0.2.15.36284 &gt; 1.1.1.1.853: Flags [S], cksum 0x0e3f (incorrect -&gt; 0x0b08), seq 574903500, win 29200, options [mss 1460,sackOK,TS val 701611 ecr 0,nop,wscale 7], length 0
 </code></pre>
-
 <h2>Latency</h2>
-
 <p>From a privacy perspective encrypting DNS traffic is great, unfortunately there
 is a down side. Unlike DNS using UDP packets, DNS over TLS requires time to
 establish a TLS connection before making the query. As a result initial queries
 can take over a second:</p>
-
 <pre><code>$ time host example.com 127.0.0.1
 Using domain server:
 Name: 127.0.0.1
@@ -127,9 +110,7 @@ real    0m1.559s
 user    0m0.009s
 sys     0m0.004s
 </code></pre>
-
 <p>Compared to a fraction of a second for queries over UDP:</p>
-
 <pre><code>$ time host example.com 1.1.1.1
 Using domain server:
 Name: 1.1.1.1
@@ -148,9 +129,9 @@ sys     0m0.006s
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

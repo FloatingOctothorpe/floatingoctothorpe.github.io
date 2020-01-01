@@ -42,12 +42,9 @@
 <p>It's often useful to be able to grab memory from a running process. This post
 is going to go over how to dump memory from a live process using
 <a href="https://www.gnu.org/software/gdb/">gdb</a>.</p>
-
 <h2>Attaching to a process</h2>
-
 <p>The example in this post is going to dump memory from an interactive python
 process:</p>
-
 <pre><code>$ python
 Python 2.7.5 (default, Nov  6 2016, 00:28:07)
 [GCC 4.8.5 20150623 (Red Hat 4.8.5-11)] on linux2
@@ -55,27 +52,20 @@ Type "help", "copyright", "credits" or "license" for more information.
 &gt;&gt;&gt; a = "hello world " * 1000
 &gt;&gt;&gt;
 </code></pre>
-
 <p><strong>Note</strong>: a long string is assigned to the variable <code>a</code>, this string will be
 stored in memory, more specifically the <a href="https://en.wikipedia.org/wiki/Memory_management#HEAP">heap</a>.</p>
-
 <p>The first thing to do is find the process id (PID) for the process. This can be
 done with <a href="http://man7.org/linux/man-pages/man1/pgrep.1.html">pgrep</a>:</p>
-
 <pre><code>$ pgrep python
 1131
 </code></pre>
-
 <p><a href="http://man7.org/linux/man-pages/man1/ps.1.html">ps</a> can be used to verify the PID matches the expected process:</p>
-
 <pre><code>$ ps -fp 1131
 UID        PID  PPID  C STIME TTY          TIME CMD
 user      1131  1110  0 20:45 pts/1    00:00:00 python
 </code></pre>
-
 <p>Once you have the correct PID, run <code>gdb</code> with the <code>-p</code> option to specify the
 process to attach to:</p>
-
 <pre><code>$ gdb -p 1131
 GNU gdb (GDB) Red Hat Enterprise Linux 7.6.1-94.el7
 Copyright (C) 2013 Free Software Foundation, Inc.
@@ -84,24 +74,17 @@ Attaching to process 1131
 ...
 (gdb)
 </code></pre>
-
 <p>If everything goes well, GDB should stop the process it's attaching to and give
 you a <code>(gdb)</code> prompt.</p>
-
 <h2>Memory ranges</h2>
-
 <p>Once GDB is attached to a process, the next thing to do is work out which
 memory range needs to be dumped. One way to do this is to look at the <code>/proc/</code>
 file system. More specifically <code>/proc/&lt;pid&gt;/maps</code> and <code>/proc/&lt;pid&gt;/smaps</code>.</p>
-
 <p><code>maps</code> gives a single line for each block of assigned memory:</p>
-
 <pre><code>$ grep heap /proc/1131/maps
 00c7d000-00d94000 rw-p 00000000 00:00 0         [heap]
 </code></pre>
-
 <p><code>smaps</code> also gives size information for each block of memory:</p>
-
 <pre><code>$ grep -A 15 heap /proc/1131/smaps
 00c7d000-00d94000 rw-p 00000000 00:00 0         [heap]
 Size:               1116 kB
@@ -120,28 +103,20 @@ MMUPageSize:           4 kB
 Locked:                0 kB
 VmFlags: rd wr mr mw me ac sd
 </code></pre>
-
 <p>For more information on <code>maps</code> and <code>smaps</code>, refer to the <a href="https://www.kernel.org/doc/Documentation/filesystems/proc.txt">proc file system
 documentation</a>.</p>
-
 <p><strong>Note</strong>: if you want to get this information without leaving GDB, external
 commands can be called from inside GDB by prefixing the command with <code>!</code>:</p>
-
 <pre><code>(gdb) ! grep heap /proc/1131/maps
 00c7d000-00d94000 rw-p 00000000 00:00 0         [heap]
 </code></pre>
-
 <h2>Dumping the heap</h2>
-
 <p>Once the memory range is known, it can be dumped to a file with a GDB command
 similar to the following:</p>
-
 <pre><code>(gdb) dump binary memory /tmp/python-heap.bin 0x00c7d000 0x00d94000
 </code></pre>
-
 <p>At this point GDB can be detached by running the <code>quit</code> command, this will exit
 GDB and the process will resume:</p>
-
 <pre><code>(gdb) quit
 A debugging session is active.
 
@@ -150,10 +125,8 @@ A debugging session is active.
 Quit anyway? (y or n) y
 Detaching from program: /usr/bin/python2.7, process 1131
 </code></pre>
-
 <p>Tools like <a href="https://man.cx/xxd(1)">xxd</a> can now be used to inspect the dump of the memory
 range:</p>
-
 <pre><code>$ xxd /tmp/python-heap.bin |grep -m 1 -B 3 -A 6 '\.\.\.hello world'
 00f7450: 0000 0000 0000 0000 112f 0000 0000 0000  ........./......
 00f7460: 0100 0000 0000 0000 e06a 96d0 cb7f 0000  .........j......
@@ -171,9 +144,9 @@ range:</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

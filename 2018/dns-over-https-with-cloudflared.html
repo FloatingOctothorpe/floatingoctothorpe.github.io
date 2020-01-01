@@ -43,31 +43,22 @@
 to encrypt DNS traffic. The main downside to this was uncached DNS queries had
 a fairly high latency. In this post I'm going to look at an alternative
 approach using <a href="https://developers.cloudflare.com/1.1.1.1/dns-over-https/cloudflared-proxy/">cloudflared</a>.</p>
-
 <h2>Installing cloudflared</h2>
-
 <p>The cloudflared daemon is fairly straightforward to install, on
 <a href="https://www.centos.org/">CentOS</a> it can be installed with <code>yum</code>:</p>
-
 <pre><code>yum install https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.rpm
 </code></pre>
-
-<p><strong>Note</strong>: the RPM download link above was taken from <a href="https://developers.cloudflare.com/argo-tunnel/downloads/">CloudFlare&#39;s download
+<p><strong>Note</strong>: the RPM download link above was taken from <a href="https://developers.cloudflare.com/argo-tunnel/downloads/">CloudFlare's download
 page</a>.</p>
-
 <p>Once the cloudflared package is installed, you should be able to run
 <code>cloudflared --version</code>:</p>
-
 <pre><code>$ cloudflared --version
 cloudflared version 2018.5.6 (built 2018-05-23-1637 UTC)
 </code></pre>
-
 <h2>Running cloudflared</h2>
-
 <p><code>cloudflared</code> is primarily used to connect to <a href="https://blog.cloudflare.com/argo-tunnel/">Argo Tunnel
 Servers</a>, however it can also be used to proxy DNS traffic
 over HTTPS. This is done with the <code>proxy-dns</code> command:</p>
-
 <pre><code>$ cloudflared proxy-dns
 WARN[0000] Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp /usr/local/etc/cloudflared /etc/cloudflared]
 INFO[0000] Adding DNS upstream                           url="https://1.1.1.1/dns-query"
@@ -75,36 +66,27 @@ INFO[0000] Adding DNS upstream                           url="https://1.0.0.1/dn
 INFO[0000] Starting DNS over HTTPS proxy server          addr="dns://localhost:53"
 INFO[0000] Starting metrics server                       addr="127.0.0.1:37593"
 </code></pre>
-
 <p>There are also several options that can be used to control the DNS proxy. For
 example if you wanted to disable auto updates, and use Google as the upstream
 DNS you could use the following command:</p>
-
 <pre><code>cloudflared --no-autoupdate proxy-dns \
   --upstream https://dns.google.com/experimental?ct
 </code></pre>
-
 <p><strong>Note</strong>: at the time of writing DNS over HTTPS is still a draft standard
 (<a href="https://tools.ietf.org/html/draft-ietf-doh-dns-over-https-07">draft-ietf-doh-over-https-07</a>); and
-shouldn't be confused with <a href="https://developers.google.com/speed/public-dns/docs/dns-over-https">Google&#39;s DNS-over-HTTPS API</a>.</p>
-
+shouldn't be confused with <a href="https://developers.google.com/speed/public-dns/docs/dns-over-https">Google's DNS-over-HTTPS API</a>.</p>
 <h3>Daemon metrics</h3>
-
 <p>Once <code>cloudflared</code> is running, as well as providing a DNS endpoint, it also
 provides metrics over HTTP:</p>
-
 <pre><code>$ curl  127.0.0.1:34197/metrics |grep cpu_seconds
 # HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
 # TYPE process_cpu_seconds_total counter
 process_cpu_seconds_total 0.02
 </code></pre>
-
 <h2>Configuring systemd</h2>
-
 <p>Unfortunately the cloudflared package only includes the binary; therefore it
 will not start at boot. This can be fixed by creating a custom unit file with
 the following contents:</p>
-
 <pre><code>[Unit]
 Description=CloudFlare DNS proxy
 Documentation=https://developers.cloudflare.com/1.1.1.1/dns-over-https/cloudflared-proxy/
@@ -118,20 +100,15 @@ ProtectSystem=strict
 [Install]
 WantedBy=multi-user.target
 </code></pre>
-
 <p>Save the unit file as <code>/etc/systemd/system/cloudflared-proxy-dns.service</code>, and
 then run the following commands to enable and start the service:</p>
-
 <pre><code>systemctl daemon-reload
 systemctl enable cloudflared-proxy-dns.service
 systemctl start cloudflared-proxy-dns.service
 </code></pre>
-
 <h2>Query latency</h2>
-
 <p>Like Unbound, cloudflared has to initially establish a TLS connection which
 introduces noticeable latency:</p>
-
 <pre><code>$ time host example.com 127.0.0.1
 Using domain server:
 Name: 127.0.0.1
@@ -145,11 +122,9 @@ real    0m0.546s
 user    0m0.004s
 sys     0m0.002s
 </code></pre>
-
 <p>However unlike Unbound, the TLS connection is kept open, consequently
 subsequent queries are significantly faster because the TLS connection is
 reused:</p>
-
 <pre><code>$ time host example.org 127.0.0.1
 Using domain server:
 Name: 127.0.0.1
@@ -168,9 +143,9 @@ sys     0m0.005s
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

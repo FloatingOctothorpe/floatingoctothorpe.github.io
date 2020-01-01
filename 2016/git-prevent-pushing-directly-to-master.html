@@ -42,50 +42,42 @@
 <p><a href="https://git-scm.com/docs/githooks">Git hooks</a> make it easy to extend git's behaviour. One very
 common use case is protecting the master branch. This post is going to quickly
 go over one way to do this.</p>
-
 <h2>Setting up repos</h2>
-
 <p>For this example I'm going to create a local bare repository. This is done
 using <a href="https://git-scm.com/docs/git-init">git init</a>:</p>
-
 <pre><code>$ git init --bare example.git
 Initialized empty Git repository in /home/example/example.git/
 </code></pre>
-
 <p>The next step is to clone a working copy of the bare repository:</p>
-
 <pre><code>$ git clone example.git working_copy
 Cloning into 'working_copy'...
 warning: You appear to have cloned an empty repository.
 done.
 </code></pre>
-
 <p><strong>Note</strong>: for this example the bare repository is going to be on the same host,
 however it could easily be hosted remotely and accessed via ssh.</p>
-
 <h2>Update hooks</h2>
-
 <p>When references are pushed to a repository any configured update hook will be
 invoked just before each reference is updated. The update hook is given three
 arguments:</p>
-
 <ol>
-<li><p>The name of the ref being updated</p></li>
-<li><p>The old object name stored in the ref (old SHA1 commit hash)</p></li>
-<li><p>The new object name to be stored in the ref (new SHA1 commit hash)</p></li>
+<li>
+<p>The name of the ref being updated</p>
+</li>
+<li>
+<p>The old object name stored in the ref (old SHA1 commit hash)</p>
+</li>
+<li>
+<p>The new object name to be stored in the ref (new SHA1 commit hash)</p>
+</li>
 </ol>
-
 <p>The ref will only be updated if the return code of the hook is 0. Any non-zero
 return code will prevent the update taking place.</p>
-
 <p>Configuring an update hook is just a case of adding a file call <code>update</code> to the
 hooks directory. The file can be a script or a binary, and must have execute
 permissions.</p>
-
 <h2>Rejecting any master reference</h2>
-
 <p>The scrip below will prevent any updates being pushed to the master branch:</p>
-
 <pre><code>#!/bin/sh
 #
 # Reject any update on the master branch
@@ -105,16 +97,12 @@ if [ "$refname" = 'refs/heads/master' ]; then
   exit 1
 fi
 </code></pre>
-
 <p>Enabling the hook is just a case of moving it into the correct directory in the
 example repo and adding execute permissions:</p>
-
 <pre><code>mv update_script.sh example.git/hooks/update
 chmod 755 example.git/hooks/update
 </code></pre>
-
 <p>Once installed any new commits being pushed to master will be rejected:</p>
-
 <pre><code>$ git push origin master
 Counting objects: 3, done.
 Writing objects: 100% (3/3), 236 bytes | 0 bytes/s, done.
@@ -125,19 +113,14 @@ To /home/example/example.git
  ! [remote rejected] master -&gt; master (hook declined)
 error: failed to push some refs to '/home/example/example.git'
 </code></pre>
-
 <h2>Being more selective</h2>
-
 <p>There are a couple of problems with the hook above:</p>
-
 <ol>
 <li>If the master branch doesn't exist, for example in a new repository, you
-can't create it by pushing.</li>
+    can't create it by pushing.</li>
 <li>You can't fast-forward master to an existing branch using <code>git push</code>.</li>
 </ol>
-
 <p>The script below addresses these two problems:</p>
-
 <pre><code>#!/bin/sh
 #
 # Reject updates to master if the new reference doesn't already exist.
@@ -169,12 +152,10 @@ if [ "$refname" = 'refs/heads/master' ]; then
   fi
 fi
 </code></pre>
-
 <p>The first issue is fixed by checking if the old reference is zeros. The old
 reference being zeros implies the branch doesn't exist locally. This makes it
 possible to create a master branch in the example repo by pushing a new commit
 to master:</p>
-
 <pre><code>$ git push origin master
 Counting objects: 3, done.
 Writing objects: 100% (3/3), 236 bytes | 0 bytes/s, done.
@@ -182,9 +163,7 @@ Total 3 (delta 0), reused 0 (delta 0)
 To /home/example/example.git
  * [new branch]      master -&gt; master
 </code></pre>
-
 <p>However subsequent commits made directly to master will still be rejected:</p>
-
 <pre><code>$ git commit test.txt -m "Update test file"
 [master b4bf80d] Update test file
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -198,11 +177,9 @@ To /home/example/example.git
  ! [remote rejected] master -&gt; master (hook declined)
 error: failed to push some refs to '/home/example/example.git'
 </code></pre>
-
 <p>The second problem is fixed by comparing the new reference to references in
 existing local branches. This allows master to be updated if the commit is
 already present in an existing branch:</p>
-
 <pre><code>$ git checkout -b topic_branch
 Switched to a new branch 'topic_branch'
 $ git push origin topic_branch
@@ -216,7 +193,6 @@ Total 0 (delta 0), reused 0 (delta 0)
 To /home/example/example.git
    5b1235d..b4bf80d  master -&gt; master
 </code></pre>
-
 <p>Obviously this also means you can effectively update master by pushing a
 temporary branch. However the hook should be enough to prevent people
 habitually working on master.</p>
@@ -225,9 +201,9 @@ habitually working on master.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

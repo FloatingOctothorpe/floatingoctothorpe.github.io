@@ -42,7 +42,6 @@
 <p>Netcat is a simple command line utility for working with TCP or UDP
 connections. It is however surprisingly versatile and can be used for a wide
 range of tasks.</p>
-
 <pre style="text-align:center">
   .       .       
   \`-"'"-'/       
@@ -54,92 +53,68 @@ range of tasks.</p>
   -""---""---   / 
  /   Ncat    \_/  
 (     ____        
- \_.=|____E       
+ \_.=|____E
 
 </pre>
 
 <p><strong>Note</strong>: the examples in the post use the <a href="https://nmap.org/ncat/">Nmap version of
 Netcat</a> instead of the original, OpenBSD, or GNU version.</p>
-
 <h2>Installing Netcat</h2>
-
 <p>For <a href="https://www.centos.org">CentOS 7</a>, Netcat is available from the standard
 repositories:</p>
-
 <pre><code>yum install -y nmap-ncat
 </code></pre>
-
 <p>There is also a Windows version of Netcat available on the <a href="https://nmap.org/download.html#windows">Nmap
 site</a>.</p>
-
 <h2>Sending and receiving text</h2>
-
 <p>Netcat can be told to listen on a port using the <code>-l</code> option, followed by a
 port:</p>
-
 <pre><code>nc -l 2222
 </code></pre>
-
 <p>Once Netcat is listening, another instance of Netcat can be used to connect to
 the port:</p>
-
 <pre><code>nc localhost 2222
 </code></pre>
-
 <p>After the connection is made, stdin will be sent via the TCP connection from
 the client to the server and vice versa:</p>
-
 <pre><code>$ nc localhost 2222
 Hello from client...
 Hello from server
 </code></pre>
-
 <p>The client can then terminate the connection by sending an <a href="https://en.wikipedia.org/wiki/End-of-file">end-of-file
 character</a> ( <kbd>ctrl</kbd>+<kbd>d</kbd> ). Alternatively either
 side can kill Netcat with <kbd>ctrl</kbd>+<kbd>c</kbd>.</p>
-
 <p><strong>Note</strong>: the Nmap version of Netcat also has a <code>--chat</code> option. If this option
 is used Netcat will start a simple chat server:</p>
-
 <pre><code>$ nc localhost 2222
 &lt;announce&gt; ::1 is connected as &lt;user5&gt;.
 &lt;announce&gt; already connected: nobody.
 hello, is anyone there?
 &lt;user0&gt; maybe...
 </code></pre>
-
 <h2>Port scanning</h2>
-
 <p>Netcat can be used to quickly check if a port is open:</p>
-
 <pre><code>$ echo -n | nc -vw1 127.0.0.1 22
 Ncat: Version 6.40 ( http://nmap.org/ncat )
 Ncat: Connected to 127.0.0.1:22.
 SSH-2.0-OpenSSH_6.6.1
 Ncat: 0 bytes sent, 23 bytes received in 0.02 seconds.
 </code></pre>
-
 <p>In the example above, Netcat successfully connects to TCP port 22. <code>-v</code> is used
 to give verbose output, <code>-w1</code> is used to set the timeout to 1 second, and
 <code>echo -n</code> is used to make sure stdin is closed.</p>
-
 <p>If the port is closed you will normally either get a <code>Connection refused</code>
 message:</p>
-
 <pre><code>$ echo -n | nc -vw1 127.0.0.1 2222
 Ncat: Version 6.40 ( http://nmap.org/ncat )
 Ncat: Connection refused.
 </code></pre>
-
 <p>Or the connection will time out after a second:</p>
-
 <pre><code>$ echo -n | nc -vw1 8.8.8.8 2222
 Ncat: Version 6.40 ( http://nmap.org/ncat )
 Ncat: Connection timed out.
 </code></pre>
-
 <p>There are however other messages you can get:</p>
-
 <pre><code>$ echo -n | nc -vw1 127.0.0.0 2222
 Ncat: Version 6.40 ( http://nmap.org/ncat )
 Ncat: Network is unreachable.
@@ -148,9 +123,7 @@ $ echo -n | nc -vw1 bad-hostname 2222
 Ncat: Version 6.40 ( http://nmap.org/ncat )
 Ncat: Could not resolve hostname "bad-hostname": Name or service not known. QUITTING.
 </code></pre>
-
 <p>The return code from Netcat can be used in scripts, for example:</p>
-
 <pre><code>#!/bin/sh
 for port in 22 80 443
 do
@@ -161,14 +134,10 @@ do
   fi
 done
 </code></pre>
-
 <p><strong>Note</strong>: <a href="https://nmap.org/book/man.html">nmap</a> is probably a better tool if you want to quickly
 scan multiple ports.</p>
-
 <h2>HTTP client</h2>
-
 <p>Netcat can also be used as a simple HTTP client:</p>
-
 <pre><code>$ printf 'GET / HTTP/1.1\nhost: example.com\n\n' | nc example.com 80
 HTTP/1.1 200 OK
 Cache-Control: max-age=604800
@@ -177,26 +146,18 @@ Date: Fri, 14 Apr 2017 18:06:48 GMT
 Etag: "359670651+gzip+ident"
 ...
 </code></pre>
-
 <p>This is particularly useful if you want to send custom headers or malformed
 requests. It's also worth noting that the Nmap version of Netcat can use the
 <code>--ssl</code> option if the remote server is using SSL or TLS.</p>
-
 <h2>HTTP server</h2>
-
 <p>Netcat can also be used to start a very simple HTTP server:</p>
-
 <pre><code>nc -kl 8000 --sh-exec "echo -e 'HTTP/1.1 200 OK\r\n'; date"
 </code></pre>
-
 <p><strong>Note</strong>: the <code>-k</code> option is used to keep Netcat listening after the first
 request.</p>
-
 <h2>Remote shell</h2>
-
 <p>Input sent to Netcat can be redirected to another process using the <code>--exec</code>
 option. For example:</p>
-
 <pre><code># Start listening
 $ nc -l 2222 --exec /bin/bash
 
@@ -205,39 +166,26 @@ $ nc localhost 2222
 uptime
  19:32:39 up  2:30,  4 users,  load average: 0.16, 0.05, 0.06
 </code></pre>
-
 <p><strong>Note</strong>: blindly executing commands you receive from an unauthenticated TCP
 connection is rarely a good idea!</p>
-
 <h2>Copying files</h2>
-
 <p>Netcat can also be used to copy files over a network. First set Netcat to
 listen and redirect stdout to a file on the receiving end:</p>
-
 <pre><code>nc -l 2222 &gt; received_file.txt
 </code></pre>
-
 <p>Then send the file:</p>
-
 <pre><code>nc localhost 2222 &lt; info.txt
 </code></pre>
-
 <p>If you're worried about sending information in the clear, <a href="https://www.gnupg.org/documentation/manpage.html">gpg</a> can be
 used to encrypt the data before it's sent:</p>
-
 <pre><code>gpg --batch --passphrase secret_key --symmetric -o - info.txt | nc localhost 2222
 </code></pre>
-
 <p>And decrypt the data being received:</p>
-
 <pre><code>nc -l 2222 | gpg --batch --passphrase secret_key -o received_file.txt
 </code></pre>
-
 <p><strong>Note</strong>: secure copy (<a href="http://man7.org/linux/man-pages/man1/scp.1.html">scp</a>) is a far easier way to copy files if
 <code>sshd</code> is up and running.</p>
-
 <h2>Further reading</h2>
-
 <p>The original version of Netcat has a <a href="https://sourceforge.net/p/nc110/code/HEAD/tree/nc110/README">README</a> that's worth
 reading. The Nmap version of Netcat also has <a href="https://nmap.org/ncat/guide/">a guide</a> which
 has more information and some interesting examples.</p>
@@ -246,9 +194,9 @@ has more information and some interesting examples.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

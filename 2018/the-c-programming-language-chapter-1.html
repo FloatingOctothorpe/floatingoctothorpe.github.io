@@ -43,68 +43,50 @@
 Kernighan</a> and <a href="https://en.wikipedia.org/wiki/Dennis_Ritchie">Dennis Ritchie</a>. So
 far I've been very impressed with the book, it's much more hands on than I
 expected, which is great because I tend to learn by writing code.</p>
-
 <p>I've now finished the first chapter of the book, however I've still got a few
 exercises to complete. The source code for the exercises should be on
 <a href="https://github.com/FloatingOctothorpe/the-c-programming-language">GitHub</a> shortly. In the mean time the rest of this post is
 going to cover a few initial thoughts now I'm one week in.</p>
-
 <h2>Initial thoughts</h2>
-
 <p>The first chapter is fairly broad, and introduces a range of different topics.
 Because C has been so influential, many of the topics like for loops and
 variable scope should be familiar if you're coming from another language,
 however there are definitely some points which are worth noting.</p>
-
 <h3>Double or single quotes</h3>
-
 <p>Unlike languages like Python where single and double quotes can be used
 interchangeably, double quotes and single quotes have different meanings. In C
 single quotes identify a single character, with the numeric value normally
 corresponding to an ASCII character:</p>
-
 <pre><code>int character = 'A';
 printf("%d\n",character);  /* prints 65 */
 </code></pre>
-
 <p>Double quotes on the other hand create a string literal. This variable will be
 a character array with a null byte as the last character:</p>
-
 <pre><code>char characters[2] = "A";
 printf("%d, %d\n", characters[0], characters[1]);  /* prints 65 0 */
 </code></pre>
-
 <h3>Optional brackets</h3>
-
 <p>Like many languages curly brackets (<code>{</code>) can be omitted under certain
 circumstances, for example if a loop only has a single statement:</p>
-
 <pre><code>for (i = 0; i &lt; 4; i ++)
     foo[i] = i * i;
 </code></pre>
-
 <p>While this is optional, many of the examples in the book use this shortcut.
 This can quickly become a problem if you forget to add brackets when adding an
 additional statement.  For example the code below will only run the last line
 once because it's not part of the for loop:</p>
-
 <pre><code>for (i = 0; i &lt; 4; i++)
     printf("%d\n", i);
     foo[i] = i * i;
 </code></pre>
-
 <p>It's also very easy to add an extra <code>;</code> if brackets are omitted. The code below
 is a good example of this:</p>
-
 <pre><code>for (i = 0; i &lt; 4; i++);
     printf("%d\n", i);
 </code></pre>
-
 <p><strong>Note</strong>: while this code will compile, <code>printf</code> will only be run once and will
 print <code>4</code>.</p>
-
 <h3>String manipulation</h3>
-
 <p>I've been using Python for quite a few years now. As a result, it's very easy
 to take many of the built in features for granted. For example, one of the
 exercises asks you to remove trailing whitespace from <code>stdin</code>. In Python you
@@ -115,9 +97,9 @@ requires a little bit more work.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

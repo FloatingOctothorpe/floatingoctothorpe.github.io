@@ -44,21 +44,16 @@ distributions, and is the default syslog server in <a href="https://www.centos.o
 Normally messages are logged to disk; however sending logs to a central
 location is often desirable from a security point of view. Collating logs from
 multiple systems also makes them easier to query.</p>
-
 <p>This post is going to go over using Rsyslog to sent and receive messages across
 a network. For the example below I'm going to use two CentOS 7 virtual machines
 with the following IP addresses:</p>
-
 <ul>
 <li><strong>client.localdomain</strong>: 10.0.2.7</li>
 <li><strong>server.localdomain</strong>: 10.0.2.8</li>
 </ul>
-
 <h2>UDP delivery</h2>
-
 <p>UDP delivery is probably the simplest way to set up remote logging. On the
 server receiving the messages add the following configuration:</p>
-
 <pre><code># Enable logging via UDP
 $ModLoad imudp
 
@@ -73,48 +68,34 @@ $template REMOTE_SYSTEM_LOG,"/var/log/remote/%fromhost-ip%/syslog.log"
 if ($fromhost-ip != '127.0.0.1') then ?REMOTE_SYSTEM_LOG
 &amp; end
 </code></pre>
-
 <p><strong>Note</strong>: this configuration can either be added to the main configuration file
 (<code>/etc/rsyslog.conf</code>), or a file under <code>/etc/rsyslog.d</code> (e.g.
 <code>/etc/rsyslog.d/remote.conf</code>).</p>
-
 <p>The client configuration just needs the following line:</p>
-
 <pre><code>*.info  @10.0.2.8:514
 </code></pre>
-
 <p>This tells Rsyslog on the client to forward all messages which are info level,
 or higher onto <code>10.0.2.8</code> via UDP.</p>
-
 <p>Once the configuration has been updated on the client and the server, restart
 Rsyslog to re-read the configuration:</p>
-
 <pre><code>systemctl restart rsyslog.service
 </code></pre>
-
 <p>Now the configuration is in place, the <a href="http://man7.org/linux/man-pages/man1/logger.1.html">logger</a> command can be
 used to send a test message from the client:</p>
-
 <pre><code>[root@client ~]# logger -p local0.info -t testing-testing "hello world"
 </code></pre>
-
 <p>If everything is working correctly, this message should be logged on the remote
 system:</p>
-
 <pre><code>[root@server tls]# cat /var/log/remote/10.0.2.7/syslog.log
 Feb 12 09:47:17 client testing-testing: hello world
 </code></pre>
-
 <h2>TCP delivery</h2>
-
 <p>TCP can be used instead of UDP, this ensures messages are delivered in order,
 however it can also cause problems if the remote syslog server is not
 available for any reason. A <a href="http://www.rsyslog.com/using-the-syslog-receiver-module/">post on the Rsyslog site</a> goes
 over some of the considerations when picking TCP or UDP.</p>
-
 <p>To enable logging over TCP, the server configuration needs to use the <code>imtcp</code>
 module:</p>
-
 <pre><code># Enable logging via TCP
 $ModLoad imtcp
 
@@ -129,34 +110,24 @@ $template REMOTE_SYSTEM_LOG,"/var/log/remote/%fromhost-ip%/syslog.log"
 if ($fromhost-ip != '127.0.0.1') then ?REMOTE_SYSTEM_LOG
 &amp; end
 </code></pre>
-
 <p>The client configuration also needs to be updated to use <code>@@</code> instead of <code>@</code>,
 so messages are sent using TCP:</p>
-
 <pre><code>*.info  @@10.0.2.8:514
 </code></pre>
-
 <p><strong>Note</strong>: don't forget to restart Rsyslog on the server and client.</p>
-
 <h3>Encrypting messages</h3>
-
 <p>By default log messages are sent in the clear. This is fine if you trust your
 network, however it is possible to encrypt messages using <code>rsyslog-gnutls</code>. The
 first thing to do is install the <code>rsyslog-gnutls</code> package:</p>
-
 <pre><code>yum install rsyslog-gnutls
 </code></pre>
-
 <p>Once the package is installed, generate x509 public/private keys on the server:</p>
-
 <pre><code>openssl genrsa  -out /etc/pki/tls/private/rsyslog-key.pem 2048
 openssl req -x509 -new -key /etc/pki/tls/private/rsyslog-key.pem \
   -out /etc/pki/tls/certs/rsyslog.pem -days 365
 </code></pre>
-
 <p>The server configuration then needs to be told about the new certificates, and
 the gtls driver needs to be enabled:</p>
-
 <pre><code># Set x509 certificate paths
 $DefaultNetstreamDriver gtls
 $DefaultNetstreamDriverCAFile /etc/pki/tls/certs/rsyslog.pem
@@ -181,10 +152,8 @@ $template REMOTE_SYSTEM_LOG,"/var/log/remote/%fromhost-ip%/syslog.log"
 if ($fromhost-ip != '127.0.0.1') then ?REMOTE_SYSTEM_LOG
 &amp; end
 </code></pre>
-
 <p>Once the server is configured, copy across the server certificate to the client
 and update the client config:</p>
-
 <pre><code>$DefaultNetstreamDriver gtls
 $DefaultNetstreamDriverCAFile /etc/pki/tls/certs/rsyslog.pem
 $ActionSendStreamDriverMode 1
@@ -192,31 +161,27 @@ $ActionSendstreamDriverAuthMode anon
 
 *.info  @@10.0.2.8:514
 </code></pre>
-
 <p>Once Rsyslog is restarted on the server and client, all syslog traffic should
 now be encrypted.</p>
-
 <h2>Further reading</h2>
-
 <p>If you're after more information on configuring Rsyslog, the <a href="http://www.rsyslog.com/doc/master/index.html">official
 documentation</a> is a good place to start. If you're interested the
 syslog protocol, <a href="https://www.ietf.org/rfc/rfc3164.txt">RFC 3164</a> is worth a read, even if it's just for
 the creative intro:</p>
-
 <blockquote>
-  <p>Since the beginning, life has relied upon the transmission of
-   messages.  For the self-aware organic unit, these messages can relay
-   many different things.  The messages may signal danger, the presence
-   of food or the other necessities of life, and many other things...</p>
+<p>Since the beginning, life has relied upon the transmission of
+ messages.  For the self-aware organic unit, these messages can relay
+ many different things.  The messages may signal danger, the presence
+ of food or the other necessities of life, and many other things...</p>
 </blockquote>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

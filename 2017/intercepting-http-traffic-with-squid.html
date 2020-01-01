@@ -43,79 +43,56 @@
 purposes. Following on from <a href="/2017/raspberry-pi-wifi-access-point.html">an earlier post</a>, this post is
 going to look at using Squid to intercept HTTP traffic on a wireless access
 point.</p>
-
 <h2>Installation</h2>
-
 <p>Squid is part of the standard Debian repositories and can be installed with
 <code>apt-get</code>:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install squid3
 </code></pre>
-
 <h2>Intercepting traffic</h2>
-
 <p>Once squid is install, <code>/etc/squid3/squid.conf</code> needs to be updated. Start by
 allowing connections from the local network:</p>
-
 <pre><code>acl localnet src 192.168.0.0/16       # RFC1918 possible internal network
 </code></pre>
-
 <p>Then put the http port into intercept mode:</p>
-
 <pre><code>http_port 3128 intercept
 </code></pre>
-
 <p>Once the configuration has been updated, restart Squid to pick up the changes,
 and enable the service to make sure it starts at boot:</p>
-
 <pre><code>systemctl restart squid3.service
 systemctl enable squid3.service
 </code></pre>
-
 <p>The final step is to redirect inbound traffic on the wireless interface to
 Squid. This can be done with the following iptables rule:</p>
-
 <pre><code>iptables -t nat -A PREROUTING -i wlan0 -p tcp \
   --destination-port 80 -j REDIRECT --to-port 3128
 </code></pre>
-
 <p><strong>Note</strong>: don't forget to run <code>iptables-save</code> if you want to make the rule
 persistent.</p>
-
 <h2>Replacing images</h2>
-
 <p>Once Squid is intercepting connections, it's possible to manipulate HTTP
 traffic. For example you could replace all JPG images with a cat:</p>
-
 <p><img class="pure-img" src="/2017/webmd-with-cats.png"
   alt="WebMD before and after images are replaced with a cat." /></p>
-
 <p><small>Cat photograph by and copyright &copy; of <a href="https://en.wikipedia.org/wiki/User:DrL">DrL</a>. This
 image is licensed under the Creative Commons <a href="https://creativecommons.org/licenses/by-sa/2.5/deed.en">Attribution-Share Alike 2.5
 Generic</a> license and can be found on <a href="https://commons.wikimedia.org/wiki/File:Blackcat-Lilith.jpg">Wikimedia
 Commons</a>. The website being modified is
 <a href="http://pets.webmd.com">http://pets.webmd.com</a>.</small></p>
-
 <p>The first thing to do is setup and configure Apache to serve a cat image. This
 can be done with the following commands:</p>
-
 <pre><code>apt-get install apache2
 systemctl enable apache2.service
 systemctl start apache2.service
 curl -o /var/www/html/cat.jpg \
   https://upload.wikimedia.org/wikipedia/commons/4/4c/Blackcat-Lilith.jpg
 </code></pre>
-
 <p>Once Apache is up and running add the following configuration to
 <code>/etc/squid3/squid.conf</code>:</p>
-
 <pre><code>url_rewrite_program /etc/squid3/more_cats.py
 </code></pre>
-
 <p>This will tell Squid to run <code>more_cats.py</code> which will allow us to manipulate
 HTTP requests. The <code>more_cats.py</code> script should look similar to the following:</p>
-
 <pre><code>#!/usr/bin/env python
 """Squid rewrite program to replace JPGs with a cat"""
 
@@ -141,35 +118,26 @@ def main():
 if __name__ == '__main__':
     main()
 </code></pre>
-
 <p><strong>Note</strong>: refer to the <a href="http://www.squid-cache.org/Doc/config/url_rewrite_program/">Squid documentation</a> for more
 information on writing rewrite programs.</p>
-
 <p>Finally Squid can be restarted and all files ending in <code>.jpg</code> will be replace
 with a cat as shown above:</p>
-
 <pre><code>systemctl restart squid3
 </code></pre>
-
 <h3>More scripts</h3>
-
 <p>Rewrite scripts are obviously very powerful and let you do a wide range of
 things to HTTP traffic. <a href="https://github.com/linvex/squid-scripts">GitHub</a> is a good place
 to look for inspiration.</p>
-
 <h2>HTTPS adoption</h2>
-
 <p>The obvious way to prevent HTTP traffic being manipulated is end to end
 encryption. HTTPS is becoming far more common, and recently passed the half way
 mark:</p>
-
 <blockquote>
-  <p>Yesterday, for the first time, <a href="https://twitter.com/mozilla">@Mozilla</a> telemetry shows
-  more than 50% of page loads were encrypted with HTTPS.
-  <small> - <a href="https://twitter.com/letsencrypt/status/786977436109934592">tweet</a> from Let's Encrypt
-  (<a href="https://twitter.com/letsencrypt">@letsencrypt</a>), 14 Oct 2016</small></p>
+<p>Yesterday, for the first time, <a href="https://twitter.com/mozilla">@Mozilla</a> telemetry shows
+more than 50% of page loads were encrypted with HTTPS.
+<small> - <a href="https://twitter.com/letsencrypt/status/786977436109934592">tweet</a> from Let's Encrypt
+(<a href="https://twitter.com/letsencrypt">@letsencrypt</a>), 14 Oct 2016</small></p>
 </blockquote>
-
 <p>If you don't already use it, I would highly recommend <a href="https://www.eff.org/https-everywhere">HTTPS
 Everywhere</a>. Finally if you do manage a website, consider
 enabling HTTPS if you haven't already!</p>
@@ -178,9 +146,9 @@ enabling HTTPS if you haven't already!</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

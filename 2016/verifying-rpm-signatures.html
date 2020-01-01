@@ -42,46 +42,34 @@
 <p>Like other package formats, <a href="https://en.wikipedia.org/wiki/RPM_Package_Manager">RPMs</a> can be cryptographically verified
 to ensure packages are still intact before they are installed. This post is
 going to go over how you can verify packages.</p>
-
 <h2>Why verify RPMs?</h2>
-
 <p>RPMs are normally sourced from the Internet, this presents two problems:</p>
-
 <ul>
 <li>RPMs can become truncated or corrupt during transit.</li>
 <li>RPMs could be maliciously modified as part of a <a href="https://en.wikipedia.org/wiki/Man-in-the-middle_attack">man in the middle
-attack</a>.</li>
+   attack</a>.</li>
 </ul>
-
 <p>To mitigate these problems RPMs contain a signature section; the section
 includes a checksum and optionally a cryptographic signature. Checksums ensure
 truncated or corrupt packages are not installed. The signature (if included)
 can be used to verify the contents of the RPM has not been modified, since the
 author signed the package. RPMs normally use <a href="https://en.wikipedia.org/wiki/GNU_Privacy_Guard">GPG</a> public-key
 cryptography to achieve this.</p>
-
 <h2>GPG public keys</h2>
-
 <p>On Red Hat based distributions like <a href="https://www.centos.org">CentOS</a>, you can normally find
 GPG public keys in <code>/etc/pki/rpm-gpg/</code>. The files in the directory should be
 <a href="https://tools.ietf.org/html/rfc4880#section-6.2">ASCII Armoured</a> GPG public keys.</p>
-
 <p>Although keys are normally deployed to <code>/etc/pki/rpm-gpg/</code>, they are actually
 imported to an RPM database before they are used. You can query which RPMs have
 been imported by running <code>rpm -q gpg-pubkey</code>:</p>
-
 <pre><code>$ rpm -q gpg-pubkey
 gpg-pubkey-f4a80eb5-53a7ff4b
 </code></pre>
-
 <p><strong>Note</strong>: the RPM database files can be found in <code>/var/lib/rpm</code>.</p>
-
 <h3>Importing keys with YUM</h3>
-
 <p>When installing packages with YUM, if the <code>gpgcheck</code> option has been enabled,
 YUM will automatically try to verify packages against imported public keys. If
 the key has not yet been imported you will see something like this:</p>
-
 <pre><code>Retrieving key from file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 Importing GPG key 0xF4A80EB5:
  Userid     : "CentOS-7 Key (CentOS 7 Official Signing Key) &lt;security@centos.org&gt;"
@@ -90,12 +78,10 @@ Importing GPG key 0xF4A80EB5:
  From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 Is this ok [y/N]:
 </code></pre>
-
 <p>Saying yes will import the public key and continue the installation. The path
 to the public key which should be imported is managed on a per repository
 basis. For example the base repository for CentOS 7 has the following
 configuration:</p>
-
 <pre><code>[base]
 name=CentOS-$releasever - Base
 mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os&amp;infra=$infra
@@ -103,48 +89,34 @@ mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 </code></pre>
-
 <p><strong>Note</strong>: other protocols like <code>https</code> can be used instead of <code>file</code>, refer to
 the <a href="http://man7.org/linux/man-pages/man5/yum.conf.5.html">yum.conf(5)</a> man page for more details.</p>
-
 <h3>Importing keys with RPM</h3>
-
 <p>Alternatively <code>rpm --import</code> can be used to import public keys:</p>
-
 <pre><code>$ rpm -q gpg-pubkey
 package gpg-pubkey is not installed
 $ sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 $ rpm -q gpg-pubkey
 gpg-pubkey-f4a80eb5-53a7ff4b
 </code></pre>
-
 <h3>Listing imported keys</h3>
-
 <p>The <code>rpm</code> command can be used to list GPG keys currently imported into the RPM
 database:</p>
-
 <pre><code>$ rpm -q --qf "%{version}-%{release} %{summary}\n" gpg-pubkey
 f4a80eb5-53a7ff4b gpg(CentOS-7 Key (CentOS 7 Official Signing Key) &lt;security@centos.org&gt;)
 b6792c39-53c4fbdd gpg(CentOS-7 Debug (CentOS-7 Debuginfo RPMS) &lt;security@centos.org&gt;)
 8fae34bd-538f1e51 gpg(CentOS-7 Testing (CentOS 7 Testing content) &lt;security@centos.org&gt;)
 </code></pre>
-
 <p><strong>Note</strong>: a query string is used in the example above to make the keys easier
 to identify.</p>
-
 <h3>Removing keys</h3>
-
 <p>To remove GPG keys from the RPM database you can use <code>rpm -e</code> followed by
 <code>gpg-pubkey-&lt;version&gt;-&lt;release&gt;</code>. For example:</p>
-
 <pre><code>$ sudo rpm -e gpg-pubkey-b6792c39-53c4fbdd
 </code></pre>
-
 <h3>Version and release?</h3>
-
 <p>GPG public keys have a key id and a <a href="https://en.wikipedia.org/wiki/Unix_time">POSIX timestamp</a>. You can
 list these using the <a href="https://www.gnupg.org/documentation/manpage.html">gpg</a> command:</p>
-
 <pre><code>$ gpg --list-packets /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 :public key packet:
                 version 4, algo 1, created 1403518795, expires 0
@@ -165,48 +137,36 @@ list these using the <a href="https://www.gnupg.org/documentation/manpage.html">
                 subpkt 16 len 8 (issuer key ID 24C6A8A7F4A80EB5)
                 data: [4095 bits]
 </code></pre>
-
 <p><strong>Note</strong>: the details of how the key id is calculated are described in
 <a href="https://tools.ietf.org/html/rfc4880#section-12.2">RFC 4880</a>.</p>
-
 <p>So what does this have to do with the seemingly arbitrary version and release
 of <code>gpg-pubkey</code> entries in the RPM database? Well the version maps directly to
 the last eight characters of the GPG key id, and the release is the hexadecimal
 version of the creation timestamp.</p>
-
 <h2>Verifying packages</h2>
-
 <p>So long as the <code>gpgcheck</code> option has been enabled, YUM will automatically check
 the GPG signature of packages it downloads. If the signature matches, YUM will
 carry on as normal. If the package doesn't match the configured public key you
 will get a message similar to the following and the package won't be installed:</p>
-
 <pre><code>The GPG keys listed for the "CentOS-7 - Base" repository are already
 installed but they are not correct for this package.
 
 Check that the correct key URLs are configured for this repository.
 </code></pre>
-
 <h2>Verifying packages with rpm</h2>
-
 <p>You can also manually verify RPM packages using the <code>rpm</code> command. If both the
 signature and the checksum are correct you'll get output similar to the
 following:</p>
-
 <pre><code>$ rpm --checksig tcpdump-4.5.1-3.el7.x86_64.rpm
 tcpdump-4.5.1-3.el7.x86_64.rpm: rsa sha1 (md5) pgp md5 OK
 </code></pre>
-
 <p>If no key in the RPM database matches the package signature you will get a
 message similar to the following:</p>
-
 <pre><code>$ rpm --checksig tcpdump-4.5.1-3.el7.x86_64.rpm
 tcpdump-4.5.1-3.el7.x86_64.rpm: RSA sha1 ((MD5) PGP) md5 NOT OK (MISSING KEYS: (MD5) PGP#f4a80eb5)
 </code></pre>
-
 <p>Assuming the RPM is not corrupt you can get signature information using the
 <code>--info</code> query option:</p>
-
 <pre><code>$ rpm -qp --info tcpdump-4.5.1-3.el7.x86_64.rpm
 ...
 Signature   : RSA/SHA256, Wed 25 Nov 2015 15:43:25 GMT, Key ID 24c6a8a7f4a80eb5
@@ -215,30 +175,22 @@ Build Date  : Fri 20 Nov 2015 08:36:02 GMT
 Build Host  : worker1.bsys.centos.org
 ...
 </code></pre>
-
 <p>If you only want to verify the contents of the package against the checksum,
 you can use the <code>--nosignature</code> option:</p>
-
 <pre><code>$ rpm --checksig --nosignature tcpdump-4.5.1-3.el7.x86_64.rpm
 tcpdump-4.5.1-3.el7.x86_64.rpm: sha1 md5 OK
 </code></pre>
-
 <p>If the file is corrupt or truncated verifying against the checksum should fail:</p>
-
 <pre><code>$ rpm --checksig --nosignature tcpdump-4.5.1-3.el7.x86_64.rpm
 tcpdump-4.5.1-3.el7.x86_64.rpm: sha1 MD5 NOT OK
 </code></pre>
-
 <p>It is also possible to use both the <code>--nosignature</code> and <code>--nodigest</code> options at
 the same time:</p>
-
 <pre><code>$ rpm --checksig --nosignature --nodigest tcpdump-4.5.1-3.el7.x86_64.rpm
 tcpdump-4.5.1-3.el7.x86_64.rpm: OK
 </code></pre>
-
 <p>Although this initial seems pointless, it does actually check the file header
 looks like an RPM:</p>
-
 <pre><code>$ rpm --checksig --nosignature --nodigest /dev/null
 error: /dev/null: not an rpm package
 </code></pre>
@@ -247,9 +199,9 @@ error: /dev/null: not an rpm package
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

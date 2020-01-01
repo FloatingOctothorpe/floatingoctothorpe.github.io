@@ -43,73 +43,52 @@
 for a few years. In the end I used <a href="http://pogostick.net/~pnh/ntpasswd/">chntpw</a> and a
 <a href="https://www.ubuntu.com/">Ubuntu</a> live USB to unlock the Administrator account. This post
 is quickly going to go over how to do this.</p>
-
 <p><strong>Note</strong>: this will only work if full disk encryption like BitLocker is not
 being used.</p>
-
 <h2>Booting into Ubuntu</h2>
-
 <p>The first thing to do is create a live USB, this can be done with tools like
 <a href="https://rufus.akeo.ie/">Rufus</a>, or command line tools like <a href="http://man7.org/linux/man-pages/man1/dd.1.html">dd</a>. If you're not
 familiar with the process there is a step by step guide on
 <a href="https://tutorials.ubuntu.com/tutorial/tutorial-create-a-usb-stick-on-windows#0">tutorials.ubuntu.com</a>. Once you've created a live USB and
 booted from it you should get a menu similar to the following:</p>
-
 <p><img class="pure-img" src="/2017/ubuntu-boot-menu.png"
   alt="Ubuntu grub menu showing boot options."/></p>
-
 <p>From here you should be able to select the <code>Try Ubuntu without installing</code>
 option and boot into a desktop environment:</p>
-
 <p><img class="pure-img" src="/2017/ubuntu-desktop.png"
   alt="Ubuntu desktop environment with a terminal emulator running."/></p>
-
 <h3>Booting in text only mode</h3>
-
 <p>Unfortunately the Netbook I was working with was struggling to boot the full
 graphical environment. To get around this I did the following:</p>
-
 <ol>
 <li>Press <kbd>F6</kbd> and enabled <code>Expert mode</code>.</li>
 <li>Remove <code>quiet</code> and <code>splash</code> from the boot options, this isn't strictly
-require but makes it easier to see what's going on if something goes wrong.</li>
+    require but makes it easier to see what's going on if something goes wrong.</li>
 <li>Add <code>systemd.unit=multi-user.target</code> to the end of the boot options.</li>
 <li>Press <kbd>Enter</kbd> to boot the system.</li>
 <li>Finally log in as the <code>ubuntu</code> user, the default password should be blank.</li>
 </ol>
-
 <h2>Using chntpw</h2>
-
 <p>Once you have a bash prompt, <code>chntpw</code> can be installed with the following
 commands:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install chntpw
 </code></pre>
-
 <p>Next you will want to mount the main Windows file system. This can be done with
 a command similar to the following:</p>
-
 <pre><code>sudo mount /dev/sda2 /mnt/
 </code></pre>
-
 <p><strong>Note</strong>: make sure you mount the correct partition. <code>sudo fdisk -l</code> can be used
 to check the partition table on available disks.</p>
-
 <p>After the file system is mounted, switch to the <code>Windows/System32/config</code>
 directory, if the directory isn't there, make sure you mounted the correct
 partition:</p>
-
 <pre><code>cd /mnt/Windows/System32/config/
 </code></pre>
-
 <p>You can now run the following command to start up <code>chntpw</code>:</p>
-
 <pre><code>sudo chntpw SAM
 </code></pre>
-
 <p>If everything goes well you should see a menu similar to the following:</p>
-
 <pre><code>lubuntu@lubuntu:/mnt/Windows/System32/config$ sudo chntpw SAM
 chntpw version 1.00 140201, (c) Petter N Hagen
 Hive &lt;SAM&gt; name (from header): &lt;\SystemRoot\System32\Config\SAM&gt;
@@ -146,20 +125,16 @@ Total  login count: 6
  q - Quit editing user, back to user select
 Select: [q] &gt;
 </code></pre>
-
 <p>To enable the <code>Administrator</code> account, use the first option to clear the
 password and the second option to unlock and enable the account:</p>
-
 <pre><code>Select: [q] &gt; 1
 Password cleared!
 ...
 Select: [q] &gt; 2
 Unlocked!
 </code></pre>
-
 <p>Finally quit using the <code>q</code> option, make sure you save the changes to the hive
 files:</p>
-
 <pre><code>Select: [q] &gt; q
 
 Hives that have changed:
@@ -168,15 +143,11 @@ Hives that have changed:
 Write hive files? (y/n) [n] : y
  0  &lt;SAM&gt; - OK
 </code></pre>
-
 <h2>Booting back into Windows</h2>
-
 <p>You should now be able to restart the system. Once it's booted you should be
 able to login using the <code>Administrator</code> account:</p>
-
 <p><img class="pure-img" src="/2017/windows-7-login.png"
   alt="Windows 7 login prompt with the Administrator account enabled."/></p>
-
 <p><strong>Note</strong>: once you're in, make sure you update the Administrator account
 password to something that isn't blank!</p>
       </article>
@@ -184,9 +155,9 @@ password to something that isn't blank!</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

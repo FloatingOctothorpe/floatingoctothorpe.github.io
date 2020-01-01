@@ -44,13 +44,10 @@ title="Transport Layer Security">TLS</abbr>/<abbr title="Secure Socket
 Layer">SSL</abbr> protocols, however it can also be used for several other
 cryptography related tasks. This post is going to quickly go over using OpenSSL
 to encrypt and decrypt files with a symmetric key.</p>
-
 <h2>Selecting an algorithm</h2>
-
 <p>The available cipher algorithms will depend on the exact version of OpenSSL
 you're using and compile time options, the <code>list-cipher-algorithms</code> command can
 be used to list available ciphers:</p>
-
 <pre><code>$ openssl list-cipher-algorithms
 AES-128-CBC
 AES-128-CBC-HMAC-SHA1
@@ -62,13 +59,11 @@ AES-128-ECB
 AES-128-OFB
 ...
 </code></pre>
-
 <p>Unfortunately the <code>enc</code> command requires a slightly different format. Details
 of the available ciphers can be found in the
 <a href="http://openssl.cs.utah.edu/docs/apps/enc.html#supported_ciphers">enc(1)</a> man page. Alternatively you can run
 <code>enc</code> with and unsupported option (for example <code>openssl enc -help</code>) to print a
 list of cipher options:</p>
-
 <pre><code>$ openssl enc -help
 unknown option '-help'
 options are
@@ -94,52 +89,38 @@ Cipher Types
 -aes-128-ecb               -aes-128-gcm               -aes-128-ofb
 ...
 </code></pre>
-
 <p>For the rest of this post I'm going to use a <a href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a> with a 128 bit key
 and <a href="https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#CBC">Cipher Block Chaining</a> (<code>aes-128-cbc</code>), however the process of
 encrypting and decrypting files using the <code>enc</code> command should be very similar
 for other algorithms.</p>
-
 <h2>Encrypting files</h2>
-
 <p>A simple test file can be created with the following command:</p>
-
 <pre><code>$ echo hello world &gt; plain-text.txt
 </code></pre>
-
 <p>The file can then be encrypted with a command similar to the following:</p>
-
 <pre><code>$ openssl enc -e -aes-128-cbc -in plain-text.txt -out cipher-text.txt
 enter aes-128-cbc encryption password:
 Verifying - enter aes-128-cbc encryption password:
 </code></pre>
-
 <p>It's important that the password used to encrypt the file is suitably complex
 to avoid brute force attacks. The resulting cipher text file will look
 something like the following:</p>
-
 <pre><code>$ xxd cipher-text.txt
 0000000: 5361 6c74 6564 5f5f 5537 e53f 5beb 8d3f  Salted__U7.?[..?
 0000010: 87ed 1b2d 7f8a 002d 76d7 84c4 26d6 fd74  ...-...-v...&amp;..t
 </code></pre>
-
 <p><strong>Note</strong>: by default a salt will be used with the password to generate the
 encryption key. The cipher text file will have a <code>Salted__</code> signature to
 indicate this, followed by an eight byte salt.</p>
-
 <h2>Decrypting files</h2>
-
 <p>To decrypt the cipher text the <code>-d</code> option can be used:</p>
-
 <pre><code>$ openssl enc -d -aes-128-cbc -in cipher-text.txt -out decrypted.txt
 enter aes-128-cbc decryption password:
 $ cat decrypted.txt
 hello world
 </code></pre>
-
 <p>It's worth noting that invalid passwords will be detected, and a non-zero error
 code is returned:</p>
-
 <pre><code>$ openssl enc -d -aes-128-cbc -in cipher-text.txt -out decrypted.txt
 enter aes-128-cbc decryption password:
 bad decrypt
@@ -152,9 +133,9 @@ $ echo $?
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

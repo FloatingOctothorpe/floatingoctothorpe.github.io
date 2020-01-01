@@ -41,103 +41,74 @@
 
 <p>Once you've got a few Linux virtual machines running it's easy to lose track of
 which VM is which. One way to get around this is to customise the login prompt.</p>
-
 <h2>/etc/issue and agetty</h2>
-
 <p>On <a href="https://www.centos.org/">CentOS</a> the login prompt is normally handled by
 <a href="http://man7.org/linux/man-pages/man8/agetty.8.html">agetty</a>. The prompt message is read from <code>/etc/issue</code> by
 default, although this can be changed using the <code>-f</code> option. The default
 configuration file looks something like the following:</p>
-
 <pre><code>\S
 Kernel \r on an \m
 </code></pre>
-
 <p>The default issue file uses the following escape codes:</p>
-
 <ul>
 <li><strong>\S</strong>: the value of <code>PRETTY_NAME</code> from <code>/etc/os-release</code>.</li>
 <li><strong>\r</strong>: the release number of the kernel.</li>
 <li><strong>\m</strong>: the architecture identifier of the machine.</li>
 </ul>
-
 <p>Once the escape codes are replaced, the login prompt should look similar to the
 following:</p>
-
 <pre><code>CentOS Linux 7 (Core)
 Kernel 3.10.0-693.21.1.el7.x86_64 on an x86_64
 </code></pre>
-
 <p>There are several additional escape codes which can be used. For example if you
 also wanted to include the IP address, current tty line and number of active
 users you could use the following:</p>
-
 <pre><code>\S (\l)
 Kernel \r on an \m
 Remote IP: \4{enp0s3}
 Active users: \u
 </code></pre>
-
 <p>This will produce output similar to the following:</p>
-
 <pre><code>CentOS Linux 7 (Core) (tty1)
 Kernel 3.10.0-693.21.1.el7.x86_64 on an x86_64
 Remote IP: 10.0.2.15
 Active users: 1
 </code></pre>
-
 <p><strong>Note</strong>: the <a href="http://man7.org/linux/man-pages/man8/agetty.8.html">agetty man page</a> has a full list of available
 escape codes, however some escape codes are not supported in earlier versions
 of agetty.</p>
-
 <h3>ANSI escape codes</h3>
-
 <p>It's also possible to use <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI escape codes</a> to add colour
 output. Later versions of agetty can use the <code>\e</code> escape code to do this, for
 example:</p>
-
 <pre><code>\e{red}Hello world\e{reset}
 </code></pre>
-
 <p>Unfortunatley CentOS currently doesn't support this option. It is however
 possible to put ANSI escape codes directly into <code>/etc/issue</code>:</p>
-
 <pre><code>echo -e "\e[31mHello world\e[m\n" &gt;&gt; /etc/issue
 </code></pre>
-
 <p>The resulting login prompt should display a red "Hello world" message:</p>
-
 <p><img class="pure-img" src="/2018/custom-login-prompt.png"
   alt="Login prompt screenshot showing red text." /></p>
-
 <h2>Network banners</h2>
-
 <p>Historically telnet was used to access systems remotely, and <code>/etc/issue.net</code>
 was used to store the login banner for remote users. CentOS no longer runs
 telnet by default, however <code>/etc/issue.net</code> is still deployed as part of the
 <code>centos-release</code> package. Both <a href="https://www.openssh.com/">OpenSSH</a> and
 <a href="https://security.appspot.com/vsftpd.html">vsftpd</a> can be configured to display the contents of
 <code>/etc/issue.net</code> at login.</p>
-
 <h3>OpenSSH</h3>
-
 <p>OpenSSH can be configured to display <code>/etc/issue.net</code> by adding the
 <a href="https://man.openbsd.org/sshd_config#Banner">Banner</a> options to <code>/etc/ssh/sshd_config</code>:</p>
-
 <pre><code>Banner /etc/issue.net
 </code></pre>
-
 <h3>vsftpd</h3>
-
 <p>Like OpenSSH, vsftpd can also be configured to used <code>/etc/issue.net</code>. This is
 done by setting the <a href="http://vsftpd.beasts.org/vsftpd_conf.html#lbAG">banner_file</a> in
 <code>/etc/vsftpd/vsftpd.conf</code>:</p>
-
 <pre><code>banner_file=/etc/issue.net
 </code></pre>
-
 <h3>escape codes</h3>
-
 <p>Unlike <code>/etc/issue</code>, escape codes are not normally used in <code>/etc/issue.net</code>.
 Both OpenSSH and vsftpd will just print the contents of the file without
 interpreting it. While this initially seems like a downside, it ensures the
@@ -149,9 +120,9 @@ the server.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

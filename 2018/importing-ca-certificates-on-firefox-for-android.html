@@ -45,23 +45,18 @@ uses it's own certificate store. After a bit of digging I found this <a href="ht
 question</a> which pointed me in the right direction.
 This post is going to go over importing CA certificates using either
 <a href="https://httpd.apache.org/">Apache</a> or <a href="https://www.python.org/">Python</a>.</p>
-
 <h2>Setting up a CA</h2>
-
 <p>This post will assume you've already set up a certificate authority, and have a
 copy of the x509 certificate in <a href="https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail">PEM format</a>. If you want some
 information on setting up a certificate authority using OpenSSL, Jamie Nguyen
 has written some <a href="https://jamielinux.com/docs/openssl-certificate-authority/">excellent documentation</a> on the topic.
 For the purpose of this post, I set up a new certificate with the following
 OpenSSL commands:</p>
-
 <pre><code>openssl genrsa -out ca.key.pem 1024
 openssl req -key ca.key.pem -new -x509 -days 7300 \
   -sha256 -extensions v3_ca -out ca.cert.pem
 </code></pre>
-
 <p>The resulting x509 certificate should look something like the following:</p>
-
 <pre><code>-----BEGIN CERTIFICATE-----
 MIICwDCCAimgAwIBAgIJAOTlnWuRt44KMA0GCSqGSIb3DQEBCwUAMHkxCzAJBgNV
 BAYTAkdCMRAwDgYDVQQIDAdFbmdsYW5kMRIwEAYDVQQKDAlBbGljZSBMdGQxKDAm
@@ -80,38 +75,28 @@ A4GBAHv7UERGItJflvA3uiBW7jtmdlgwE17NOI9zxhexFAKnOVVa8Jn5bfPaQSVh
 0syMhpMy5WKdKj/BEYKRJ5UXJ6MpWjVvf9EWQUFhmX+MlK0w
 -----END CERTIFICATE-----
 </code></pre>
-
 <h2>Importing the certificate with Apache</h2>
-
 <p>To import the certificate, it needs to be served from a web server with the
 <code>application/x-x509-ca-cert</code> MIME type. This can be done by adding
 configuration similar to the following:</p>
-
 <pre><code>AddType application/x-x509-ca-cert .pem
 </code></pre>
-
 <p>The <a href="https://httpd.apache.org/docs/2.4/mod/mod_mime.html#addtype">AddType</a> directive will tell Apache to serve any files
 ending in <code>.pem</code> with the <code>application/x-x509-ca-cert</code> MIME type. Once the
 configuration is in place, restart Apache to pick up the new configuration, and
 drop the certificate file into the <code>DocumentRoot</code> directory:</p>
-
 <pre><code>$ systemctl restart apache2.service
 $ ls /var/www/html/ca.cert.pem
 /var/www/html/ca.cert.pem
 </code></pre>
-
 <p>From here you should be able to load the certificate by opening
 <code>http://{apache-hostname}/ca.cert.pem</code> in Firefox. If everything goes well you
 should get a message similar to the following:</p>
-
 <p><img class="pure-img" src="/2018/firefox-import-ca-prompt.png"
   alt="Firefox importing a new certficate authority" /></p>
-
 <h2>Importing certificates with Python</h2>
-
 <p>If you don't have Apache set up is also possible to use a script similar to the
 following to serve files with the correct MIME type:</p>
-
 <pre><code>#!/usr/bin/env python3
 
 """Serve PEM files using the application/x-x509-ca-cert MIME type"""
@@ -133,7 +118,6 @@ def run_server(ip_address='0.0.0.0', port=8000):
 if __name__ == '__main__':
     run_server()
 </code></pre>
-
 <p><strong>Note</strong>: the script above will listen on port 8000 and serve content from the
 directory it's being run in.</p>
       </article>
@@ -141,9 +125,9 @@ directory it's being run in.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

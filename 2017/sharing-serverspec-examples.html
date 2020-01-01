@@ -41,12 +41,9 @@
 
 <p>Following on from <a href="/2017/Getting-started-with-Serverspec.html">last weeks post</a>, this post is going to go over
 sharing Serverspec examples between multiple hosts.</p>
-
 <h2>Default setup</h2>
-
 <p>After running <code>serverspec-init</code> for a few hosts you will end up with a folder
 structure that looks something like this:</p>
-
 <pre><code>.
 +-- Rakefile
 +-- spec
@@ -58,31 +55,32 @@ structure that looks something like this:</p>
     ¦   +-- sample_spec.rb
     +-- spec_helper.rb
 </code></pre>
-
 <p>When you run <code>rake spec</code> the following happens:</p>
-
 <ol>
-<li><p><code>rake</code> parses the <code>Rakefile</code> and runs the <code>:spec</code> task.</p></li>
-<li><p>The <code>:spec</code> task finds all of the directories under the <code>spec</code> directory
-and creates a task for each host:</p>
-
+<li>
+<p><code>rake</code> parses the <code>Rakefile</code> and runs the <code>:spec</code> task.</p>
+</li>
+<li>
+<p>The <code>:spec</code> task finds all of the directories under the <code>spec</code> directory
+    and creates a task for each host:</p>
 <pre><code>RSpec::Core::RakeTask.new(target.to_sym) do |t|
   ENV['TARGET_HOST'] = original_target
   t.pattern = "spec/#{original_target}/*_spec.rb"
 end
-</code></pre></li>
-<li><p>Each host task then invokes <code>rspec</code> to run the spec files for each host.</p></li>
-<li><p>Finally spec files will load <code>spec_helper.rb</code> and declare the tests which
-rspec should run.</p></li>
+</code></pre>
+</li>
+<li>
+<p>Each host task then invokes <code>rspec</code> to run the spec files for each host.</p>
+</li>
+<li>
+<p>Finally spec files will load <code>spec_helper.rb</code> and declare the tests which
+    rspec should run.</p>
+</li>
 </ol>
-
 <p>This is fine if you only have a handful of hosts, however if you have hundreds
 of hosts, duplicate test code will quickly become a problem.</p>
-
 <h2>Creating shared examples</h2>
-
 <p>Shared examples will look something like this:</p>
-
 <pre><code>shared_examples 'webserver' do
 
   describe package('httpd') do
@@ -99,19 +97,15 @@ of hosts, duplicate test code will quickly become a problem.</p>
   end
 end
 </code></pre>
-
 <p>For this post, shared examples are going to be kept in a directory called
 <code>spec/shared/</code>. So the code above would be saved in <code>spec/shared/webserver.rb</code>;
 however feel free to use an alternative directory.</p>
-
 <p><strong>Note</strong>: you can include multiple shared examples in a single file, however
 sticking to one file per shared example makes the examples easier to find and
 manage.</p>
-
 <p>Because the <code>shared</code> directory is in the <code>spec</code> directory it will be picked up
 by the <code>:spec</code> task. This can be fixed by making the following change to the
 rakefile.</p>
-
 <pre><code> namespace :spec do
    targets = []
    Dir.glob('./spec/*').each do |dir|
@@ -122,19 +116,15 @@ rakefile.</p>
      targets &lt;&lt; target
    end
 </code></pre>
-
 <p>Before the shared examples can be used, they need to be imported by each spec
 file. This can be done easily by adding the following lines to the
 <code>spec_helper.rb</code> file:</p>
-
 <pre><code># Load shared examples
 base_spec_dir = Pathname.new(File.join(File.dirname(__FILE__)))
 Dir[base_spec_dir.join('shared/**/*.rb')].sort.each{ |f| require f }
 </code></pre>
-
 <p>Finally once shared examples are loaded, they can be included in host spec
 files:</p>
-
 <pre><code>$ cat spec/remote-a.example.com/main_spec.rb
 require 'spec_helper'
 
@@ -154,9 +144,9 @@ end
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -42,16 +42,13 @@
 <p>C is by any standard a relatively old programming language; despite this it is
 still widely used. In fact C just missed out on a top ten spot in this years
 <a href="https://insights.stackoverflow.com/survey/2018/#most-popular-technologies">Stack Overflow Developer Survey</a>.</p>
-
 <p>For a long time now I've been meaning to go through <a href="https://en.wikipedia.org/wiki/The_C_Programming_Language">The C Programming
 Language</a> by <a href="https://en.wikipedia.org/wiki/Brian_Kernighan">Brian Kernighan</a> and <a href="https://en.wikipedia.org/wiki/Dennis_Ritchie">Dennis
 Ritchie</a>. Although the most recent edition of the book is
 older than I am, it's still has a reputation for being one of the best ways to
 learn C.</p>
-
 <p>Over the next few posts I'm going to go over each of the following chapters
 from the book:</p>
-
 <ol>
 <li><a href="/2018/the-c-programming-language-chapter-1.html">A Tutorial Introduction</a></li>
 <li><a href="/2018/the-c-programming-language-chapter-2.html">Types, Operators, and Expressions</a></li>
@@ -62,40 +59,29 @@ from the book:</p>
 <li>Input and Output</li>
 <li>The UNIX System Interface</li>
 </ol>
-
 <p>I'm planning to keep sample code on <a href="https://github.com/FloatingOctothorpe/the-c-programming-language">GitHub</a>. If you're
 interested in following along, the rest of this post is going to quickly go
 over compiling a simple hello world program on <a href="https://www.centos.org/">CentOS</a> or
 <a href="https://www.debian.org/">Debian</a>.</p>
-
 <h2>Installing GCC</h2>
-
 <p>The <a href="https://gcc.gnu.org/">GNU Compiler Collection (GCC)</a> is a free and open source
 compiler system which is available on most Linux distributions. On Debian it
 can be installed using <code>apt-get</code>:</p>
-
 <pre><code>sudo apt-get install gcc
 </code></pre>
-
 <p>Alternatively on Red Hat based distributions like CentOS <code>yum</code> can be used:</p>
-
 <pre><code>sudo yum install gcc
 </code></pre>
-
 <p>If everything goes well, you should now be able to run <code>gcc --version</code>:</p>
-
 <pre><code>$ gcc --version
 gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-16)
 Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 </code></pre>
-
 <h2>Hello World</h2>
-
 <p>Once GCC is installed you can test it with a simple hello world example. First
 create a text file called <code>hello.c</code> with the following contents:</p>
-
 <pre><code>#include &lt;stdio.h&gt;
 
 main()
@@ -103,20 +89,15 @@ main()
     printf("hello, world\n");
 }
 </code></pre>
-
 <p>This can then be compiled with <code>gcc</code>:</p>
-
 <pre><code>gcc hello.c
 </code></pre>
-
 <p>Compiling the source code will produce an executable binary, by default the
 binary will be called <code>a.out</code>. Running this should print <code>hello, world</code> to
 stdout:</p>
-
 <pre><code>$ ./a.out
 hello, world
 </code></pre>
-
 <p><strong>Note</strong>: <a href="https://en.wikipedia.org/wiki/A.out">a.out</a> is short for assembler output, this filename
 default actually pre-dates the first edition of UNIX!</p>
       </article>
@@ -124,9 +105,9 @@ default actually pre-dates the first edition of UNIX!</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -42,137 +42,117 @@
 <p>Following on from <a href="/2017/android-backups-with-adb.html">last weeks post</a>, this post is going to look
 at extracting backup files using <a href="http://man7.org/linux/man-pages/man1/dd.1.html">dd</a> and <a href="https://github.com/nelenkov/android-backup-extractor">Android backup
 extractor</a>.</p>
-
 <h2>Using dd for unencrypted backups</h2>
-
 <p>If the file is not encrypted <code>dd</code> can and be used to extract the data. You can
 quickly verify if the file is encrypted by checking the header. The header of
 unencrypted files will look similar to the following:</p>
-
 <pre><code>ANDROID BACKUP
 1
 1
 none
 </code></pre>
-
 <p>The first line indicates the file is an Android backup, the second line is the
 backup format version, the third line indicates if the backup is compressed,
 and finally the last line is the type of encryption used. As long as the last
 line is <code>none</code> and not <code>AES-256</code> the following steps should work:</p>
-
 <ol>
-<li><p>Extract the data from the backup using <code>dd</code>:</p>
-
+<li>
+<p>Extract the data from the backup using <code>dd</code>:</p>
 <pre><code>dd if=backup.ab bs=1 skip=24 of=data
-</code></pre></li>
-<li><p>If the file was compressed use <code>openssl</code> to decompress the data:</p>
-
+</code></pre>
+</li>
+<li>
+<p>If the file was compressed use <code>openssl</code> to decompress the data:</p>
 <pre><code>openssl zlib -d -in data -out data.tar
 </code></pre>
-
-<p><strong>Note</strong>: if you don't have <code>openssl</code> installed, or if it was not compiled
-with <code>zlib</code> support, <a href="https://www.gnu.org/software/gzip/manual/gzip.html">gzip</a> can be used instead:</p>
-
+<p><strong>Note</strong>: if you don't have <code>openssl</code> installed, or if it was not
+compiled with <code>zlib</code> support, <a href="https://www.gnu.org/software/gzip/manual/gzip.html">gzip</a> can be used instead:</p>
 <pre><code>printf "\x1f\x8b\x08\x00\x00\x00\x00\x00" | cat - data | gzip -dc &gt; data.tar
 </code></pre>
-
 <p>Alternatively you can use the <code>zlib</code> module in <a href="https://www.python.org/">Python</a>:</p>
-
 <pre><code>python -c "import zlib;open('data.tar','wb').write(zlib.decompress(open('data', 'rb').read()))"
-</code></pre></li>
-<li><p>Finally the files in the backup can be extracted using <a href="http://man7.org/linux/man-pages/man1/tar.1.html">tar</a>:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Finally the files in the backup can be extracted using <a href="http://man7.org/linux/man-pages/man1/tar.1.html">tar</a>:</p>
 <pre><code>tar xvf data.tar
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
-
 <p>The steps above can be run in one go with a command similar to the following:</p>
-
 <pre><code>dd if=backup.ab bs=1 skip=24 | openssl zlib -d | tar xvf -
 </code></pre>
-
 <h2>Android backup extractor</h2>
-
 <p>More recent versions of Android use encryption when creating backups. As a
 result the method above using <code>dd</code> doesn't work. There is however a tool called
 <a href="https://github.com/nelenkov/android-backup-extractor">Android backup extractor</a> which can be used
 to unpack encrypted backups.</p>
-
 <h3>Installation</h3>
-
 <p>Android backup extractor can be installed with the following steps:</p>
-
 <ol>
-<li><p>Install <code>java</code>, <code>ant</code> and <code>git</code>, on CentOS this can be done with <code>yum</code>:</p>
-
+<li>
+<p>Install <code>java</code>, <code>ant</code> and <code>git</code>, on CentOS this can be done with <code>yum</code>:</p>
 <pre><code>sudo yum install -y java ant git
-</code></pre></li>
-<li><p>Clone the source from GitHub:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Clone the source from GitHub:</p>
 <pre><code>git clone https://github.com/nelenkov/android-backup-extractor.git
-</code></pre></li>
-<li><p>Switch to the <code>android-backup-extractor</code> directory:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Switch to the <code>android-backup-extractor</code> directory:</p>
 <pre><code>cd android-backup-extractor
-</code></pre></li>
-<li><p>Download the latest version of the <a href="https://www.bouncycastle.org/">Bouncy Castle</a>
-library:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Download the latest version of the <a href="https://www.bouncycastle.org/">Bouncy Castle</a>
+    library:</p>
 <pre><code>curl -L https://www.bouncycastle.org/download/bcprov-jdk15on-158.jar \
   -o lib/bcprov-jdk15on-158.jar
-</code></pre></li>
-<li><p>Update <code>build.xml</code> to use the correct version of the Bouncy Castle library:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Update <code>build.xml</code> to use the correct version of the Bouncy Castle library:</p>
 <pre><code>sed -i 's/bcprov-jdk15on-150.jar/bcprov-jdk15on-158.jar/' build.xml
-</code></pre></li>
-<li><p>Run <code>ant</code> to build the source code:</p>
-
+</code></pre>
+</li>
+<li>
+<p>Run <code>ant</code> to build the source code:</p>
 <pre><code>ant
 </code></pre>
-
 <p>If everything went well the output of <code>ant</code> should look similar to the following:</p>
-
 <pre><code>$ ant
 Buildfile: /home/user/android-backup-extractor/build.xml
-
 
 build:
     [javac] Compiling 2 source files to /home/user/android-backup-extractor/build
     [javac] warning: [options] bootstrap class path not set in conjunction with -source 1.7
     [javac] 1 warning
 
-
 jar:
       [jar] Building jar: /home/hmm/android-backup-extractor/abe.jar
 
-
 all:
-
 
 BUILD SUCCESSFUL
 Total time: 3 seconds
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
-
 <h3>Unpacking files</h3>
-
 <p>Once Android backup extractor is installed, backup files can be unpacked with
 the following command:</p>
-
 <pre><code>abe unpack  &lt;backup.ab&gt; &lt;backup.tar&gt; [password]
 </code></pre>
-
 <p>This will write the data to a tar file and produce output similar to the
 following:</p>
-
 <pre><code>$ ./abe unpack backup.ab output.tar secret_password
 Calculated MK checksum (use UTF-8: true): E612441F07EABF08AA761C3EC0C75EB102E3D36B8CC1ED54CC7F5E56A049C838
 0% 1% 2% 3% 4% 5% 6% 7% 8% 9% 10% 11% 12% 13% 14% 15% 16% 17% 18% 19% 20% 21% 22% 23% 24% 25% 26% 27% 28% 29% 30% 31% 32% 33% 34% 35% 36% 37% 38% 39% 40% 41% 42% 43% 44% 45% 46% 47% 48% 49% 50% 51% 52% 53% 54% 55% 56% 57% 58% 59% 60% 61% 62% 63% 64% 65% 66% 67% 68% 69% 70% 71% 72% 73% 74% 75% 76% 77% 78% 79% 80% 81% 82% 83% 84% 85% 86% 87% 88% 89% 90% 91% 92% 93% 94% 95% 96% 97% 98% 99% 100%
 1730560 bytes written to output.tar.
 </code></pre>
-
 <p><strong>Note</strong>: you can also run <code>abe</code> indirectly using <code>java</code> and the <code>-jar</code> option:</p>
-
 <pre><code>java -jar abe.jar unpack backup.ab output.tar secret_password
 </code></pre>
       </article>
@@ -180,9 +160,9 @@ Calculated MK checksum (use UTF-8: true): E612441F07EABF08AA761C3EC0C75EB102E3D3
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

@@ -45,25 +45,20 @@ in detail at how to unpack and decrypt Android backups with
 processed. If you're only interested in unpacking backups, I would recommend
 having a look at <a href="https://github.com/nelenkov/android-backup-extractor">Android backup extractor</a>
 which was covered in the <a href="/2017/extracting-backups-with-android-backup-extractor.html">previous post</a>.</p>
-
 <h2>Header format</h2>
-
 <p>The first four lines of an Android backup file will look similar to the
 following:</p>
-
 <pre><code>ANDROID BACKUP
 4
 1
 AES-256
 </code></pre>
-
 <p>The first line is a "magic" string used to identify the file as an Android
 backup. The next two lines specify the file format version and compression
 version. Finally the last line indicates the type of encryption being used; at
 the time of writing <code>none</code> or <code>AES-256</code> are the only valid options. Parsing the
 first few lines is just a case of reading the file line by line with code
 similar to the following:</p>
-
 <pre><code>header = {}
 with open(backup_file, 'rb') as backup:
     if backup.readline() != b'ANDROID BACKUP\n':
@@ -73,63 +68,51 @@ with open(backup_file, 'rb') as backup:
     header['compression_version'] = int(backup.readline())
     header['encryption'] = backup.readline().decode('utf-8').strip()
 </code></pre>
-
 <p>If the file is encrypted there will be five additional lines similar to the
 following:</p>
-
 <pre><code>A565DBC120C063F9...
 E14901585B953A94...
 10000
 8B79E3E53050B873...
 69EE0E7EC88799B3...
 </code></pre>
-
 <p>These lines contain the following information:</p>
-
 <ol>
 <li>The user password salt (hex)</li>
 <li>The master key checksum salt (hex)</li>
 <li>The number of PBKDF2 rounds used with HMAC</li>
 <li>The <abbr title="Initialization Vector">IV</abbr> of the user key (hex)</li>
 <li>A blob encrypted with the user key containing the IV of the master key,
-master key itself, and a master key checksum hash (hex)</li>
+    master key itself, and a master key checksum hash (hex)</li>
 </ol>
-
 <p>Parsing these lines is just a case of continuing to read the header line by
 line, and converting the hex to bytes where appropriate:</p>
-
 <pre><code>header['user_salt'] = bytes.fromhex(backup.readline().decode('utf-8').strip())
 header['checksum_salt'] = bytes.fromhex(backup.readline().decode('utf-8').strip())
 header['pbkdf2_rounds'] = int(backup.readline())
 header['user_iv'] = bytes.fromhex(backup.readline().decode('utf-8').strip())
 header['master_key_blob'] = bytes.fromhex(backup.readline().decode('utf-8').strip())
 </code></pre>
-
 <p><strong>Note</strong>: the <a href="https://github.com/android/platform_frameworks_base/blob/android-cts-8.0_r1/services/backup/java/com/android/server/backup/BackupManagerService.java#L4456">BackupManagerService source
 code</a> is worth looking at for
 additional header information.</p>
-
 <h2>Decrypting the master key</h2>
-
 <p>Encrypted Android backups are encrypted using AES 256. There are in fact two
 keys which are used; a "master" key which encrypts the actual data, and a
 "user" key which is used to encrypt the master key. The first step to
 decrypting the master key is generating the user key using HMAC. The process
 converts an Android backup password and a user salt into a 256 bit key. This
 can be done with code similar to the following:</p>
-
 <pre><code>PBKDF2_KEY_SIZE = 32
 
 key = hashlib.pbkdf2_hmac('sha1', password.encode('utf-8'),
                           header['user_salt'],
                           header['pbkdf2_rounds'], PBKDF2_KEY_SIZE)
 </code></pre>
-
 <p>Once you have the key, the key and user IV and be used to decrypt the master
 key blob. Unfortunately the Python standard library doesn't have an AES module,
 there are however third party modules such as <a href="https://github.com/ricmoo/pyaes">pyaes</a> which can
 be used:</p>
-
 <pre><code>cipher_text = master_key_blob
 
 aes = pyaes.AESModeOfOperationCBC(key, user_iv)
@@ -139,10 +122,8 @@ while len(plain_text) &lt; len(cipher_text):
     offset = len(plain_text)
     plain_text += aes.decrypt(cipher_text[offset:(offset + 16)])
 </code></pre>
-
 <p>The decrypted master key blob can then be parsed with code similar to the
 following:</p>
-
 <pre><code>blob = io.BytesIO(plain_text)
 master_iv_length = ord(blob.read(1))
 master_iv = blob.read(master_iv_length)
@@ -151,20 +132,16 @@ master_key = blob.read(master_key_length)
 master_key_checksum_length = ord(blob.read(1))
 master_key_checksum = blob.read(master_key_checksum_length)
 </code></pre>
-
 <h2>Verifying the checksum</h2>
-
 <p>Once the master key has been decrypted, HMAC can be used to regenerate the
 checksum and verify the key is correct. This can be done with code similar to
 the following:</p>
-
 <pre><code>checksum = hashlib.pbkdf2_hmac('sha1', master_key, header['checksum_salt'],
                                header['pbkdf2_rounds'], PBKDF2_KEY_SIZE)
 
 if not header['master_key_checksum'] == checksum:
     raise AndroidBackupParseError('Invalid decryption password')
 </code></pre>
-
 <p>Unfortunately this is only true for earlier Android backup versions. From
 version 2 onwards the key is converted to a "UTF-8 byte array" before
 being passed to HMAC to calculate the MAC. The <a href="https://www.bouncycastle.org/">Java Bouncy Castle
@@ -172,7 +149,6 @@ library</a> has a function called
 <a href="https://github.com/bcgit/bc-java/blob/r1rv58/core/src/main/java/org/bouncycastle/util/Strings.java#L142">Strings.toUTF8ByteArray</a> which does this
 conversion. A Python function similar to the following can be used to convert
 the key in a similar way before it's passed into the HMAC function:</p>
-
 <pre><code>def convert(input_bytes):
     output = []
     for byte in input_bytes:
@@ -184,17 +160,13 @@ the key in a similar way before it's passed into the HMAC function:</p>
             output.append(ord('\x80') | (byte &amp; ord('\x3f')))
     return bytes(output)
 </code></pre>
-
 <p><strong>Note</strong>: Python doesn't have a <code>char</code> type, and treats bytes as unsigned,
 unlike Java which treats bytes as signed. As a result the function above
 differs from <code>Strings.toUTF8ByteArray</code>.</p>
-
 <h2>Decrypting the payload</h2>
-
 <p>Assuming the master key and master key IV have been successfully decrypted, the
 last step is to decrypt and then decompress the payload. This can done with code
 similar to the following:</p>
-
 <pre><code>decrypter = pyaes.Decrypter(pyaes.AESModeOfOperationCBC(header['master_key'],
                                                         header['master_iv']))
 data = decrypter.feed(backup.read()) + decrypter.feed()
@@ -203,12 +175,9 @@ tar_data = zlib.decompress(data)
 with open('output.tar', 'wb') as output_tar:
     output_tar.write(tar_data)
 </code></pre>
-
 <p><strong>Note</strong>: the code above reads the backup payload into memory. This is fine for
 small backup files, however it will be a problem for larger backups.</p>
-
 <h2>Source code</h2>
-
 <p>A proof of concept Python script for the steps above is <a href="https://github.com/FloatingOctothorpe/dump_android_backup">available on
 GitHub</a>. However I would still recommend using
 <a href="https://github.com/nelenkov/android-backup-extractor">Android backup extractor</a> instead unless your
@@ -218,9 +187,9 @@ interested in playing with the Python code.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

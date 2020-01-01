@@ -44,113 +44,98 @@ time working with <a href="https://www.gnu.org/software/bash/">Bash</a>. There a
 shells</a>, however I personally use bash day to day.
 Mainly because if you jump onto a new system bash will likely be the default
 shell.</p>
-
 <p>This post goes through some useful tips and keyboard shortcuts which will
 hopefully save you time. If your new to bash I would recommend learning a
 couple of shortcuts at a time, if you've been using bash for years you probably
 know most of this already.</p>
-
 <p><strong>Note</strong>: Some of the shortcuts below assume you are using the default emacs
 style line editing mode. You can check this by running <code>set -o | grep emacs</code>.
 For more info have a look at the <a href="https://www.gnu.org/software/bash/manual/html_node/Command-Line-Editing.html">Bash command line editing
 docs</a>.</p>
-
 <h2>Tab completion</h2>
-
 <p>When using bash I spend half of my time hitting <kbd>tab</kbd>. When you hit
 tab bash will try to complete the path your currently typing based on what
 you've entered so far. For example say you want to run the following:</p>
-
 <pre><code>cd /etc/sysconfig/network-scripts/
 </code></pre>
-
 <p>You can do this by typing:</p>
-
 <pre><code>cd /e&lt;tab&gt;/sysco&lt;tab&gt;/net&lt;tab&gt;
 </code></pre>
-
 <p>OK, so you probably knew that, but did you know bash can also be configured to
 give command specific completion? For example say you want to check the status
 of a service but can't quite remember the service name:</p>
-
 <pre><code>systemctl status au
 </code></pre>
-
 <p>Then hit <kbd>tab</kbd> and bash will complete the command by replacing <code>au</code>
 with <code>auditd.service</code>.</p>
-
 <pre><code>systemctl status auditd.service
 </code></pre>
-
 <p>If you haven't done so already I would also recommend installing the
 <a href="https://github.com/scop/bash-completion">bash-completion</a> package which provides additional completion
 functions for bash.</p>
-
 <h2>Exit quickly</h2>
-
 <p>To close bash you can type <code>logout</code> or <code>exit</code>, however you can also send an
 <a href="https://en.wikipedia.org/wiki/End-of-file">end-of file</a> character:</p>
-
 <p><kbd>ctrl</kbd> + <kbd>d</kbd></p>
-
 <p><strong>Note</strong>: if you find the behaviour annoying you can disabled it with
 <code>set -o ignoreeof</code>.</p>
-
 <h2>Moving the cursor</h2>
-
 <p>The following shortcuts let you move the cursor quickly:</p>
-
 <ul>
-<li><p><kbd>ctrl</kbd> + <kbd>a</kbd> : move to the start of the line</p></li>
-<li><p><kbd>ctrl</kbd> + <kbd>e</KBd> : move to the end of the line</p></li>
-<li><p><kbd>ctrl</kbd> + <kbd>f</KBd> : move one letter forwards</p></li>
-<li><p><kbd>ctrl</kbd> + <kbd>b</KBd> : move one letter backwards</p></li>
-<li><p><kbd>alt</kbd> + <kbd>f</KBd> : move one word forwards</p></li>
-<li><p><kbd>alt</kbd> + <kbd>b</KBd> : move one word backwards</p></li>
+<li>
+<p><kbd>ctrl</kbd> + <kbd>a</kbd> : move to the start of the line</p>
+</li>
+<li>
+<p><kbd>ctrl</kbd> + <kbd>e</KBd> : move to the end of the line</p>
+</li>
+<li>
+<p><kbd>ctrl</kbd> + <kbd>f</KBd> : move one letter forwards</p>
+</li>
+<li>
+<p><kbd>ctrl</kbd> + <kbd>b</KBd> : move one letter backwards</p>
+</li>
+<li>
+<p><kbd>alt</kbd> + <kbd>f</KBd> : move one word forwards</p>
+</li>
+<li>
+<p><kbd>alt</kbd> + <kbd>b</KBd> : move one word backwards</p>
+</li>
 </ul>
-
 <h2>Recalling history</h2>
-
 <p>Retyping long commands can be a pain. You can get around this by pressing:</p>
-
 <p><kbd>ctrl</kbd> + <kbd>r</kbd></p>
-
 <p>This will bring up a reverse search prompt that looks something like this:</p>
-
 <pre><code>(reverse-i-search)`':
 </code></pre>
-
 <p>You can then start typing part of a command you've previously used:</p>
-
 <pre><code>(reverse-i-search)`fork': grep fork master.log | sed -r 's/(Jun.*[0-9]{2}):[0-9]{2}:[0-9]{2}.*/\1/' | uniq -c
 </code></pre>
-
 <p>You then have a few options:</p>
-
 <ul>
-<li><p><kbd>ctrl</kbd> + <kbd>r</kbd> : Keep cycling through matches.</p></li>
-<li><p><kbd>Enter</kbd> : Run the command.</p></li>
-<li><p><kbd>Esc</kbd> : Edit the command before running it.</p></li>
-<li><p><kbd>ctrl</kbd> + <kbd>c</kbd> : Get back to a prompt without running anything.</p></li>
+<li>
+<p><kbd>ctrl</kbd> + <kbd>r</kbd> : Keep cycling through matches.</p>
+</li>
+<li>
+<p><kbd>Enter</kbd> : Run the command.</p>
+</li>
+<li>
+<p><kbd>Esc</kbd> : Edit the command before running it.</p>
+</li>
+<li>
+<p><kbd>ctrl</kbd> + <kbd>c</kbd> : Get back to a prompt without running anything.</p>
+</li>
 </ul>
-
 <h2>Repeat the last command</h2>
-
 <p>While running as a standard user it's easy to forget to use <code>sudo</code> and get a
 message like this:</p>
-
 <pre><code>$ systemctl restart httpd.service
 Failed to issue method call: Access denied
 </code></pre>
-
 <p>Instead of typing <code>sudo</code> followed by retyping the whole command again, you can
 just type:</p>
-
 <pre><code>sudo !!
 </code></pre>
-
 <p>Bash will then replace <code>!!</code> with the previous command and run it:</p>
-
 <pre><code>$ sudo !!
 sudo systemctl restart httpd.service
 </code></pre>
@@ -159,9 +144,9 @@ sudo systemctl restart httpd.service
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

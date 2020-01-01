@@ -41,21 +41,16 @@
 
 <p>This post is going to go over how to use custom x509 certificates with Java
 clients.</p>
-
 <p>Normally Java applications will use <abbr title="certificate
 authority">CA</abbr> certificates provided by the operating system. In the case
 of <a href="https://www.centos.org/">CentOS</a> 7 certificates can be found in a TrustStore called
 <code>/etc/pki/ca-trust/extracted/java/cacerts</code>.</p>
-
 <p>However if you are doing anything like using a self signed certificate
 connections will fail. This happens because the Java client cannot verify the
 identity of the server it's connecting to, without a corresponding certificate.</p>
-
 <h2>Example code</h2>
-
 <p>Below is a short Java class which attempts to connect to a URL and print the
 HTTP return code:</p>
-
 <pre><code>import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -81,31 +76,24 @@ class Example {
     }
 }
 </code></pre>
-
 <p>The certificate used by <a href="https://example.com">example.com</a> is signed by <a href="https://www.digicert.com/">DigiCert
 Inc</a>. Therefore it can be verified using the certificates found
 in <code>/etc/pki/ca-trust/extracted/java/cacerts</code>:</p>
-
 <pre><code>$ java Example https://example.com
 Connecting to : https://example.com
 Return code   : 200
 </code></pre>
-
 <p>However trying to connect to a web server using a self signed certificate will
 fail:</p>
-
 <pre><code>$ java Example https://foobar.localdomain
 Connecting to : https://foobar.localdomain
 sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
 </code></pre>
-
 <h2>Downloading the certificate</h2>
-
 <p>The first thing to do is get a copy of the CA certificate used by the server
 you're trying to connect to.  If you have access to the server you can just
 copy the file. Alternatively you can use the <code>s_client</code> command in
 <a href="https://www.openssl.org/">OpenSSL</a>:</p>
-
 <pre><code>$ echo | openssl s_client -connect foobar.localdomain:443
 CONNECTED(00000003)
 ...
@@ -135,62 +123,45 @@ P3CPTHVCKbt3BbuCv3AIOiSou6hFuSj9RQ==
 -----END CERTIFICATE-----
 ...
 </code></pre>
-
 <p>The contents of a x509 certificate can easily be checked using the following
 OpenSSL command:</p>
-
 <pre><code>openssl x509 -in foobar.localdomain.pem -noout -text
 </code></pre>
-
 <p>You can also use the following <a href="https://curl.haxx.se/">curl</a> command to verify you have the
 correct certificate:</p>
-
 <pre><code>curl -I --cacert foobar.localdomain.pem https://foobar.localdomain
 </code></pre>
-
 <h3>X509v3 basic constraints</h3>
-
 <p>Before continuing it's worth pointing out a gotcha. For this post I set up
 <a href="https://httpd.apache.org/">Apache</a> on CentOS 7. When you install the <code>mod_ssl</code> package the
 following files are created by the package scriptlet using OpenSSL:</p>
-
 <ul>
 <li><code>/etc/pki/tls/private/localhost.key</code></li>
 <li><code>/etc/pki/tls/certs/localhost.crt</code></li>
 </ul>
-
 <p>The default OpenSSL configuration (<code>/etc/pki/tls/openssl.cnf</code>) has the
 following lines:</p>
-
 <pre><code>[ v3_req ]
 # Extensions to add to a certificate request
 basicConstraints = CA:FALSE
 </code></pre>
-
 <p>As a result the self-signed certificate will have the CA boolean set to false:</p>
-
 <pre><code>  X509v3 extensions:
         X509v3 Basic Constraints:
             CA:FALSE
 </code></pre>
-
 <p>As per the <a href="https://tools.ietf.org/html/rfc5280#section-4.2.1.9">x509 rfc</a>, if the CA boolean is false, it should not be
 used to verify certificate signatures. To get around this the certificate needs
 to be regenerated with the CA boolean set to true.</p>
-
 <h2>Adding to the system TrustStore</h2>
-
 <p>Under CentOS 7 adding the new certificate is just a case of running the
 following:</p>
-
 <pre><code>cp foobar.localdomain.pem /etc/pki/ca-trust/source/anchors/
 update-ca-trust
 </code></pre>
-
 <p>This will update the entries in <code>/etc/pki/ca-trust/extracted/java/cacerts</code>. You
 can verify the new certificate is present using the <a href="https://www.mankier.com/1/keytool">keytool</a>
 command:</p>
-
 <pre><code>$ keytool -list \
   -keystore /etc/pki/ca-trust/extracted/java/cacerts \
   -storepass changeit
@@ -199,41 +170,31 @@ foobar.localdomain, 16-Jul-2016, trustedCertEntry,
 Certificate fingerprint (SHA1): 75:EE:B3:4E:68:17:43:57:D9:A6:B1:6B:19:B2:7C:69:ED:0B:39:6F
 ...
 </code></pre>
-
 <p><strong>Note</strong>: Adding files to <code>/etc/pki/ca-trust/source/anchors/</code> will normally
 require root access.</p>
-
 <h2>Using a custom TrustStore</h2>
-
 <p>Alternatively a custom TrustStore file can be created. This is helpful if you
 are not able to change the system TrustStore. Note that Java will not look at
 the system TrustStore if a custom TrustStore is used.</p>
-
 <p>To create a new TrustStore and import the certificate the following <code>keytool</code>
 command can be run:</p>
-
 <pre><code>keytool -import \
   -alias foobar.localdomain \
   -keystore cacerts.ts \
   -file foobar.localdomain.pem
 </code></pre>
-
 <p><strong>Note</strong>: It's not possible to set an empty password. Instead you need to use
 the Java default password <code>changeit</code>. Alternatively you can set a TrustStore
 password and then provide this to Java at runtime.</p>
-
 <p>Once the TrustStore has been created you can set the <code>javax.net.ssl.trustStore</code>
 option to get Java to use it:</p>
-
 <pre><code>$ java -Djavax.net.ssl.trustStore=cacerts.ts \
   Example https://foobar.localdomain
 Connecting to : https://foobar.localdomain
 Return code   : 200
 </code></pre>
-
 <p>If you used a non-standard password you will also need to use the
 <code>javax.net.ssl.trustStorePassowrd</code> option:</p>
-
 <pre><code>$ java -Djavax.net.ssl.trustStore=cacerts.ts  \
        -Djavax.net.ssl.trustStorePassword=password \
        Example https://foobar.localdomain
@@ -245,9 +206,9 @@ Return code   : 200
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

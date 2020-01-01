@@ -45,109 +45,78 @@ becoming increasingly common as a server side language thanks to
 in ten days by <a href="https://en.wikipedia.org/wiki/Brendan_Eich">Brendan Eich</a> in 1995. Since then JavaScript
 has been standardised and heavily extended, however like most languages it has
 it's share of quirks and oddities...</p>
-
 <h2>parseInt and null</h2>
-
 <p>The <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/parseInt">parseInt</a> function parses a string and returns an
 integer:</p>
-
 <pre><code>&gt;&gt; parseInt('3')
 3
 </code></pre>
-
 <p>It's normally best practise to specify a <code>radix</code> (the base in mathematical
 numeral systems) when parsing integers:</p>
-
 <pre><code>&gt;&gt; parseInt('3', 10)
 3
 </code></pre>
-
 <p>This is very useful if you need to deal with non-decimal systems like
 hexadecimal:</p>
-
 <pre><code>&gt;&gt; parseInt('ff', 16)
 255
 </code></pre>
-
 <p>The first parameter to <code>parseInt</code> should be a string, however because
 JavaScript is weakly typed, passing non-string values won't result in a syntax
 error. Instead the value is converted to a string and parsed:</p>
-
 <pre><code>&gt;&gt; parseInt(false, 10)
 NaN
 </code></pre>
-
 <p>This can lead to some odd behaviour:</p>
-
 <pre><code>&gt;&gt; parseInt(null, 24)
 23
 </code></pre>
-
 <p>So what's going on? Well, <code>null</code> is first being converted to a string. Once
 converted the first character (<code>n</code>) is parse as 23, however the next character,
 <code>u</code>, along with the remainder of the string is discarded because <code>u</code> is not
 used in base 24 numbers.</p>
-
 <p>Trying to parse <code>false</code> also produces similar behaviour:</p>
-
 <pre><code>&gt;&gt; parseInt(false, 16)
 250
 </code></pre>
-
 <h2>Lexicographic sorting</h2>
-
 <p>The <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort">sort</a> method in JavaScript can be used to arrange elements
 of an array in place:</p>
-
 <pre><code>&gt;&gt; ['z', 'a', 'm'].sort()
 Array [ "a", "m", "z" ]
 </code></pre>
-
 <p>However unlike other languages like Python, numeric values are by default
 sorted lexicographically. This can produce some unexpected results:</p>
-
 <pre><code>&gt;&gt; [1,3,11].sort()
 Array [ 1, 11, 3 ]
 </code></pre>
-
 <p>You can easily override this behaviour using a comparison function:</p>
-
 <pre><code>&gt;&gt; [1,3,11].sort(function(a, b){return a - b;})
 Array [ 1, 3, 11 ]
 </code></pre>
-
 <h2>Large numbers</h2>
-
 <p>Unlike other languages JavaScript only has one numeric type which uses a double
 precision 64-bit floating-point (<a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">IEEE 754</a>). There
 is no specific type for integers! For most use cases this is fine, however it
 can result in some unexpected behaviour. For example long numbers will lose
 precision:</p>
-
 <pre><code>&gt;&gt; console.log(111111111111111111)
 111111111111111100
 </code></pre>
-
 <p>The <code>Number.MAX_SAFE_INTEGER</code> constant can be used to work out the maximum
 number you can safely work with:</p>
-
 <pre><code>&gt;&gt; Number.MAX_SAFE_INTEGER
 9007199254740991
 </code></pre>
-
 <h2>Addition and concatenation</h2>
-
 <p>In JavaScript you can only add numbers and strings. If you try to add another
 type it will first be converted to a primitive. For example if you try to add
 two arrays you end up with an empty string:</p>
-
 <pre><code>&gt;&gt; [] + []
 ""
 </code></pre>
-
 <p>This happens because each array object is first converted to a string, then the
 two strings are concatenated:</p>
-
 <pre><code>&gt;&gt; toString([])
 ""
 &gt;&gt; toString([]) + toString([])
@@ -155,42 +124,32 @@ two strings are concatenated:</p>
 &gt;&gt; ['hello'] + ['world']
 "helloworld"
 </code></pre>
-
 <p>An empty object, when converted to a string will end up as <code>[object Object]</code>,
 and adding this to an array has a fairly predictable result:</p>
-
 <pre><code>&gt;&gt; toString({}
 "[object Object]"
 &gt;&gt; [] + {} // effectively "" + "[object Object]"
 "[object Object]"
 </code></pre>
-
 <p>Addition is normally <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, however
 something strange happens if you reverse the addition above:</p>
-
 <pre><code>&gt;&gt; {} + []
 0
 </code></pre>
-
 <p>So what's actually going on? Well the code above is not actually adding an
 empty array to an empty object. You can see this by using the new object
 constructor to confirm you don't get the same behaviour:</p>
-
 <pre><code>&gt;&gt; new Object() + []
 "[object Object]"
 </code></pre>
-
 <p>Instead <code>{}</code> is being interpreted as an empty code block and ignored. This
 leaves <code>+ []</code>, where the plus is actually a unary plus operator. This operator
 will attempt to convert the operand (<code>[]</code>), into a number. In the case of an
 empty array this results in <code>0</code>:</p>
-
 <pre><code>&gt;&gt; + []
 0
 </code></pre>
-
 <p>You can also see similar behaviour if you try to evaluate <code>{} + {}</code>:</p>
-
 <pre><code>&gt;&gt; {} + {}
 NaN
 &gt;&gt; +{}
@@ -198,38 +157,28 @@ NaN
 &gt;&gt; Number({})
 NaN
 </code></pre>
-
 <p>Or if you try to use <code>+</code> twice:</p>
-
 <pre><code>&gt;&gt; "foo" + + "bar" // effectively "foo" + (+"bar")
 "fooNaN"
 </code></pre>
-
 <p><strong>Note</strong>: I originally came across this oddity watching a lightning talk called
 "<a href="https://www.destroyallsoftware.com/talks/wat">Wat</a>" by Gary Bernhardt. It's well worth watching
 if you've not seen it before.</p>
-
 <h2>typeof null</h2>
-
 <p>JavaScript has both <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/null">null</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>.
 Running <code>typeof</code> against <code>undefined</code> behaves as expected:</p>
-
 <pre><code>&gt;&gt; typeof(undefined)
 "undefined"
 </code></pre>
-
 <p>However <code>null</code> behaves a little bit differently:</p>
-
 <pre><code>&gt;&gt; typeof(null)
 "object"
 </code></pre>
-
 <p>This is actually a hang over from the first implementation of JavaScript.
 Values were represented as a type tag plus the value. However <code>null</code> was
 represented with a NULL pointer. The type tag for objects was <code>0</code>, as a result
 <code>null</code> is also interpreted as an object. This oddity is documented in the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof">MDN
 web docs for typeof</a>.</p>
-
 <p>Interestingly a fix for this behaviour was <a href="https://web.archive.org/web/20170102165051/wiki.ecmascript.org/doku.php?id=harmony:typeof_null">proposed</a>,
 however it never made it into JavaScript because it broke backwards
 compatibility with some websites.</p>
@@ -238,9 +187,9 @@ compatibility with some websites.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

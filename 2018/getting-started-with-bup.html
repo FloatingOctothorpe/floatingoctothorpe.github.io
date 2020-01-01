@@ -43,60 +43,53 @@
 always true, most people will have stories about how they lost data and didn't
 have a backup. Very few people will tell you about the time they had too many
 backups...</p>
-
 <p>With the above in mind, this post is going to look at using <a href="https://bup.github.io/">Bup</a>
 to manage backups. Before going any further, it's worth pointing out that Bup
 is still relatively new software, and has <a href="https://github.com/bup/bup/blob/master/README.md#things-that-are-stupid-for-now-but-which-well-fix-later">a few features that need to be
 ironed out</a>. If that puts you off I would recommend having a
 look at <a href="https://rsync.samba.org/">rsync</a>, which can be used to implement a <a href="https://www.jwz.org/doc/backups.html">relatively
 simple backup strategy</a>.</p>
-
 <h2>What is Bub?</h2>
-
 <p>Bup is backup software which shares a few similarities with Git (it uses the
 same packfile format). However unlike Git, Bup has been designed to handle
 large files effectively. Some of Bups features include:</p>
-
 <ul>
-<li><p>Large files are split into chunks so incremental changes to very large files
-can be backed up without having to store duplicate files.</p></li>
-<li><p>Remote backups can easily be run over SSH.</p></li>
-<li><p>Backups can be mounted as a FUSER filesystem.</p></li>
-<li><p>Automatic backups can be set up with <code>cron</code> and <code>bup-cron</code>.</p></li>
+<li>
+<p>Large files are split into chunks so incremental changes to very large files
+   can be backed up without having to store duplicate files.</p>
+</li>
+<li>
+<p>Remote backups can easily be run over SSH.</p>
+</li>
+<li>
+<p>Backups can be mounted as a FUSER filesystem.</p>
+</li>
+<li>
+<p>Automatic backups can be set up with <code>cron</code> and <code>bup-cron</code>.</p>
+</li>
 </ul>
-
 <h2>Installing Bup</h2>
-
 <p>The <code>bup</code> package is already available on <a href="https://www.debian.org/">Debian</a>, so it can be
 easily installed using <code>apt-get</code>:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install bup
 </code></pre>
-
 <p>Once you've installed Bup you should be able to run <code>bup --version</code>:</p>
-
 <pre><code>$ bup --version
 bup-debian/0.29-3
 </code></pre>
-
 <p>Alternatively Bup has also been <a href="https://github.com/bup/bup/blob/master/README.md#from-binary-packages">packaged for several other
 distributions</a>, or can be <a href="https://github.com/bup/bup/blob/master/README.md#from-source">installed from
 source</a>.</p>
-
 <h2>Creating a backup</h2>
-
 <p>Once you've installed Bup, the next thing to do is create a Bup repository
 using <code>bup init</code>. By default the repository will be saved to <code>~/.bup/</code>, however
 the <code>-d</code> option can be used to override this:</p>
-
 <pre><code>$ bup -d /var/bup init
 Initialized empty Git repository in /var/bup/
 </code></pre>
-
 <p>If you're familiar with Git repositories, the repository layout should look
 very familiar:</p>
-
 <pre><code>$ find /var/bup/
 /var/bup/
 /var/bup/refs
@@ -123,52 +116,38 @@ very familiar:</p>
 /var/bup/info/exclude
 /var/bup/HEAD
 </code></pre>
-
 <p>Creating a backup is split into two steps. The first thing to do is create an
 index of the files you want to backup:</p>
-
 <pre><code>$ bup -d /var/bup index /etc/
 Indexing: 1100, done (5089 paths/s).
 </code></pre>
-
 <p>After the index has been created file contents can be backed up using the
 <code>bup save</code> command:</p>
-
 <pre><code>root@ein:/var# bup -d /var/bup save --name etc-backup /etc/
 Reading index: 1100, done.
 Saving: 100.00% (1869/1869k, 1100/1100 files), done.
 bloom: creating from 1 file (1160 objects).
 </code></pre>
-
 <p><strong>Note</strong>: the <code>--name</code> option is used to specify the backup name:</p>
-
 <h2>Restoring files</h2>
-
 <p>To restore files from Bup, you first need to work out which backups are
 available. <code>bup ls</code> can be used to list backup names:</p>
-
 <pre><code>$ bup -d /var/bup ls
 etc-backup
 </code></pre>
-
 <p>You can then list the contents of a named backup:</p>
-
 <pre><code>$ bup -d /var/bup ls etc-backup
 2018-07-27-233535  latest
 </code></pre>
-
 <p>Once you've worked out which backup you want to restore files from, you can
 restore the backup files to a directory using <code>bup restore</code>:</p>
-
 <pre><code>$ mkdir /tmp/bup_restore
 $ bup -d /var/bup restore -C /tmp/bup_restore/ etc-backup/2018-07-27-233535/etc/
 Restoring: 1100, done.
 $ cat /tmp/bup_restore/hostname
 foobar.example.com
 </code></pre>
-
 <p>Alternatively you can mount the Bup repository to access individual files:</p>
-
 <pre><code>$ mkdir /tmp/bup_mount
 $ bup -d /var/bup fuse /tmp/bup_mount/
 $ ls /tmp/bup_mount/
@@ -180,9 +159,9 @@ foobar.example.com
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

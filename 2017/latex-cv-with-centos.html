@@ -43,45 +43,33 @@
 decided to use a <a href="https://github.com/Roald87/xelatex-cv-roald">LaTex template</a> by Roald
 Ruiter. This post goes over the steps I when through to compile the template on
 <a href="https://www.centos.org/">CentOS 7</a>.</p>
-
 <h2>Installing required packages</h2>
-
 <p>The first thing to do is install <code>git</code> and <code>unzip</code>. These packages are required
 to clone the LaTex template, and to unpack packages from <a href="https://www.ctan.org/">CTAN</a>:</p>
-
 <pre><code>yum install -y git unzip
 </code></pre>
-
 <p>The <a href="https://www.tug.org/xetex/">XeTeX</a> typesetting engine is also available from the CentOS
 repositories, and can be installed with <code>yum</code>:</p>
-
 <pre><code>yum install -y texlive-collection-xetex texlive-parskip texlive-zapfding
 </code></pre>
-
 <p>Once the required packages are installed, the CV Template can be cloned from
 GitHub:</p>
-
 <pre><code>git clone https://github.com/Roald87/xelatex-cv-roald.git
 cd xelatex-cv-roald
 </code></pre>
-
 <p>In addition to the template, 3 files need to be grabbed from the <a href="https://www.ctan.org/pkg/fontawesome">fontawesome
 CTAN package</a>. This can be done with the following
 commands:</p>
-
 <pre><code>curl -L -O http://mirrors.ctan.org/fonts/fontawesome.zip
 unzip fontawesome.zip
 cp fontawesome/tex/fontawesome.sty .
 cp fontawesome/tex/fontawesomesymbols-generic.tex .
 cp fontawesome/tex/fontawesomesymbols-xeluatex.tex .
 </code></pre>
-
 <h2>Compiling the template</h2>
-
 <p>In theory it should now be possible to compile the template with the
 <a href="http://manpages.org/xelatex">xelatex</a> command. Unfortunately this produces the following
 error:</p>
-
 <pre><code>$ xelatex cv-roald-example.tex
 ...
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -99,22 +87,16 @@ l.63 \setmainfont{SourceSansPro}
                                 [
 ?
 </code></pre>
-
 <p>This error occurs because CentOS 7 uses version 2.3 of
 <a href="https://github.com/wspr/fontspec/">fontspec</a>. However as of version 2.4 the syntax was changed
 from:</p>
-
 <pre><code>\setmainfont[features]{font}
 </code></pre>
-
 <p>to:</p>
-
 <pre><code>\setmainfont{font}[features]
 </code></pre>
-
 <p>To get around this the font section in<code>cv-roald.cls</code> can be updated to look
 something like the following:</p>
-
 <pre><code>% --------------------------------- %
 %              FONTS
 % --------------------------------- %
@@ -133,47 +115,33 @@ something like the following:</p>
     BoldFont = *-SemiBold,
 ]{AdventPro}
 </code></pre>
-
 <p>After doing this the template should compile successfully:</p>
-
 <pre><code>$ xelatex cv-roald-example.tex
 $ !!
 </code></pre>
-
 <p><strong>Note</strong>: the first time <code>xelatex</code> runs it will create an auxiliary file
 (<code>cv-roald-example.aux</code>), with position information. <code>xelatex</code> then needs to be
 run a second time to position the header correctly.</p>
-
 <h2>Adding hyperlinks</h2>
-
 <p>By default the links in the generated PDF cannot be clicked. This can be fixed
 using the <a href="https://www.ctan.org/pkg/hyperref">hyperref package</a>. First update <code>cv-roald.cls</code> to
 load the package:</p>
-
 <pre><code>\RequirePackage{hyperref} % Needed for links
 </code></pre>
-
 <p>By default links will have a blue border, this can be avoided by setting the
 <code>hidelinks</code> option in <code>cv-roald.cls</code>:</p>
-
 <pre><code>\hypersetup{
   hidelinks=true
 }
 </code></pre>
-
 <p>Links can then be added to <code>cv-roald-example.tex</code>. For example:</p>
-
 <pre><code>\href{mailto:johndoe@gmail.com}{johndoe@gmail.com}
 </code></pre>
-
 <p>Once the document has been updated, don't forget to re-run <code>xelatex</code>. If
 everything goes well, the PDF should now contain hyperlinks:</p>
-
 <p><img class="pure-img" src="/2017/cv-with-hyperlinks.png"
   alt="Screenshot of a PDF with embeded hyperlinks"/></p>
-
 <h2>GitHub fork</h2>
-
 <p>A fork of the original CV template with the changes described in this post is
 available <a href="https://github.com/FloatingOctothorpe/xelatex-cv-roald">on GitHub</a>.</p>
       </article>
@@ -181,9 +149,9 @@ available <a href="https://github.com/FloatingOctothorpe/xelatex-cv-roald">on Gi
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

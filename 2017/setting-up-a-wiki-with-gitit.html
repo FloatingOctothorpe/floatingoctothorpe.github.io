@@ -43,46 +43,34 @@
 this, however setting up a fully featured wiki like
 <a href="https://www.mediawiki.org/wiki/MediaWiki">MediaWiki</a> is often overkill. After spending a little bit of
 time looking at alternatives I stumbled across <a href="https://github.com/jgm/gitit">Gitit</a>.</p>
-
 <p>Gitit is relatively lightweight, can use multiple markup languages such as
 Markdown, and uses a Git repository to store page changes. This post is going
 to go over getting started with Gitit on <a href="https://www.debian.org/">Debian</a>.</p>
-
 <h2>Installing Gitit</h2>
-
 <p>Gitit is part of the Debian repositories, therefore you can install it with
 <code>apt-get</code>:</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install gitit libghc-filestore-data pandoc-data
 </code></pre>
-
 <p><strong>Note</strong>: <code>libghc-filestore-data</code> and <code>pandoc-data</code> should both be package
 dependencies, but they are currently missing and need to be installed
 explicitly (see <a href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=865605">bug #865605</a>).</p>
-
 <p>Alternatively you can compile Gitit from source using
 <a href="https://haskellstack.org">stack</a>:</p>
-
 <pre><code>git clone https://github.com/jgm/gitit
 cd gitit
 stack install
 </code></pre>
-
 <p>If everything goes well you should now be able to use the <code>gitit</code> command:</p>
-
 <pre><code>$ gitit --version
 gitit version 0.12.1.1 -plugins
 Copyright (C) 2008 John MacFarlane
 This is free software; see the source for copying conditions.  There is no
 warranty, not even for merchantability or fitness for a particular purpose.
 </code></pre>
-
 <h2>Creating a new wiki</h2>
-
 <p>Once Gitit is installed, running <code>gitit</code> without any options will create the
 initial files required for a wiki and startup a web server on port <code>5001</code>:</p>
-
 <pre><code>$ mkdir ~/wiki
 $ cd ~/wiki
 $ gitit
@@ -94,9 +82,7 @@ Created static/css/custom.css
 Created static/img/logo.png
 Created templates/footer.st
 </code></pre>
-
 <p>The initial folder structure will be laid out as follows:</p>
-
 <pre><code>.
 +-- gitit.log
 +-- static
@@ -111,26 +97,19 @@ Created templates/footer.st
     +-- Gitit Users Guide.page
     +-- Help.page
 </code></pre>
-
 <p><strong>Note</strong>: <code>wikidata</code> is actually a Git repository, this makes it very easy to
 manage and revert page changes.</p>
-
 <p>If everything is working correctly you should now be able to access the wiki on
 port <code>5001</code> in a web browser. The initial page should look similar to the
 following:</p>
-
 <p><img class="pure-img" src="/2017/gitit-home-page.png"
   alt="Screenshot of a default Gitit homepage"/></p>
-
 <p>From here you can easily register an account and start editing pages. The
 <code>Help</code> and <code>Gitit User's Guide</code> pages should point you in the right direction
 if  you run into any problems.</p>
-
 <h2>Starting Gitit with systemd</h2>
-
 <p>Unfortunately the <code>gitit</code> package doesn't come with a startup script. It is
 however fairly easy to create a systemd unit file similar to the following:</p>
-
 <pre><code>[Unit]
 Description=Gitit wiki
 After=network.target
@@ -144,18 +123,14 @@ Group=user
 [Install]
 WantedBy=multi-user.target
 </code></pre>
-
 <p><strong>Note</strong>: make sure the <code>WorkingDirectory</code> matches where you first run <code>gitit</code>.</p>
-
 <p>Once you've create the file copy it to <code>/etc/systemd/system/gitit.service</code>,
 then enable and start the service with <code>systemctl</code>:</p>
-
 <pre><code>$ systemctl enable gitit.service
 Created symlink /etc/systemd/system/multi-user.target.wants/gitit.service ? /etc/systemd/system/gitit.service.
 
 $ systemctl start gitit.service
 </code></pre>
-
 <p>Gitit should now start automatically at boot. If you want to customise the unit
 file, the <a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service man page</a> is worth referring
 to for more info.</p>
@@ -164,9 +139,9 @@ to for more info.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

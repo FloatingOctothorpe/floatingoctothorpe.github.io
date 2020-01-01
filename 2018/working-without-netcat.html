@@ -44,16 +44,13 @@ a <a href="/2017/netcat-tricks-and-tips.html">previous post</a> I went over a fe
 Unfortunately Netcat is often not available by default. This post is going to
 look at a few alternatives for situations where it's not possible to install
 Netcat.</p>
-
 <h2>Python and sockets</h2>
-
 <p>A number of fairly fundamental tools such as <a href="https://en.wikipedia.org/wiki/Yellow_Dog_Updater,_Modified">Yum</a> are build on top
 of <a href="https://www.python.org/">Python</a>. As a result Python is often available on Linux based
 systems. Python's standard library is fairly extensive and includes a <a href="https://docs.python.org/2/library/socket.html">socket
 module</a>. Carrying out simple tasks using the module is
 fairly straightforward, for example if you wanted to test a TCP connection you
 could use code similar to the following:</p>
-
 <pre><code>from __future__ import print_function
 
 import socket
@@ -70,23 +67,18 @@ except socket.error as e:
     print(e)
     exit(1)
 </code></pre>
-
 <p>There are also several re-implementations of Netcat written in Python, for
 example <a href="https://github.com/NullArray/PyCat/">PyCat</a> and
 <a href="https://github.com/obfusk/netcat.py">netcat.py</a>. <code>netcat.py</code> is particularly useful
 because it can be used without installing any additional dependencies.</p>
-
 <pre><code>$ curl -sO https://raw.githubusercontent.com/obfusk/netcat.py/master/netcat.py
 $ python netcat.py -v localhost 22
 SSH-2.0-OpenSSH_6.6.1
 </code></pre>
-
 <h2>Perl</h2>
-
 <p>Like Python, <a href="https://www.perl.org/">Perl</a> is often installed on Linux systems and comes
 with a socket library (<a href="https://perldoc.perl.org/IO/Socket/INET.html">IO::Socket::INET</a>). A very simple TCP
 listener script might look something like the following:</p>
-
 <pre><code>#!/usr/bin/env perl
 
 use warnings;
@@ -114,43 +106,32 @@ while (1) {
 }
 shutdown($client_socket, 1);
 </code></pre>
-
 <h2>/dev/tcp and /dev/udp</h2>
-
 <p>It's actually possible to open TCP or UDP connections using bash. This is
 briefly mentioned in the <a href="http://man7.org/linux/man-pages/man1/bash.1.html">man page for bash</a>:</p>
-
 <blockquote>
-  <p><strong>Bash</strong> handles several filenames specially when they are used in
-  redirections, as described in the following table.  If the operating system
-  on which <strong>bash</strong> is running provides these special files, bash will use
-  them; otherwise it will emulate them internally with the behavior described
-  below.</p>
-  
-  <p><strong>/dev/tcp/host/port</strong></p>
-  
-  <p>If host is a valid hostname or Internet address, and port is an integer port
-  number or service name, <strong>bash</strong> attempts to open a TCP connection to the
-  corresponding socket.</p>
-  
-  <p><strong>/dev/udp/host/port</strong></p>
-  
-  <p>If host is a valid hostname or Internet address, and port is an integer port
-  number or service name, <strong>bash</strong> attempts to open a UDP connection to the
-  corresponding socket.</p>
+<p><strong>Bash</strong> handles several filenames specially when they are used in
+redirections, as described in the following table.  If the operating system
+on which <strong>bash</strong> is running provides these special files, bash will use
+them; otherwise it will emulate them internally with the behavior described
+below.</p>
+<p><strong>/dev/tcp/host/port</strong></p>
+<p>If host is a valid hostname or Internet address, and port is an integer port
+number or service name, <strong>bash</strong> attempts to open a TCP connection to the
+corresponding socket.</p>
+<p><strong>/dev/udp/host/port</strong></p>
+<p>If host is a valid hostname or Internet address, and port is an integer port
+number or service name, <strong>bash</strong> attempts to open a UDP connection to the
+corresponding socket.</p>
 </blockquote>
-
 <p>Using this feature is relatively straightforward. For example, if you wanted to
 connect to <code>time.nist.gov</code> using the <a href="https://en.wikipedia.org/wiki/Daytime_Protocol">Daytime Protocol</a>,
 you could do the following:</p>
-
 <pre><code>$ cat &lt; /dev/tcp/time.nist.gov/13
 
 58123 18-01-05 07:55:00 00 0 0 923.6 UTC(NIST) *
 </code></pre>
-
 <p>It's also possible to make simple HTTP requests, for example:</p>
-
 <pre><code>$ exec 3&lt;&gt;/dev/tcp/example.com/80
 $ echo -e 'GET / HTTP/1.1\nhost: example.com\n' &gt;&amp;3
 $ cat &lt;&amp;3
@@ -159,13 +140,10 @@ Cache-Control: max-age=604800
 Content-Type: text/html
 ...
 </code></pre>
-
 <h2>Telnet</h2>
-
 <p>While the telnet protocol is not strictly the same as a plain TCP connection,
 it's often similar enough to allow you to use the telnet client for other
 protocols, for example:</p>
-
 <pre><code>$ telnet time.nist.gov 13
 Trying 132.163.96.1...
 Connected to time.nist.gov.
@@ -174,26 +152,20 @@ Escape character is '^]'.
 58123 18-01-05 08:06:58 00 0 0  49.1 UTC(NIST) *
 Connection closed by foreign host.
 </code></pre>
-
 <h2>Powershell</h2>
-
 <p>Modern Windows systems normally have Powershell available. This makes it easy
 to call the .NET <a href="https://msdn.microsoft.com/en-us/library/system.net.sockets.tcpclient.aspx">TcpClient Class</a> directly. For example
 if you wanted to verify you can connect to <code>example.com:80</code> you could do the
 following:</p>
-
 <pre><code>PS &gt; $connection = New-Object System.Net.Sockets.TcpClient('example.com', 80)
 PS &gt; $connection.Connected
 True
 PS &gt; $connection.close()
 </code></pre>
-
 <h2>Abusing curl</h2>
-
 <p><a href="https://curl.haxx.se/">curl</a> can be used to quickly verify if a port is open. Although
 this method is far from ideal for non-http protocols such as SSH, it's often
 sufficient to verify a TCP connection can be established:</p>
-
 <pre><code>$ curl --verbose --user-agent '' --max-time 1 -i localhost:22
 * About to connect() to localhost port 22 (#0)
 *   Trying ::1...
@@ -208,16 +180,15 @@ Protocol mismatch.
 * Closing connection 0
 curl: (56) Recv failure: Connection reset by peer
 </code></pre>
-
 <p><strong>Note</strong>: HTTP headers will be sent to the target which is often undesirable.</p>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

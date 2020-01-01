@@ -43,13 +43,10 @@
 don't have access to the source code for the program. Thankfully there are a
 few debugging tools which can provide some insight into what a process is up
 to.</p>
-
 <h2>Backtraces with pstack</h2>
-
 <p>It's often useful seeing which function a process is currently executing, you
 can quickly get a stack trace from a running process using
 <a href="https://linux.die.net/man/1/pstack">pstack</a>:</p>
-
 <pre><code>$ pstack 1764
 #0  0x00007f9a7a614b83 in __select_nocancel () from /lib64/libc.so.6
 #1  0x00007f9a7ad2b585 in apr_sleep () from /lib64/libapr-1.so.0
@@ -58,15 +55,12 @@ can quickly get a stack trace from a running process using
 #4  0x00007f9a7c04d5ae in ap_run_mpm ()
 #5  0x00007f9a7c046b46 in main ()
 </code></pre>
-
 <h2>Using ltrace</h2>
-
 <p>Unlike <code>pstack</code> which shows a point in time, <a href="https://linux.die.net/man/1/ltrace">ltrace</a> can be used
 to see library calls made by a process over time. For example if you run
 <code>whoami</code> using <code>ltrace</code>, you can see the calls being made to
 <a href="https://linux.die.net/man/2/geteuid">geteuid</a>, and then to <a href="https://linux.die.net/man/3/getpwuid">getpwuid</a> to work out
 the username of the user running the command:</p>
-
 <pre><code>$ ltrace whoami &gt; /dev/null
 __libc_start_main(0x401510, 1, 0x7ffd52295f98, 0x4040e0 &lt;unfinished ...&gt;
 strrchr("whoami", '/')                                              = nil
@@ -93,21 +87,16 @@ __freading(0x7fabe3efa1c0, 0, 4, 0xfbad000c)                        = 0
 fflush(0x7fabe3efa1c0)                                              = 0
 fclose(0x7fabe3efa1c0)                                              = 0
 </code></pre>
-
 <h3>Limiting output</h3>
-
 <p><code>ltrace</code> can very quickly produce too much output. The <code>-e</code> option can be used
 to filter output based on an expression:</p>
-
 <pre><code>$ ltrace -e gethostname hostname
 hostname-&gt;gethostname("server.example.com", 128)                    = 0
 server.example.com
 +++ exited (status 0) +++
 </code></pre>
-
 <p>You can also use the <code>-c</code> option to count library calls instead of displaying
 each call:</p>
-
 <pre><code>$ ltrace -c python -c '2+2'
 % time     seconds  usecs/call     calls      function
 ------ ----------- ----------- --------- --------------------
@@ -117,11 +106,8 @@ each call:</p>
 ------ ----------- ----------- --------- --------------------
 100.00    0.039295                     3 total
 </code></pre>
-
 <h3>Following processes</h3>
-
 <p>By default <code>ltrace</code> does not follow child processes or threads:</p>
-
 <pre><code>$ ltrace python -c 'import subprocess;subprocess.call("hostname")' &gt; /dev/null 
 __libc_start_main(0x4006f0, 3, 0x7ffe699f7828, 0x4007e0 &lt;unfinished ...&gt;
 Py_Main(3, 0x7ffe699f7828, 0x7ffe699f7848, 0x4007e0 &lt;no return ...&gt;
@@ -129,9 +115,7 @@ Py_Main(3, 0x7ffe699f7828, 0x7ffe699f7848, 0x4007e0 &lt;no return ...&gt;
 &lt;... Py_Main resumed&gt; )                                                            = 0
 +++ exited (status 0) +++
 </code></pre>
-
 <p>The <code>-f</code> option can be use to follow child threads and processes:</p>
-
 <pre><code>$ ltrace -f python -c 'import subprocess;subprocess.call("hostname")' &gt; /dev/null 
 [pid 2909] __libc_start_main(0x4006f0, 3, 0x7fff48454048, 0x4007e0 &lt;unfinished ...&gt;
 [pid 2909] Py_Main(3, 0x7fff48454048, 0x7fff48454068, 0x4007e0 &lt;no return ...&gt;
@@ -152,29 +136,22 @@ Py_Main(3, 0x7ffe699f7828, 0x7ffe699f7848, 0x4007e0 &lt;no return ...&gt;
 [pid 2909] &lt;... Py_Main resumed&gt; )                                                 = 0
 [pid 2909] +++ exited (status 0) +++
 </code></pre>
-
 <h3>Attaching to a live process</h3>
-
 <p><code>ltrace</code> doesn't have to be used when a process starts, you can also attach to
 a live process using the <code>-p</code> option:</p>
-
 <pre><code>$ ltrace -p "$(pgrep --oldest httpd)"
 apr_proc_wait_all_procs(0x7ffd9ee48180, 0x7ffd9ee4817c, 0x7ffd9ee48178, 1)         = 0x11176
 apr_sleep(0xf4240, 0x7ffd9ee480bc, 3, 0)                                           = 0
 apr_proc_wait_all_procs(0x7ffd9ee48180, 0x7ffd9ee4817c, 0x7ffd9ee48178, 1)         = 0x11176
 ...
 </code></pre>
-
 <p><strong>Note</strong>: use <kbd>ctrl</kbd>+<kbd>c</kbd> to stop tracing the process.</p>
-
 <h2>Using strace</h2>
-
 <p><a href="https://linux.die.net/man/1/strace">strace</a> is very similar to <code>ltrace</code>, except it looks at system
 calls instead of library calls. Unlike library calls, system calls are made to
 the Kernel. For example if you were tracing <code>hostname</code>, you would want to
 filter on something like the <a href="https://linux.die.net/man/2/uname">uname</a> system call instead of the
 <a href="https://linux.die.net/man/3/gethostname">gethostname</a> library call:</p>
-
 <pre><code>$ strace -e gethostname hostname &gt; /dev/null 
 strace: invalid system call 'gethostname'
 
@@ -182,11 +159,9 @@ $ strace -e uname hostname &gt; /dev/null
 uname({sys="Linux", node="server.example.com", ...}) = 0
 +++ exited with 0 +++
 </code></pre>
-
 <p>Almost all of the <code>ltrace</code> options can be used with <code>strace</code>.  For example if
 you wanted to trace the parent <code>httpd</code> process and any new children it spawns,
 you could use the <code>-f</code> and <code>-p</code> options:</p>
-
 <pre><code>$ strace -f -p "$(pgrep --oldest httpd)"
 Process 1764 attached
 select(0, NULL, NULL, NULL, {0, 598303}) = 0 (Timeout)
@@ -198,9 +173,9 @@ socket(PF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 13
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

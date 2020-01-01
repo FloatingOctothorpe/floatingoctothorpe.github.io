@@ -41,100 +41,73 @@
 
 <p>It's very easy to overlook how a page will look when it's printed. This post
 will go through a few quick tips to make a page a little more print friendly.</p>
-
 <h2>Print media query</h2>
-
 <p>You can use a media query to limit rules to a particular media type:</p>
-
 <pre><code>@media print {
   /* print css goes here... */
 }
 </code></pre>
-
 <p>Alternatively you can have a separate style sheet and specify the media type
 when you include it:</p>
-
 <pre><code>&lt;link rel="stylesheet" media="print" href="/css/print.css"&gt;
 </code></pre>
-
 <p>Personally I prefer keeping everything together in a single style sheet,
 however either way will work.</p>
-
 <h2>Preview changes</h2>
-
 <p>I normally use the development tool built into Firefox when working with CSS;
 primarily the <a href="https://developer.mozilla.org/en-US/docs/Tools/Style_Editor">Style Editor</a> and <a href="https://developer.mozilla.org/en-US/docs/Tools/Page_Inspector">Page
 Inspector</a>. This presents a slight problem when you are
 working with print specific rules, namely print specific CSS won't be
 displayed.</p>
-
 <p>To get around this you can ask Firefox to emulate a media type. To do this
 press <kbd>shift</kbd>&nbsp;+&nbsp;<kbd>F2</kbd> to bring up the Firefox command line and
 type <code>media emulate print</code>:</p>
-
 <p><img class="pure-img" src="/2016/firefox-emulate-print-media.png"
   alt="Screenshot showing the Firefox command line being used to emulate print
   media." /></p>
-
 <p><strong>Note</strong>: you will still need to use print preview to check how content is
 broken across pages.</p>
-
 <h2>Hide unwanted content</h2>
-
 <p>Any elements like navigation or headers are probably not required when a page
 is printed. For this site everything in the sidebar is hidden:</p>
-
 <pre><code>@media print {
   .sidebar {
     display: none;
   }
 }
 </code></pre>
-
 <h2>Expanding links</h2>
-
 <p>Hyperlinks are obviously a little useless once a page has been printed. You
 can use the <code>content</code> property to append the <code>href</code> attribute after the element
 text. On this site I currently only expand links in the footer:</p>
-
 <pre><code>@media print {
   footer a:after {
     content:" ("attr(href) ")";
   }
 }
 </code></pre>
-
 <p>Although I could do this for all links, paragraphs get a little tricky to read
 if too many long links are inserted.</p>
-
 <h3>Don't use click here</h3>
-
 <p>As an aside if you follow the <a href="https://www.w3.org/QA/Tips/noClickHere">W3C guidance</a> and don't use
 link text like "click here" your links should still mean something, even if you
 can't follow the link.</p>
-
 <h2>Page margins</h2>
-
 <p>You can control page margins using the <code>@page</code> CSS at-rule:</p>
-
 <pre><code>@media print {
   @page {
     margin: 1cm;
   }
 }
 </code></pre>
-
 <p><strong>Note</strong>: When printing you should use measurement units like <code>cm</code> instead of
 screen specific units like <code>px</code>.</p>
-
 <h2>Page breaks</h2>
-
 <p>Unlike displaying content on a screen, printing requires content is potentially
 broken across multiple pages. You can control where content is broken using the
 <code>page-break-before</code>, <code>page-break-after</code> and <code>page-break-inside</code> properties. A
 good start would be to avoid page breaks directly after main headings, and
 prevent large elements like blockquotes being split across multiple pages:</p>
-
 <pre><code>@media print {
   h2, h3 {
     page-break-after: avoid;
@@ -149,9 +122,9 @@ prevent large elements like blockquotes being split across multiple pages:</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

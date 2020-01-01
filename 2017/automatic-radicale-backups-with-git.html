@@ -42,68 +42,46 @@
 <p>Since version 0.9, <a href="http://radicale.org/">Radicale</a> has been able to keep track of
 content changes using <a href="https://git-scm.com/">Git</a>. As well as providing version history,
 this feature can also be used to set up an automated backup.</p>
-
 <h3>Setting up Git</h3>
-
 <p>Git support requires <a href="https://github.com/jelmer/dulwich">dulwich</a>, on <a href="https://www.raspbian.org/">Raspbian</a>
 this, and Git, can be installed with <code>apt-get</code>:</p>
-
 <pre><code>sudo apt-get install python-dulwich git
 </code></pre>
-
 <p>Once the required packages are installed, check which folder Radicale is using
 to store data. This is set with the <code>filesystem_folder</code> option and defaults to
 <code>/var/lib/radicale/collections</code>:</p>
-
 <pre><code>$ grep filesystem_folder /etc/radicale/config
 filesystem_folder = /var/lib/radicale/collections
 </code></pre>
-
 <p>Run <code>git init</code> as the <code>radicale</code> user to setup the git repository:</p>
-
 <pre><code>sudo -u radicale bash -c 'cd /var/lib/radicale/collections/ &amp;&amp; git init'
 </code></pre>
-
 <p>Finally restart Radicale:</p>
-
 <pre><code>systemctl restart Radicale
 </code></pre>
-
 <p>All changes made to the files managed by Radicale should now be automatically
 tracked with Git. It's worth noting that commits will be made using
 <code>Radicale &lt;radicale@example.com&gt;</code> by default, however this can be configured in
 the <code>[git]</code> section of the config with the <code>committer</code> option.</p>
-
 <h3>Backup hook</h3>
-
 <p><a href="https://www.kernel.org/pub/software/scm/git/docs/githooks.html">Git hooks</a> are programs or scripts run at certain points in
 git's execution. For this post we are going to create a very simple post-commit
 hook that will push any new commits made by Radicale to a remote server.</p>
-
 <p>The first step is to setup SSH keys for the Radicale user:</p>
-
 <pre><code>sudo -u radicale ssh-keygen
 </code></pre>
-
 <p>Once SSH keys have been setup, copy them to the remote host. This can be done
 using <a href="https://www.freebsd.org/cgi/man.cgi?query=ssh-copy-id">ssh-copy-id</a>:</p>
-
 <pre><code>sudo -u radicale ssh-copy-id user@backup-host
 </code></pre>
-
 <p>Assuming SSH authentication is now setup, create a bare repository on the
 remote server. This repo will be used to mirror the repo Radicale commits to:</p>
-
 <pre><code>sudo -u radicale ssh user@backup-host 'git init --bare ~/radicale-backup.git'
 </code></pre>
-
 <p>As the <code>radicale</code> user, add the new remote to the local Radicale repository:</p>
-
 <pre><code>sudo -u radicale bash -c 'cd /var/lib/radicale/collections/ &amp;&amp; git remote add backup ssh://user@backup-host/home/user/radicale-backup.git'
 </code></pre>
-
 <p>Finally create a simple hook to push changes made to the backup repository:</p>
-
 <pre><code>cat &gt; /var/lib/radicale/collections/.git/hooks/post-commit &lt;&lt;EOF
 #!/bin/sh
 cd /var/lib/radicale/collections/
@@ -113,12 +91,9 @@ EOF
 chown radicale: /var/lib/radicale/collections/.git/hooks/post-commit
 chmod 755 /var/lib/radicale/collections/.git/hooks/post-commit
 </code></pre>
-
 <p>Now every time changes are made, Radicale should commit the changes and
 replicate them to the remote repository.</p>
-
 <h3>Future versions of Radicale</h3>
-
 <p>Unfortunately Git support <a href="https://github.com/Kozea/Radicale/blob/dcb0638/NEWS.rst#200---little-big-radish">is being dropped</a> in
 Radicale 2.0. There is however a <a href="https://github.com/Kozea/Radicale/blob/dcb0638/radicale/storage.py#L800">hook feature</a> than
 can be used to run arbitrary scripts. This should make it fairly simple to
@@ -128,9 +103,9 @@ replicate Git support by calling <code>git</code> from a script.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

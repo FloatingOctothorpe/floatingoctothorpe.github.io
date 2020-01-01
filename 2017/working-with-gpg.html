@@ -43,27 +43,20 @@
 of the <a href="https://www.ietf.org/rfc/rfc4880.txt">OpenPGP standard</a>. There is a good chance you already have the
 command line tool (<code>gpg</code>) installed, if not packages can be found on the <a href="https://gnupg.org/download/index.html">GnuPG
 download page</a>.</p>
-
 <h2>Symmetric encryption</h2>
-
 <p>A very simple way to encrypt data is with symmetric encryption, this can be
 done with the <code>-c</code> or <code>--symmetric</code> options:</p>
-
 <pre><code>$ echo 'secret data' &gt; somefile.txt
 $ gpg -c somefile.txt
 Enter passphrase:
 Repeat passphrase:
 </code></pre>
-
 <p>After a passphrase has been entered and verified GnuPG will encrypt the file
 and write the cipher text to an new file ending in <code>.gpg</code>:</p>
-
 <pre><code>$ file somefile.txt.gpg
 somefile.txt.gpg: GPG symmetrically encrypted data (CAST5 cipher)
 </code></pre>
-
 <p>The data can then be decrypted with the same passphrase:</p>
-
 <pre><code>$ gpg somefile.txt.gpg
 gpg: CAST5 encrypted data
 Enter passphrase:
@@ -72,24 +65,18 @@ gpg: WARNING: message was not integrity protected
 $ cat somefile.txt
 secret data
 </code></pre>
-
 <h2>Asymmetric encryption</h2>
-
 <h3>Generating a new key pair</h3>
-
 <p>If you want to use asymmetric encryption, the first thing you will need to do
 is generate a new key pair. This can be done with the <code>--gen-key</code> option:</p>
-
 <pre><code>$ gpg --gen-key
 gpg (GnuPG) 1.4.19; Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 </code></pre>
-
 <p>When running the command you will be prompted for they kind of key(s) you want to
 create. For most people RSA should be fine (this is the algorithm recommended
 by <a href="https://www.ietf.org/rfc/rfc4880.txt">RFC 4880</a>):</p>
-
 <pre><code>Please select what kind of key you want:
    (1) RSA and RSA (default)
    (2) DSA and Elgamal
@@ -97,18 +84,14 @@ by <a href="https://www.ietf.org/rfc/rfc4880.txt">RFC 4880</a>):</p>
    (4) RSA (sign only)
 Your selection?
 </code></pre>
-
 <p>You will also be prompted for how long the key should be, by default <code>2048</code>
 should be fine. A rationale for this can be found on the <a href="https://gnupg.org/faq/gnupg-faq.html#default_rsa2048">GnuPG
 FAQ</a>:</p>
-
 <pre><code>RSA keys may be between 1024 and 4096 bits long.
 What keysize do you want? (2048)
 Requested keysize is 2048 bits
 </code></pre>
-
 <p>You when then need to specify how long the key should be valid for:</p>
-
 <pre><code>Please specify how long the key should be valid.
          0 = key does not expire
       &lt;n&gt;  = key expires in n days
@@ -117,9 +100,7 @@ Requested keysize is 2048 bits
       &lt;n&gt;y = key expires in n years
 Key is valid for? (0)
 </code></pre>
-
 <p>The user ID associated with the key:</p>
-
 <pre><code>You need a user ID to identify your key; the software constructs the user ID
 from the Real Name, Comment and Email Address in this form:
     "Heinrich Heine (Der Dichter) &lt;heinrichh@duesseldorf.de&gt;"
@@ -130,19 +111,15 @@ Comment:
 You selected this USER-ID:
     "Example User &lt;user@example.com&gt;"
 </code></pre>
-
 <p>And finally a passphrase to encrypt the private key. There is no limit on
 passphrase length, and from a security perspective it's worth using a long
 passphrase, as it's the only protection you have if you're private key file is
 compromised:</p>
-
 <pre><code>You need a Passphrase to protect your secret key.
 
 Enter passphrase:
 </code></pre>
-
 <p>If everything goes correctly your keys should now be saved to <code>~/.gnupg/</code>:</p>
-
 <pre><code>$ ls -1 ~/.gnupg/
 gpg.conf
 pubring.gpg
@@ -151,9 +128,7 @@ random_seed
 secring.gpg
 trustdb.gpg
 </code></pre>
-
 <p>You can also verify keys have been generated using the <code>--list-keys</code> option:</p>
-
 <pre><code>$ gpg --list-keys
 /home/user/.gnupg/pubring.gpg
 ---------------------------------- 
@@ -161,24 +136,17 @@ pub   2048R/5B5D90CE 2017-08-10
 uid                  Example User &lt;user@example.com&gt;
 sub   2048R/8CE63902 2017-08-10
 </code></pre>
-
 <h4>Revocation certificate</h4>
-
 <p>Although not strictly necessary, it's a good idea to pre-generate a revocation
 certificate. In the event that you're key pair is either lost or compromised
 the revocation certificate can be published to invalidate your public key. This
 can be done with a command similar to the following:</p>
-
 <pre><code>gpg --output revoke_key.asc --gen-revoke "Example User &lt;user@example.com&gt;"
 </code></pre>
-
 <p><strong>Note</strong>: the generated certificate should be stored offline, not with your
 private key!</p>
-
 <h3>Exporting your public key</h3>
-
 <p>The <code>--export</code> option can be used to export your public key:</p>
-
 <pre><code>$ gpg --armor --export "Example User &lt;user@example.com&gt;"
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1
@@ -211,45 +179,34 @@ Y3q/rcuuOmT7hVJKf0Icyt94ejxC/lb1isDR3OzZ
 =mJc7
 -----END PGP PUBLIC KEY BLOCK-----
 </code></pre>
-
 <p><strong>Note</strong>: <code>--armor</code> is used to <a href="https://en.wikipedia.org/wiki/Binary-to-text_encoding">base64 encode</a> the public
 key.</p>
-
 <p>Your public key can be used by anybody to encrypt data, which you can then
 decrypt with the corresponding private key. There are a few different ways to
 distribute your public key:</p>
-
 <ul>
 <li>Hand over the key in person</li>
 <li>Publish the key on your website</li>
 <li>Publish the key on a key distribution site such as
-<a href="https://keyserver.pgp.com">keyserver.pgp.com</a></li>
+   <a href="https://keyserver.pgp.com">keyserver.pgp.com</a></li>
 </ul>
-
 <h3>Importing public keys</h3>
-
 <p>To send encrypted messages to someone you first need to get a copy of their
 public key. The <code>--import</code> option can then be used to import the key:</p>
-
 <pre><code>$ gpg --import alice_example.com.key
 gpg: key 4264D469: public key "Alice &lt;alice@example.com&gt;" imported
 gpg: Total number processed: 1
 gpg:               imported: 1  (RSA: 1)
 </code></pre>
-
 <h3>Encrypting and decrypting messages</h3>
-
 <p>Once you have a public key, you can use the <code>--encrypt</code> option to encrypt data:</p>
-
 <pre><code>$ echo 'secret message' &gt; message.txt
 $ gpg --output message.gpg --encrypt --recipient alice@example.com message.txt
 $ file message.gpg
 message.gpg: PGP RSA encrypted session key - keyid: 3E6EA063 270B658 RSA (Encrypt or Sign) 2048b .
 </code></pre>
-
 <p>The <code>--decrypt</code> option can then be used to decrypt the message with the
 corresponding private key:</p>
-
 <pre><code>$ gpg --output message.txt --decrypt message.gpg
 
 You need a passphrase to unlock the secret key for
@@ -262,13 +219,10 @@ gpg: encrypted with 2048-bit RSA key, ID 58B67002, created 2017-08-11
 $ cat message.txt
 secret message
 </code></pre>
-
 <h3>Signing messages and verifying the author</h3>
-
 <p>As well as encrypting messages and data, it's also useful to be able to verify
 a message was sent from the person you expect. This can be done by signing a
 file with the <code>--sign</code> option:</p>
-
 <pre><code>$ cat message.txt
 This is Alice...
 
@@ -283,18 +237,14 @@ user: "Alice &lt;alice@example.com&gt;"
 $ file message.txt.sig
 message.txt.sig: PGP message Compressed Data (old)
 </code></pre>
-
 <p>The signed message can then be verified using the <code>--verify</code> option:</p>
-
 <pre><code>$ gpg --verify message.txt.sig
 gpg: Signature made Fri, Aug 11, 2017  5:54:36 PM GMTDT using RSA key ID 4264D469
 gpg: Good signature from "Alice &lt;alice@example.com&gt;"
 Primary key fingerprint: D401 7604 FC42 9C4A C5A0  FD4D E94D B885 4264 D469
 </code></pre>
-
 <p>If the <code>--verify</code> option is omitted GnuPG will also extract the message after
 verifying the signature:</p>
-
 <pre><code>$ gpg message.txt.sig
 gpg: Signature made Fri, Aug 11, 2017  5:54:36 PM GMTDT using RSA key ID 4264D469
 gpg: Good signature from "Alice &lt;alice@example.com&gt;"
@@ -303,13 +253,10 @@ Primary key fingerprint: D401 7604 FC42 9C4A C5A0  FD4D E94D B885 4264 D469
 $ cat message.txt
 This is Alice...
 </code></pre>
-
 <h4>Clear-text signatures</h4>
-
 <p>For plain text such as emails, it's often easier using the <code>--clearsign</code>
 option. If this option is used the message can easily be read, without first
 having to extract the message from the signed file:</p>
-
 <pre><code>$ gpg --clearsign message.txt
 
 You need a passphrase to unlock the secret key for
@@ -333,12 +280,9 @@ VX+eiqsUeKwrXvRE4HhIuZTKh8bfbnqdhX4xZ5G/UOUIEgTZuZ7Ji2n1sgzclic=
 =8yu8
 -----END PGP SIGNATURE-----
 </code></pre>
-
 <h4>Using a separate signature</h4>
-
 <p>Alternatively the <code>--detacted</code> option can be used to create the signature in a
 separate file:</p>
-
 <pre><code>$ gpg --armor --detach-sign data
 
 You need a passphrase to unlock the secret key for
@@ -349,11 +293,8 @@ $ ls -lh data data.asc
 -rw-r--r-- 1 user 197121 10M Aug 11 18:16 data
 -rw-r--r-- 1 user 197121 473 Aug 11 18:23 data.asc
 </code></pre>
-
 <p>This is particularly useful for large files such as ISOs.</p>
-
 <h2>Further reading</h2>
-
 <p>If you need more GnuPG information the <a href="https://gnupg.org/documentation/index.html">GnuPG documentation</a> is a
 good place to start.</p>
       </article>
@@ -361,9 +302,9 @@ good place to start.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

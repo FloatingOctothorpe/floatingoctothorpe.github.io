@@ -43,48 +43,35 @@
 managed a domain, they provide a number of useful services such as DDoS
 protection and DNS management. Most of the services offered by Cloudflare can
 be accessed via a <a href="https://api.cloudflare.com/">RESTful API</a>.</p>
-
 <h2>Getting your API key</h2>
-
 <p>Once you've <a href="https://www.cloudflare.com/a/sign-up">created an account</a>, you can access
 your API key from the Cloudflare website. Go to the "My Settings" page, find
 the API key section and view your "Global API Key":</p>
-
 <p><img class="pure-img" src="/2016/cloudflare-api-key.png"
   alt="Cloudflare Global API Key webpage screenshot" /></p>
-
 <h3>Key security</h3>
-
 <p>Anyone who has your API key can authenticate with Cloudflare. As a result you
 should treat it like a password and keep it private! The examples in this post
 assume the API key is being stored in a file called <code>cloudflare-key</code>, note the
 file is not world readable:</p>
-
 <pre><code>[alice@example ~]$ ls -l cloudflare-key
 -rw-------. 1 alice alice 38 Nov  8 23:01 cloudflare-key
 </code></pre>
-
 <h2>Making requests</h2>
-
 <p>All of the examples in this post use <a href="https://curl.haxx.se/">curl</a> to make HTTP requests.
 This matches the Cloudflare documentation, however you could obviously use any
 HTTP tool or library when making API calls.</p>
-
 <h2>Zones</h2>
-
 <p>Most of the available API calls require a valid zone ID. You can get a zone ID
 using the <a href="https://api.cloudflare.com/#zone-list-zones">list zones</a> API call:</p>
-
 <pre><code>curl -s -X GET \
      -H "X-Auth-Email: alice@example.com" \
      -H "X-Auth-Key: $(cat cloudflare-key)" \
      -H "Content-Type: application/json" \
      https://api.cloudflare.com/client/v4/zones?name=example.com
 </code></pre>
-
 <p>The API should return a <a href="http://www.json.org/">JSON</a> document with the zone details,
 including the zone ID:</p>
-
 <pre><code>{
     "errors": [],
     "messages": [],
@@ -96,24 +83,18 @@ including the zone ID:</p>
             "meta": {
 ...
 </code></pre>
-
 <p><strong>Note</strong>: passing the document through <code>python -m json.tool</code>, should make the
 response a little easier to read:</p>
-
 <h2>List records in a zone</h2>
-
 <p>Once you've got a zone ID, you can list all DNS records in the zone using the
 <a href="https://api.cloudflare.com/#dns-records-for-a-zone-list-dns-records">List DNS Records</a> API call:</p>
-
 <pre><code>curl -s -X GET \
      -H "X-Auth-Email: alice@example.com" \
      -H "X-Auth-Key: $(cat cloudflare-key)" \
      -H "Content-Type: application/json" \
      https://api.cloudflare.com/client/v4/zones/2aae6c35c94fcfb415dbe95f408b9ce9/dns_records/
 </code></pre>
-
 <p>This should give output similar to the following:</p>
-
 <pre><code>{
     "errors": [],
     "messages": [],
@@ -137,24 +118,19 @@ response a little easier to read:</p>
         },
         ...
 </code></pre>
-
 <p>You can also limit results to specific names or record types using a query
 string. For example:</p>
-
 <pre><code>curl -s -X GET \
      -H "X-Auth-Email: alice@example.com" \
      -H "X-Auth-Key: $(cat cloudflare-key)" \
      -H "Content-Type: application/json" \
      https://api.cloudflare.com/client/v4/zones/2aae6c35c94fcfb415dbe95f408b9ce9/dns_records/?type=A
 </code></pre>
-
 <h2>Updating records</h2>
-
 <p>There is also an API call for <a href="https://api.cloudflare.com/#dns-records-for-a-zone-update-dns-record">updating DNS
 records</a>. Unlike the previous calls, this API uses
 the http <code>PUT</code> method, and requires a request body. This can be provided with
 the <code>--date</code> option:</p>
-
 <pre><code>curl -s -X PUT \
      -H "X-Auth-Email: alice@example.com" \
      -H "X-Auth-Key: $(cat cloudflare-key)" \
@@ -162,9 +138,7 @@ the <code>--date</code> option:</p>
      https://api.cloudflare.com/client/v4/zones/2aae6c35c94fcfb415dbe95f408b9ce9/dns_records/000bf354c14977ce5d30fbe238359b96 \
      --data '{ "content": "203.0.113.120", "id": "000bf354c14977ce5d30fbe238359b96", "locked": false, "meta": {"auto_added": false }, "name": "f-o.example.com", "proxiable":true, "proxied": false, "ttl": 1, "type": "A"}'
 </code></pre>
-
 <p>If everything is successful the response should look something like the following:</p>
-
 <pre><code>{
     "errors": [],
     "messages": [],
@@ -188,7 +162,6 @@ the <code>--date</code> option:</p>
     "success": true
 }
 </code></pre>
-
 <p><strong>Note</strong>: the example given in the <a href="https://api.cloudflare.com/#dns-records-for-a-zone-update-dns-record">Cloudflare
 documentation</a> uses all available record attributes
 in the JSON request body. However you can currently get away with only
@@ -198,9 +171,9 @@ specifying the <code>content</code>, <code>name</code> and <code>type</code> att
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

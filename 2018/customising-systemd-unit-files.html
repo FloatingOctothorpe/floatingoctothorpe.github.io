@@ -43,18 +43,14 @@
 Linux. It's also become the default init system for a range of Linux
 distributions including <a href="https://www.centos.org/">CentOS</a>, <a href="https://www.debian.org/">Debian</a>, and
 <a href="https://aws.amazon.com/amazon-linux-2/">Amazon Linux 2</a>.</p>
-
 <p>One of the great things about systemd is unit files can easily be modified to
 control how a service is launched. This post is going to look at customising
 unit file configuration, while still playing nice with the system package
 manager.</p>
-
 <h2>Adding a CPU quota to Apache</h2>
-
 <p>On CentOS, the unit file for the <code>httpd</code> service is
 <code>/usr/lib/systemd/system/httpd.service</code>, and has contents similar to the
 following:</p>
-
 <pre><code>[Unit]
 Description=The Apache HTTP Server
 After=network.target remote-fs.target nss-lookup.target
@@ -78,22 +74,16 @@ PrivateTmp=true
 [Install]
 WantedBy=multi-user.target
 </code></pre>
-
 <p>For the example in this post, I'm going to show a few different ways to add
 the following configuration:</p>
-
 <pre><code>[Service]
 CPUQuota=40%
 </code></pre>
-
 <p>This configuration will limit Apache's maximum CPU usage to 40% of a core. For
 more info, have a look at the systemd documentation on <a href="https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html">resource
 control</a>.</p>
-
 <h2>Adding the new config directly</h2>
-
 <p>It's tempting to modify <code>/usr/lib/systemd/system/httpd.service</code> directly:</p>
-
 <pre><code>@@ -5,6 +5,7 @@
  Documentation=man:apachectl(8)
 
@@ -103,53 +93,39 @@ control</a>.</p>
  EnvironmentFile=/etc/sysconfig/httpd
  ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND
 </code></pre>
-
 <p>While this will work initially there is a big drawback, the file is not marked
 as a config file:</p>
-
 <pre><code>$ rpm --query --configfiles httpd |grep httpd.service
 $
 </code></pre>
-
 <p>As a result, if <code>httpd</code> is updated the configuration change will be overridden!</p>
-
 <h2>Copying the unit file</h2>
-
 <p>To avoid the problem above, custom configuration should be placed in
 <code>/etc/systemd/system/</code>, this configuration will the be read instead of the
 configuration in <code>/usr/lib/systemd/system/</code>. Therefore you can just copy and
 modify the configuration file:</p>
-
 <pre><code>cp -p /usr/lib/systemd/system/httpd.service /etc/systemd/system/
 sed -i '/^\[Service\]/aCPUQuota=40%' /etc/systemd/system/httpd.service
 systemctl daemon-reload
 </code></pre>
-
 <p>This will work fine, however there is a slight drawback. If a later version of
 the <code>httpd</code> package modifies the unit file, systemd will ignore the changes
 until you manually copy them over to <code>/etc/systemd/system/httpd.service</code>.</p>
-
 <h2>Using .include</h2>
-
 <p>Instead of just copying the file, a better approach is to include the system
 default file using <code>.include</code>, and then add any custom configuration. This can
 be done by adding configuration similar to the following to
 <code>/etc/systemd/system/httpd.service</code>:</p>
-
 <pre><code>.include  /usr/lib/systemd/system/httpd.service
 
 [Service]
 CPUQuota=40%
 </code></pre>
-
 <p>Once the config has been updated, don't forget to reload the unit file:</p>
-
 <pre><code>systemctl daemon-reload
 </code></pre>
-
 <p><code>systemctl show</code> can then be used to check the new configuration option has
 been picked up correctly:</p>
-
 <pre><code>$ systemctl show httpd.service --property=CPUQuotaPerSecUSec
 CPUQuotaPerSecUSec=400ms
 </code></pre>
@@ -158,9 +134,9 @@ CPUQuotaPerSecUSec=400ms
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

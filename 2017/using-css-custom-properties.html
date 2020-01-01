@@ -43,26 +43,20 @@
 to support <a href="https://www.w3.org/TR/2015/CR-css-variables-1-20151203/">CSS custom properties (variables)</a>. Since
 then most major browser vendors <a href="https://caniuse.com/#feat=css-variables">have added support</a> for CSS
 custom properties, the major exception being Internet Explorer.</p>
-
 <h2>What are custom properties?</h2>
-
 <p>Prior to CSS custom properties, if you wanted to use a colour multiple times,
 you would explicitly duplicate the colour. For example:</p>
-
 <pre><code>blockquote {
   color: #ABC123;
   border-left: solid 3px #ABC123;
   padding: 1em;
 }
 </code></pre>
-
 <p>This problem is slightly alleviated by properties being inherited, however
 large blocks of CSS could often become hard to maintain.</p>
-
 <p>Custom properties allow CSS authors to use arbitrary properties with a <code>--</code>
 prefix. These properties can then be referenced using the <code>var</code> function. For
 example the CSS above could be written as follows:</p>
-
 <pre><code>:root {
   --example-color: #ABC123;
 }
@@ -72,11 +66,8 @@ blockquote {
   padding: 1em;
 }
 </code></pre>
-
 <h2>Dynamic CSS</h2>
-
 <p>A slightly more complicated example might looks something like this:</p>
-
 <pre><code>:root {
   --accent-hue: 200;
   --accent-color: hsla(var(--accent-hue), 50%, 45%, 1);
@@ -94,56 +85,46 @@ blockquote {
   font-style: italic;
 }
 </code></pre>
-
 <p>In the example above <code>--accent-hue</code> is used to control the <code>--accent-color</code>
 property, which is reference by declarations later on in the style sheet.
 Because the accent colour is controlled entirely by the custom property, it's
 easy to dynamically modify the accent colour hue with JavaScript similar to the
 following:</p>
-
 <pre><code>var new_hue = 100;
 document.documentElement.style.setProperty("--accent-hue", new_hue);
 </code></pre>
-
 <p>The screenshot below shows a <a href="/2017/css-custom-properties-demo.html">demo page</a> using JavaScript to do
 this:</p>
-
 <p><img class="pure-img" src="/2017/css-custom-property-example.png"
   alt="Example web page using CSS custom properties to dynamically control
   colours" /></p>
-
 <h2>What about CSS preprocessors?</h2>
-
 <p>At the time of writing CSS preprocessors such as <a href="http://lesscss.org/">less</a> or
 <a href="http://sass-lang.com/">Sass</a> are commonly used when working with large style sheets. While
 CSS custom properties are unlikely to complete replace CSS preprocessors, there
 is definitely an overlap with problems preprocessors are being used to solve,
 and what can now be done with the addition of custom properties.</p>
-
 <p>One key point to consider is variables used in custom processors cannot be
 referenced or modified by a browser after compilation. This means they cannot
 be dynamically modified by JavaScript or updated based on <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries">CSS media
 queries</a>. Ultimately I suspect custom properties will be
 used along side preprocessors, however time will tell.</p>
-
 <h2>Further reading</h2>
-
 <p>If you want to learn more about CSS custom properties I would recommend having
 a look at the following:</p>
-
 <ul>
 <li><a href="https://www.w3.org/TR/2015/CR-css-variables-1-20151203/">The W3C specification</a> on CSS custom properties</li>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables">The MDN documentation</a> on using CSS custom properties</li>
-<li><a href="https://philipwalton.com/articles/why-im-excited-about-native-css-variables/">Why I&#39;m Excited About Native CSS Variables</a> by Philip Walton</li>
+<li><a href="https://philipwalton.com/articles/why-im-excited-about-native-css-variables/">Why I'm Excited About Native CSS Variables</a> by Philip Walton</li>
 </ul>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

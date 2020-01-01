@@ -43,141 +43,141 @@
 now. The key principal is software tests should be written before software.
 <a href="https://en.wikipedia.org/wiki/Kent_Beck">Kent Beck</a> is often credited with creating test driven
 development, however he claims only to have rediscovered it:</p>
-
 <blockquote>
-  <p>The original description of TDD was in an ancient book about programming. It
-  said you take the input tape, manually type in the output tape you expect,
-  then program until the actual output tape matches the expected output. After
-  I'd written the first xUnit framework in Smalltalk I remembered reading this
-  and tried it out. That was the origin of TDD for me. When describing TDD to
-  older programmers, I often hear, "Of course. How else could you program?"
-  Therefore I refer to my role as "rediscovering" TDD.</p>
+<p>The original description of TDD was in an ancient book about programming. It
+said you take the input tape, manually type in the output tape you expect,
+then program until the actual output tape matches the expected output. After
+I'd written the first xUnit framework in Smalltalk I remembered reading this
+and tried it out. That was the origin of TDD for me. When describing TDD to
+older programmers, I often hear, "Of course. How else could you program?"
+Therefore I refer to my role as "rediscovering" TDD.</p>
 </blockquote>
-
 <p>This post is going to go over some of the background to test driven
 development, and will hopefully be followed up with a future post on using the
 <a href="https://docs.python.org/3.6/library/unittest.html">Python unittest</a> module to do test driven development in
 Python.</p>
-
 <h2>Developing without tests</h2>
-
 <p>One of the most common approaches to development looks something like this:</p>
-
 <p><img src="/2018/simple-dev-cycle.svg" alt="Diagram showing a simple
     development cycle"/></p>
-
 <p>Certainly when I initially learnt to program I would regularly write small
 sections of code, run the code with temporary print statements, debug any
 errors, then go back to writing the next section of code.</p>
-
 <p>This approach is certainly intuitive and works well for small sections of code.
 Unfortunately as projects get bigger a few problems start to creep in:</p>
-
 <ul>
 <li>Debugging becomes harder as you have more code to look through when
-identifying issues.</li>
+   identifying issues.</li>
 <li>Refactoring code becomes a scary prospect because you're not sure what the
-knock on effects will be.</li>
+   knock on effects will be.</li>
 <li>When coming back to old code it's very easy to forget environment
-requirements. For example, if you're using a slightly different version of a
-library this can introduce subtle bugs which are hard to track down
-quickly.</li>
+   requirements. For example, if you're using a slightly different version of a
+   library this can introduce subtle bugs which are hard to track down
+   quickly.</li>
 </ul>
-
 <h2>Adding tests</h2>
-
 <p>To address the issues above you can start writing tests. In theory you could
 just write manual tests and run them yourself, however this quickly becomes
 time consuming, and repeating tests manually is no fun. To avoid this test
 cases can be automated with a test framework like the <code>unittest</code> module in
 Python.</p>
-
 <p>In essence automated tests are just code which programmatically checks the code
 you're working on works as expected, however it's worth learning the terms
 below if you're new to automated tests:</p>
-
 <ul>
-<li><p><strong>test fixture</strong>: A test fixture represents the preparation needed to
-perform one or more tests, and any associate cleanup actions. This may
-involve, for example, creating temporary or proxy databases, directories, or
-starting a server process.</p></li>
-<li><p><strong>test case</strong>: A test case is the individual unit of testing. It checks for
-a specific response to a particular set of inputs. <code>unittest</code> provides a
-base class, TestCase, which may be used to create new test cases.</p></li>
-<li><p><strong>test suite</strong>: A test suite is a collection of test cases, test suites, or
-both. It is used to aggregate tests that should be executed together.</p></li>
-<li><p><strong>test runner</strong>: A test runner is a component which orchestrates the
-execution of tests and provides the outcome to the user. The runner may use
-a graphical interface, a textual interface, or return a special value to
-indicate the results of executing the tests.</p></li>
+<li>
+<p><strong>test fixture</strong>: A test fixture represents the preparation needed to
+   perform one or more tests, and any associate cleanup actions. This may
+   involve, for example, creating temporary or proxy databases, directories, or
+   starting a server process.</p>
+</li>
+<li>
+<p><strong>test case</strong>: A test case is the individual unit of testing. It checks for
+   a specific response to a particular set of inputs. <code>unittest</code> provides a
+   base class, TestCase, which may be used to create new test cases.</p>
+</li>
+<li>
+<p><strong>test suite</strong>: A test suite is a collection of test cases, test suites, or
+   both. It is used to aggregate tests that should be executed together.</p>
+</li>
+<li>
+<p><strong>test runner</strong>: A test runner is a component which orchestrates the
+   execution of tests and provides the outcome to the user. The runner may use
+   a graphical interface, a textual interface, or return a special value to
+   indicate the results of executing the tests.</p>
+</li>
 </ul>
-
 <p><strong>Note</strong>: the definitions above were taken from the <a href="https://docs.python.org/3.6/library/unittest.html">Python unittest
 docs</a>.</p>
-
 <p>When I initially started writing automated tests I would normally do something
 similar to the following:</p>
-
 <p><img src="/2018/simple-dev-cycle-with-tests.svg" alt="Diagram showing a
     simple development cycle, followed by writing tests" /></p>
-
 <p>This is fairly natural because the initial development model remains the same,
 and tests are only introduced after an initial version of the code is ready.
 Unfortunately there are a few problems with this approach:</p>
-
 <ul>
-<li><p>Writing test cases is often a bit monotonous, as a result it's very tempting
-to just skip writing automated tests.</p></li>
-<li><p>Like proof reading, trying to write tests for code you're already familiar
-with is tricky. It's very easy to make assumptions because you already know
-how the code works, and miss important test cases. Getting someone to peer
-review your code can help with this, however this isn't always possible.</p></li>
-<li><p>In theory the code you have is already working, so unless you go back and
-modify the code to verify tests will fail correctly there is a good chance
-your tests might not catch errors.</p></li>
+<li>
+<p>Writing test cases is often a bit monotonous, as a result it's very tempting
+   to just skip writing automated tests.</p>
+</li>
+<li>
+<p>Like proof reading, trying to write tests for code you're already familiar
+   with is tricky. It's very easy to make assumptions because you already know
+   how the code works, and miss important test cases. Getting someone to peer
+   review your code can help with this, however this isn't always possible.</p>
+</li>
+<li>
+<p>In theory the code you have is already working, so unless you go back and
+   modify the code to verify tests will fail correctly there is a good chance
+   your tests might not catch errors.</p>
+</li>
 </ul>
-
 <h2>Writing tests during development</h2>
-
 <p>As the name implies, in test driven development test cases are written before
 developing the code to pass the test case. Initially a test case is written and
 executed to confirm it fails; code to pass the test case is then written; and
 finally the passing code is refactored before writing the next test case:</p>
-
 <p><img src="/2018/tdd-dev-cycle.svg" alt="Diagram showing the main steps in a
     test driven development cycle." /></p>
-
 <p>Unlike the methods above, test cases are written during the code development
 cycle. This has a few advantages:</p>
-
 <ul>
-<li><p>Tests should both fail then pass during development. This reduces the chance
-of faulty test cases which always pass, even if the implementation is
-incorrect.</p></li>
-<li><p>Testing is part of the development process, so the temptation to just skip
-writing tests is reduced.</p></li>
-<li><p>Because tests are written before the code, test cases are less likely to be
-influenced by the implementation.</p></li>
+<li>
+<p>Tests should both fail then pass during development. This reduces the chance
+   of faulty test cases which always pass, even if the implementation is
+   incorrect.</p>
+</li>
+<li>
+<p>Testing is part of the development process, so the temptation to just skip
+   writing tests is reduced.</p>
+</li>
+<li>
+<p>Because tests are written before the code, test cases are less likely to be
+   influenced by the implementation.</p>
+</li>
 </ul>
-
 <p>Unfortunately there are also some disadvantages associated with test driven
 development:</p>
-
 <ul>
-<li><p>You need to have a good understanding of how to write test cases, without
-this development will be very slow.</p></li>
-<li><p>Because tests are written upfront, initial development will be slower. This
-isn't great if you decide your going to take a different implementation
-approach and throw away your initial work.</p></li>
+<li>
+<p>You need to have a good understanding of how to write test cases, without
+   this development will be very slow.</p>
+</li>
+<li>
+<p>Because tests are written upfront, initial development will be slower. This
+   isn't great if you decide your going to take a different implementation
+   approach and throw away your initial work.</p>
+</li>
 </ul>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

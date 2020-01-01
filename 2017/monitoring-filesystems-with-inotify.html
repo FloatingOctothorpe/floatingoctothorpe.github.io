@@ -43,44 +43,33 @@
 watch for filesystem events, such as files being modified. inotify has been
 part of the Linux kernel since version 2.6.13, and therefore should already be
 available in modern Linux distributions.</p>
-
 <h2>inotify-tools</h2>
-
 <p>A quick way to get started with inotify is by installing <code>inotify-tools</code>. On
 <a href="https://www.centos.org/">CentOS 7</a> <code>inotify-tools</code> can be installed from
 <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a>:</p>
-
 <pre><code>yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install inotify-tools
 </code></pre>
-
 <p>Once the package is installed you should be able to use
 <a href="http://man7.org/linux/man-pages/man1/inotifywatch.1.html">inotifywatch</a> and <a href="http://man7.org/linux/man-pages/man1/inotifywait.1.html">inotifywait</a>.
 By default <code>inotifywait</code> will run until a inode event matching the arguments
 passed to it occurs. For example:</p>
-
 <pre><code>inotifywait --event delete_self /tmp/foobar
 </code></pre>
-
 <p>The command above will wait until <code>/tmp/foobar</code> is deleted, the output of the
 command will look similar to the following:</p>
-
 <pre><code>$ inotifywait --event delete_self /tmp/foobar
 Setting up watches.
 Watches established.
 /tmp/foobar DELETE_SELF
 $
 </code></pre>
-
 <p>The <code>inotifywatch</code> command works in a similar way, except it counts events and
 produces a summary. For example the command below will watch <code>/etc/passwd</code> and
 <code>/etc/shadow</code> for 60 seconds:</p>
-
 <pre><code>inotifywatch -t 60 /etc/passwd /etc/shadow
 </code></pre>
-
 <p>The output of the command will be similar to the following:</p>
-
 <pre><code>$ inotifywatch -t 60 /etc/passwd /etc/shadow
 Establishing watches...
 Finished establishing watches, now collecting statistics.
@@ -89,21 +78,16 @@ total  access  attrib  close_write  close_nowrite  open  delete_self  filename
 7      2       1       1            0              1     1            /etc/shadow
 $
 </code></pre>
-
 <h2>Automatically running Make</h2>
-
 <p>A fairly common sequence when programming is running through the following
 steps:</p>
-
 <ol>
 <li>Modify code</li>
 <li>Re-compile</li>
 <li>Test code</li>
 </ol>
-
 <p>A simple way to automate this is to poll the filesystem for changes, this can
 be done with a script similar to the following:</p>
-
 <pre><code>while true; do
     if find src/ -mmin 1 &gt; /dev/null; do
         make
@@ -112,15 +96,12 @@ be done with a script similar to the following:</p>
     fi
 done
 </code></pre>
-
 <p>However this has two main drawbacks, you're constantly having to check files
 for changes, and if you're unlucky you might have to wait the entire interval
 between polling, 10 seconds in the example above, before <code>make</code> recompiles the
 code.</p>
-
 <p>To get around this <code>inotifywait</code> can be used to monitor the source files for
 changes:</p>
-
 <pre><code>while true; do
 
     # Wait for changes in the src/ directory
@@ -135,16 +116,12 @@ changes:</p>
     make
 done
 </code></pre>
-
 <p><strong>Note</strong>: <code>--exclude</code> is used to prevent <code>inotifiywait</code> monitoring swap files
 written by Vim.</p>
-
 <h2>Processing inbound files</h2>
-
 <p>Another common use for inotify is watching input directories for new files. For
 example you could set up a script to automatically create thumbnails for new
 images:</p>
-
 <pre><code>#!/bin/sh
 #
 # Generate thumbnails for new JPG files.
@@ -169,17 +146,13 @@ do
   fi
 done
 </code></pre>
-
 <p>When the script above is run it will start watching <code>/var/images</code> for new JPG
 files. Files can then be copied to the directory, e.g.:</p>
-
 <pre><code>$ scp cat.jpg  host.example.com:/var/images
 user@host.example.com's password:
 </code></pre>
-
 <p>The script will detect the new file and make the corresponding thumbnail image
 (<code>cat_thumb.jpg</code>):</p>
-
 <pre><code>$ generate_thumbnails.sh
 Setting up watches.  Beware: since -r was given, this may take a while!
 Watches established.
@@ -190,9 +163,9 @@ Creating: /var/images/cat_thumb.jpg
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

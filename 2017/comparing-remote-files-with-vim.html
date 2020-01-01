@@ -42,63 +42,42 @@
 <p>I've been using <a href="http://www.vim.org/">Vim</a> for quite a few years now. One of the nice
 things about Vim is your often run in to useful features you didn't know
 existed.</p>
-
 <h2>Editing remote files</h2>
-
 <p>One feature I recently stumbled over is the ability to edit remote files using
 <a href="http://man7.org/linux/man-pages/man1/scp.1.html">scp</a>. To open a remote file you can just pass Vim a URL, for
 example:</p>
-
 <pre><code>vim scp://remote.example.com//tmp/somefile.txt
 </code></pre>
-
 <p>Behind the scenes Vim will then copy the file to <code>/tmp</code>, and changes made to
 this file will be copied back to the remote host via scp.</p>
-
 <p>Instead of opening a remote file while launching Vim, files can also be opened
 afterwards with the following:</p>
-
 <pre><code>:e scp://remote.example.com//tmp/somefile.txt
 </code></pre>
-
 <p>In a similar vein, remote files can be read into the current buffer with <code>:r</code>:</p>
-
 <pre><code>:r scp://remote.example.com//etc/hosts
 </code></pre>
-
 <h3>Other protocols</h3>
-
 <p>As well as <code>scp</code>, the <a href="https://vimhelp.appspot.com/pi_netrw.txt.html">netrw plugin</a> also supports several
 other protocols including <code>ftp</code>, <code>rsync</code> and <code>sftp</code>.</p>
-
 <h2>Comparing remote files</h2>
-
 <p>Normally files are compared in Vim using the <a href="https://vimhelp.appspot.com/diff.txt.html">diff feature</a>. The
 easiest way to do this is with the <code>vimdiff</code> command, for example:</p>
-
 <pre><code>vimdiff /etc/krb5.conf /etc/krb5.conf.backup
 </code></pre>
-
 <p>This can also be used to compare a remote file:</p>
-
 <pre><code>vimdiff /etc/krb5.conf scp://remote.example.com//etc/krb5.conf
 </code></pre>
-
 <p>The resulting Vim windows will look similar to the following:</p>
-
 <p><img class="pure-img" src="/2017/vimdiff-with-a-remote-file.png"
   alt="vimdiff comparing a local and a remote file" /></p>
-
 <h2>Further reading</h2>
-
 <p>If you need more information it's worth referring to the following Vim docs:</p>
-
 <ul>
 <li><a href="https://vimhelp.appspot.com/diff.txt.html">diff.txt</a>: Vim diff mode documentation</li>
 <li><a href="https://vimhelp.appspot.com/pi_netrw.txt.html">pi_netrw.txt</a>: reading and writing files over a network</li>
 <li><a href="https://vimhelp.appspot.com/windows.txt.html">windows.txt</a>: commands for using multiple windows and buffers</li>
 </ul>
-
 <p><strong>Note</strong>: the documentation above can also be accessed in Vim directly. For
 example <code>:help diff.txt</code> will bring up the documentation on the diff feature.</p>
       </article>
@@ -106,9 +85,9 @@ example <code>:help diff.txt</code> will bring up the documentation on the diff 
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

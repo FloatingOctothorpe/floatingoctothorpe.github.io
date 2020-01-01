@@ -42,22 +42,16 @@
 <p><a href="https://en.wikipedia.org/wiki/WebSocket">Websockets</a> were standardized back in 2011 (<a href="https://tools.ietf.org/html/rfc6455">RFC
 6455</a>). Since then support has been added to <a href="http://caniuse.com/websockets">most major
 browsers</a>.</p>
-
 <h2>Background</h2>
-
 <p>Websockets allow full duplex communication between a browser and a server. This
 is particularly useful for applications which need to frequently send and
 receive small messages because it avoids HTTP overhead.</p>
-
 <p>In Javascript, new Websocket connections are made with code similar to the
 following:</p>
-
 <pre><code>var ws = new WebSocket('ws://example.com/socket')
 </code></pre>
-
 <p>When a connection is established the client will send a request with an
 <a href="https://en.wikipedia.org/wiki/HTTP/1.1_Upgrade_header">HTTP/1.1 upgrade header</a> similar to the following:</p>
-
 <pre><code>GET /socket HTTP/1.1
 Host: example.com
 Upgrade: websocket
@@ -66,39 +60,29 @@ Connection: keep-alive, Upgrade
 Sec-WebSocket-Key: PdspSkfns9qGxGTNajm+Tw==
 Sec-WebSocket-Version: 13
 </code></pre>
-
 <p>If the server supports Websockets, it will reply with a message similar to the
 following:</p>
-
 <pre><code>HTTP/1.1 101 Switching Protocols
 Upgrade: websocket
 Connection: Upgrade
 Sec-WebSocket-Accept: eO+uwdEEfbO7q68DAzeDjM4Gs8c=
 </code></pre>
-
 <p>From this point on, the connection will look more like a standard TCP
 connection.  As well as not requiring any HTTP headers for subsequent messages,
 messages can be sent by either the client or the server (bidirectional) and
 messages can be sent at the same time (full-duplex).</p>
-
 <h2>Setting up a server</h2>
-
 <p>There is a pretty wide range of libraries which can be used to implement a
 Websocket server. This post is going to use the <a href="http://www.tornadoweb.org/en/stable/">Tornado</a> Python
 web framework. On CentOS 7 it can either be installed with <code>yum</code>:</p>
-
 <pre><code>yum install -y python-tornado
 </code></pre>
-
 <p>Alternatively if you need a more up-to-date version, it can be installed using
 <code>pip</code>:</p>
-
 <pre><code>pip install tornado
 </code></pre>
-
 <p>Once Tornado is installed, a very simple Websocket application could look
 something like the following:</p>
-
 <pre><code>#!/usr/bin/env python
 
 """A simple Websocket server which just echos messages"""
@@ -118,45 +102,33 @@ if __name__ == '__main__':
     APP.listen(8888)
     tornado.ioloop.IOLoop.instance().start(
 </code></pre>
-
 <p>In the code above the key method is the <code>on_message</code> method. This is called
 every time a client sends a new message and replies with the clients message
 prefixed with<code>server:</code>. Starting the server is just a case of running the
 script with Python:</p>
-
 <pre><code>$ python websocket_echo_server.py
 </code></pre>
-
 <p><strong>Note</strong>: unlike other Python web frameworks, Tornado isn't normally use with a
 WSGI server, however this is possible. For more info, refer to the <a href="http://www.tornadoweb.org/en/stable/guide/running.html">Tornado
 deployment docs</a>.</p>
-
 <h2>Connecting to a Websocket</h2>
-
 <p>Once the Websocket server is up and running Javascript similar to the following
 can be used to connect to the server:</p>
-
 <pre><code>var ws = new WebSocket('ws://localhost:8888/socket');
 </code></pre>
-
 <p>A call-back function can then be defined to handle messages:</p>
-
 <pre><code>ws.onmessage = function(evt){
   console.log(evt.data);
 };
 </code></pre>
-
 <p>And finally a test message can be sent to the server:</p>
-
 <pre><code>ws.send("Hello world");
 </code></pre>
-
 <p>If everything works as expected, the server should reply with
 <code>server: Hello world</code>, which should be logged to the console. Normally the
 Javascript above would be included in a web page, however a quick way to test
 the code is to open the Firefox Web Console ( <kbd>ctrl</kbd> +
 <kbd>shift</kbd> + <kbd>k</kbd> ) and type directly into the console:</p>
-
 <p><img class="pure-img" src="/2017/firefox-devtools-websocket.png"
   alt="A screenshot showing the Firefox Web Console being used to connect to a
   Websocket."/></p>
@@ -165,9 +137,9 @@ the code is to open the Firefox Web Console ( <kbd>ctrl</kbd> +
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

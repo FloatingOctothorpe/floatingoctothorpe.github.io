@@ -43,36 +43,27 @@
 to other serialization languages like <a href="http://www.json.org/">JSON</a>, YAML does offer more
 features and flexibility. Unfortunately this also makes it easier to make
 mistakes with YAML.</p>
-
 <h2>Validating files</h2>
-
 <p>Below is a trivial YAML file:</p>
-
 <pre><code>---
 key:
   - foo
   - bar
 </code></pre>
-
 <p>At first glance the file looks fine, however first item is indented with a tab.
 As a result the file doesn't meet the <a href="http://www.yaml.org/spec/1.2/spec.html#id2777534">YAML spec</a>:</p>
-
 <pre><code>$ hexdump -c example.yaml
 0000000   -   -   -  \n   k   e   y   :  \n  \t   -       f   o   o  \n
 0000010           -       b   a   r  \n
 0000018
 </code></pre>
-
 <p>The following <a href="https://www.ruby-lang.org/en/">Ruby</a> command can be used to check for errors in the
 file:</p>
-
 <pre><code>ruby -r yaml -e 'YAML.load_file ARGV[0];puts "ok"' example.yaml
 </code></pre>
-
 <p>This command uses the <a href="https://ruby-doc.org/stdlib-trunk/libdoc/yaml/rdoc/YAML.html">Ruby YAML library</a>, loaded by <code>-r</code>, to
 try to parse the file specified by the first argument. Running this should
 produce a stack trace similar to the following for the example above:</p>
-
 <pre><code>/usr/share/ruby/psych.rb:205:in `parse': (example.yaml): found character that cannot start any token while scanning for the next token at line 3 column 1 (Psych::SyntaxError)
         from /usr/share/ruby/psych.rb:205:in `parse_stream'
         from /usr/share/ruby/psych.rb:153:in `parse'
@@ -82,44 +73,30 @@ produce a stack trace similar to the following for the example above:</p>
         from /usr/share/ruby/psych.rb:299:in `load_file'
         from -e:1:in `&lt;main&gt;'
 </code></pre>
-
 <p>The example above can quickly be fixed by using <code>sed</code> to replace leading tabs
 with spaces:</p>
-
 <pre><code>$ sed -i 's/^\t/  /' example.yaml
 </code></pre>
-
 <p>Once the YAML file has been fixed, running the command again should return <code>ok</code>:</p>
-
 <pre><code>$ ruby -r yaml -e 'YAML.load_file ARGV[0];puts "ok"' example.yaml
 ok
 </code></pre>
-
 <h3>Reading from stdin</h3>
-
 <p>Alternatively the command above can be adapted to read from <code>STDIN</code> instead:</p>
-
 <pre><code>ruby -r yaml -e 'YAML.load STDIN;puts "ok"'
 </code></pre>
-
 <p>This is useful if the YAML is being generated from another command. For
 example:</p>
-
 <pre><code>$ curl -s http://localhost:8000/example | ruby -r yaml -e 'YAML.load STDIN;puts "ok"'
 ok
 </code></pre>
-
 <h2>Validating JSON</h2>
-
 <p>The <a href="https://ruby-doc.org/stdlib-trunk/libdoc/json/rdoc/JSON.html">Ruby JSON library</a> can be used in a similar way to
 validate JSON files:</p>
-
 <pre><code>$ ruby -r json -e 'JSON.load File.open(ARGV[0]);puts "ok"' example.json
 ok
 </code></pre>
-
 <p>And to validate JSON from STDIN:</p>
-
 <pre><code>$ cat example.json | ruby -r json -e 'JSON.load STDIN;puts "ok"'
 ok
 </code></pre>
@@ -128,9 +105,9 @@ ok
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

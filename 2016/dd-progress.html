@@ -41,25 +41,19 @@
 
 <p><a href="https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html">dd</a> is a great tool for creating bootable media. For example putting
 <a href="https://www.raspbian.org/">raspbian</a> onto an SD card is just a case of running:</p>
-
 <pre><code>dd if=2016-05-27-raspbian-jessie-lite.img of=/dev/sdd bs=4M
 </code></pre>
-
 <p>By default dd prints nothing until it has finished copying. If you have a large
 image, or if the device you're copying to has no status LED this isn't ideal.
 Thankfully there are a few ways around this.</p>
-
 <p><strong>Note</strong>: Make sure you are writing to the correct block device, dd will
 happily overrite your system disk if you tell it to! Checking
 <code>/proc/partitions</code> or running <code>dmesg</code> might be helpful.</p>
-
 <h2>Kill signals</h2>
-
 <p>The <a href="https://www.gnu.org/software/coreutils/manual/html_node/kill-invocation.html#kill-invocation">kill</a> command can be used for more than just stopping
 processes. You can send any signal including <code>SIGUSR1</code> (check
 <a href="http://man7.org/linux/man-pages/man7/signal.7.html">signal(7)</a> for more info). If you do this dd will print I/O
 stats to stderr then continue copying:</p>
-
 <pre><code># Find the pid
 $ pgrep '^dd$'
 22410
@@ -67,62 +61,45 @@ $ pgrep '^dd$'
 # Send SIGUSR1 to dd using kill
 $ kill -USR1 22410
 </code></pre>
-
 <p>You should then get output similar to the following:</p>
-
 <pre><code>330+1 records in
 330+1 records out
 1387266048 bytes (1.4 GB) copied, 80.9681 s, 17.1 MB/s
 </code></pre>
-
 <p>If you want to run this every 30 seconds you can do something like:</p>
-
 <pre><code>while [ "$(pgrep '^dd$')" ]; do
   kill -USR1 $(pgrep '^dd$')
   sleep 30
 done
 </code></pre>
-
 <h2>Using pv</h2>
-
 <p>You can also use the <a href="http://man7.org/linux/man-pages/man1/pv.1.html">pv</a> command if it's installed:</p>
-
 <pre><code>dd if=2016-05-27-raspbian-jessie-lite.img | pv | dd of=/dev/sdd bs=4M
 </code></pre>
-
 <p>Doing this will give you a progress bar similar to the following:</p>
-
 <pre><code>43MiB 0:00:06 [7.2MiB/s] [    &lt;=&gt;               ]
 </code></pre>
-
 <p>Because you're using two dd processes, you will end up with I/O stats being
 printed from each process. To suppress this you can use <code>status=none</code>:</p>
-
 <pre><code>dd if=2016-05-27-raspbian-jessie-lite.img status=none | pv | dd of=/dev/sdd bs=4M
 </code></pre>
-
 <h2>New status option</h2>
-
 <p>If you're using a later version of dd (<a href="https://www.gnu.org/software/coreutils/coreutils.html">Coreutils</a> 8.24+) you
 can also just use <code>status=progress</code>:</p>
-
 <pre><code>dd if=2016-05-27-raspbian-jessie-lite.img of=/dev/sdd bs=4M status=progress
 </code></pre>
-
 <p>This will print I/O stats regularly while dd is copying data:</p>
-
 <pre><code>10485760 bytes (10 MB, 10 MiB) copied, 0.703711 s, 14.9 MB/s
 </code></pre>
-
 <p>You can check the version of Coreutils you are using by running <code>dd --version</code>.</p>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

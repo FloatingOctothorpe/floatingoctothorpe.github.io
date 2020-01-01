@@ -43,15 +43,12 @@
 already familiar with another programming language, most of this chapter should
 seem pretty familiar to you. This post is quickly going to go over some of the
 more unusual control flow statements which might be new to you.</p>
-
 <h2>Switch statement</h2>
-
 <p>Switch statements are fairly common, however there are some languages, notably
 <a href="https://docs.python.org/2/faq/design.html#why-isn-t-there-a-switch-or-case-statement-in-python">Python</a>, which don't include a switch statement. In C
 switch statements take a single expression, and then compare the result against
 multiple cases. If a case matches the statements following the matching case
 are executed. For example:</p>
-
 <pre><code>switch (next_char) {
   case 'a':
     t[j++] = '\a';
@@ -76,14 +73,10 @@ are executed. For example:</p>
     break;
 }
 </code></pre>
-
 <p><strong>Note</strong>: in the example above <code>break;</code> is used to exit the switch statement to
 avoid checking subsequent cases.</p>
-
 <h2>Infinite for loops</h2>
-
 <p>It's actually possible to omit every expression in a for loop. For example:</p>
-
 <pre><code>#include &lt;stdio.h&gt;
 
 int main()
@@ -102,42 +95,32 @@ int main()
   return 0;
 }
 </code></pre>
-
 <p>The code above will loop until <code>seconds</code> is divisible by 10, at which point
 <code>break;</code> is used to exit the for loop. While the code above is valid, the for
 loop could easily be re-written as follows:</p>
-
 <pre><code>for (seconds = time('\0') % 60; seconds % 10 != 0; seconds = time('\0') % 60)
   sleep(1);
 </code></pre>
-
 <h2>do-while loops</h2>
-
 <p>Another slightly unusual control flow statement is the <code>do-while</code> loop. This
 behaves in a similar way to a normal while loop, except the expression comes
 after the statements. For example:</p>
-
 <pre><code>do {
   seconds = time('\0') % 60;
   sleep(1);
 } while (seconds % 10 != 0);
 </code></pre>
-
 <p><strong>Note</strong>: because the condition is evaluated at the end, the statements
 preceding it will always be run at least once.</p>
-
 <h2>goto and labels</h2>
-
 <p>C also supports <code>goto</code> statements. These can be used to jump to a corresponding
 label. For example</p>
-
 <pre><code>if (error)
   goto handle_error;
 
 handle_error:
   fprintf(stderr, "Something bad happended...\n");
 </code></pre>
-
 <p>Generally <code>goto</code> statements are rarely used, however it's worth knowing how
 they work in case you do run into one.</p>
       </article>
@@ -145,9 +128,9 @@ they work in case you do run into one.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

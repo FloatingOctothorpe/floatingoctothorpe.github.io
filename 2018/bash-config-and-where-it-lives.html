@@ -43,14 +43,11 @@
 you're new to bash it's not always obvious which configuration file you should
 use when adding custom configuration. This post is going to go over which
 configuration files bash reads, and when.</p>
-
 <h2>Bash configuration</h2>
-
 <p>When you start a new bash shell, bash will look in several different locations
 for configuration files. Configuration files can contain anything you can
 normally type into bash, for example you might want to set up some command
 aliases, or environment variables:</p>
-
 <pre><code># Add ~/bin to path
 export PATH="$PATH:~/bin"
 
@@ -61,80 +58,60 @@ export VISUAL=vim
 alias ls='ls --color=auto'
 alias ll='ls -l --color=auto'
 </code></pre>
-
 <h3>Login and interactive shells</h3>
-
 <p>If bash is started by a login process (e.g. by <code>/bin/login</code>) the first argument
 by convention is prefixed with a <code>-</code> character:</p>
-
 <pre><code>$ echo $0
 -bash
 </code></pre>
-
 <p>Bash uses this to determine if the shell should be treated as a login shell.
 Bash then checks to see if the shell is interactive, this is done by calling
 <a href="http://man7.org/linux/man-pages/man3/isatty.3.html">isatty</a> to check stdin and stderr are connected to a tty. There
 are a few exceptions to this, for example using the <code>-c</code> option will normally
 prevent bash running as an interactive shell. For more info on the other
 exceptions, refer to the <a href="https://www.gnu.org/software/bash/manual/html_node/What-is-an-Interactive-Shell_003f.html">bash docs</a>.</p>
-
 <h3>Bashrc and profile config</h3>
-
 <p>Once bash has checked to see if it's being run as a login or interactive shell,
 it decides which config files to load as follows:</p>
-
 <p><img class="pure-img" src="/2018/bash-config-flow-diagram.svg"
   alt="Flow diagram showing which config bash reads at startup" /></p>
-
 <p>Profile configuration is loaded from <code>/etc/profile</code>, if the file exists.  And
 then from one of the following files:</p>
-
 <ol>
 <li><code>~/.bash_profile</code></li>
 <li><code>~/.bash_login</code></li>
 <li><code>~/.profile</code></li>
 </ol>
-
 <p>The files in <code>~</code> are checked in order, so <code>~/.bash_login</code> will only be read if
 <code>~/.bash_profile</code> is missing, and <code>~/.profile</code> will only be read if both
 <code>~/.bash_profile</code> and <code>~/bash_login</code> are missing. Bashrc configuration is
 slightly more straightforward, it's simply read from <code>~/.bashrc</code> if the file
 exists.</p>
-
 <h3>Sourcing other files</h3>
-
 <p>In theory if you start a new login shell, bash will not attempt to read
 <code>~/.bashrc</code>. However in reality bash configuration normally sources other
 configuration. The diagrams below show which files are normally read on CentOS
 for a user with default bash configuration:</p>
-
 <p><img class="pure-img" src="/2018/bash-config-default-source-order-diagram.svg"
   alt="Flow diagram showing the order bash config is loaded on CentOS" /></p>
-
 <p><strong>Note</strong>: the files in <code>/etc/</code> are global and will be read by all users
 including <code>root</code>; whereas the files in <code>~/</code> are obviously user specific.</p>
-
 <h3>Logout config</h3>
-
 <p>As well as loading config during startup, bash can also be configured to run
 commands on exit. To do this configuration should be put in <code>~/.bash_logout</code>.
 Like profile config, this config is only used by login shells, however unlike
 profile configuration you cannot force bash to read the configuration with the
 <code>-l</code> option.</p>
-
 <h2>Exceptions and special cases</h2>
-
 <p>There are a few exceptions and special cases which are worth knowing about:</p>
-
 <ul>
 <li><strong>Command line options</strong>: several command line options such as <code>--norc</code>,
-<code>--noprofile</code> and <code>--login</code> can be used to alter bash's default behaviour.</li>
+   <code>--noprofile</code> and <code>--login</code> can be used to alter bash's default behaviour.</li>
 <li><strong>Running as <code>sh</code></strong>: if bash is invoked as <code>sh</code> it will try to emulate the
-<a href="https://en.wikipedia.org/wiki/Bourne_shell">Bourne shell</a>.</li>
+   <a href="https://en.wikipedia.org/wiki/Bourne_shell">Bourne shell</a>.</li>
 <li><strong>Environment variables</strong>: <code>BASH_ENV</code> can be used to specify additional
-config for non-interactive shells.</li>
+   config for non-interactive shells.</li>
 </ul>
-
 <p>Full details on the points above can be found in the <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html#Bash-Startup-Files">Bash
 docs</a>.</p>
       </article>
@@ -142,9 +119,9 @@ docs</a>.</p>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

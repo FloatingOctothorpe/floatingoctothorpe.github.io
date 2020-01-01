@@ -41,36 +41,27 @@
 
 <p>When working with shell scripts, it's very easy to get tripped up by line
 returns and get output which looks something like this:</p>
-
 <pre><code>$ ./example.sh
 -bash: ./example.sh: /bin/sh^M: bad interpreter: No such file or directory
 </code></pre>
-
 <p>The first time you run into this problem, it can be a little confusing. Running
 the script as an argument to <a href="https://www.gnu.org/software/bash/">bash</a> will work as expected:</p>
-
 <pre><code>$ bash example.sh
 Hello world
 </code></pre>
-
 <p>And displaying the contents of the file with <a href="http://manpages.org/cat">cat</a> won't show any
 obvious problems:</p>
-
 <pre><code>$ cat example.sh
 #!/bin/sh
 echo 'Hello world'
 </code></pre>
-
 <h2>What's actually going on?</h2>
-
 <h3>A brief history of new lines</h3>
-
 <p>Most modern computers use <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a>, or a derivative like
 <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a>. ASCII characters can be split into two groups,
 printable characters and control characters. Printable characters are
 characters which can be represented visually, such as alphanumeric characters
 or punctuation.</p>
-
 <p>Control characters on the other hand are not normally displayed. Instead they
 provide instructions intended for the device displaying the text (e.g. a
 printer). Many of the control characters have their roots in actions you would
@@ -78,78 +69,59 @@ perform on a manual typewriter. For example when moving to a new line on a
 typewriter, you have to move the carriage back to the starting position and
 then feed the paper so you don't overwrite the previous line. These movements
 map to carriage returns (<code>\r</code>) and line feeds (<code>\n</code>) in ASCII.</p>
-
 <p>Unfortunately not all operating systems use the same sequence of control
 characters to represent a new line. Unix-like systems (Linux, OS X, FreeBSD
 etc) all use a single line feed (<code>\n</code>) to represent a new line. DOS and windows
 systems on the other hand use a carriage return followed by a line feed
 (<code>\r\n</code>).</p>
-
 <h3>Looking at the first line</h3>
-
 <p>When you execute a shell script, the first line contains a
 <a href="https://en.wikipedia.org/wiki/Shebang_(Unix)">shebang</a>, followed by the path to the interpreter which should
 be used. If you're using windows-style new lines you will have an extra
 carriage return before the line feed character.</p>
-
 <pre><code>$ hexdump -c example.sh
 0000000   #   !   /   b   i   n   /   s   h  \r  \n   e   c   h   o
 0000010   '   H   e   l   l   o       w   o   r   l   d   '  \r  \n
 000001f
 </code></pre>
-
 <p>As a result bash will try to use <code>/bin/sh\r</code> as the interpreter and fail. You
 can easily tell if you're using windows-style new lines using the <code>file</code>
 command:</p>
-
 <pre><code>$ file example.sh
 example.sh: POSIX shell script, ASCII text executable, with CRLF line terminators
 </code></pre>
-
 <h2>Removing extra carriage returns</h2>
-
 <p>To fix this issue, any extra carriage returns before a line feed need to be
 removed. There is a command called <a href="http://manpages.org/dos2unix">dos2unix</a> for doing this:</p>
-
 <pre><code>$ dos2unix example.sh
 dos2unix: converting file example.sh to Unix format ...
 </code></pre>
-
 <p>If you don't have <code>dos2unix</code> installed you can use <a href="http://manpages.org/sed">sed</a>:</p>
-
 <pre><code>$ sed -i 's/\r$//' example.sh
 </code></pre>
-
 <p>If for some reason you don't have <code>sed</code>, you can use <a href="http://manpages.org/tr">tr</a>:</p>
-
 <pre><code>$ tr -d '\r' &lt; example.sh &gt; example_fixed.sh
 </code></pre>
-
 <p>After doing one of the above you should be able to run your script:</p>
-
 <pre><code>$ ./example.sh
 Hello world
 </code></pre>
-
 <h3>Converting with Vim</h3>
-
 <p>Alternatively editors like <a href="http://www.vim.org/">Vim</a> can also be used to convert scripts.
 Typing the following in normal mode will set the new line style and rewrite the
 script without any carriage returns:</p>
-
 <pre><code>:set ff=unix
 :w
 </code></pre>
-
 <p><strong>Note</strong>: <code>ff</code> is short for <code>fileformat</code> and <code>w</code> is short for write.</p>
       </article>
     </div>
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>

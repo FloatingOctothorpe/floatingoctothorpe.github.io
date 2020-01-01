@@ -43,12 +43,9 @@
 unfortunately like many tools, it's easy to accidentally make a mistake using
 git. Thankfully it's normally possible to recover from mistakes; this post is
 going to go over recovering deleted branches.</p>
-
 <h2>Accidentally deleting a branch</h2>
-
 <p>For the example in this post I'm going to start with two branches, <code>master</code> and
 <code>dev</code>:</p>
-
 <pre><code>$ git lg
 * b55c4f7 - (25 seconds ago) Update readme file - Floatingoctothorpe (HEAD -&gt; master)
 | * 48263c7 - (2 minutes ago) Add doc string - Floatingoctothorpe (dev)
@@ -58,27 +55,20 @@ going to go over recovering deleted branches.</p>
 |/
 * 5a2a844 - (5 minutes ago) First commit - Floatingoctothorpe
 </code></pre>
-
 <p><strong>Note</strong>: <code>git lg</code> is an alias which runs <code>git log</code> with a number of options.
 Full details are in an earlier <a href="/2016/git-tips.html">Git tips post</a>.</p>
-
 <p>If you try to delete a branch in git which hasn't been merged using <code>-d</code> or
 <code>--delete</code>, git will normally refuse:</p>
-
 <pre><code>$ git branch -d dev
 error: The branch 'dev' is not fully merged.
 If you are sure you want to delete it, run 'git branch -D dev'.
 </code></pre>
-
 <p>However once you use <code>-D</code> the branch will be gone:</p>
-
 <pre><code>$ git branch -D dev
 Deleted branch dev (was 48263c7).
 </code></pre>
-
 <p>From this point on the branch will no longer be referenced, and won't appear
 when running <code>git lg</code> or <code>git rev-list --all</code>:</p>
-
 <pre><code>$ git lg
 * b55c4f7 - (76 seconds ago) Update readme file - Floatingoctothorpe (master)
 * 5a2a844 - (6 minutes ago) First commit - Floatingoctothorpe (HEAD -&gt; dev)
@@ -87,23 +77,18 @@ $ git rev-list --all
 b55c4f79db1b5b6235314fcae7f9c0766f49d6c6
 5a2a844a578ab2789fbefdcadcdad3d7924cfe26
 </code></pre>
-
 <h2>Recreating the branch</h2>
-
 <p>When you delete a branch git will print the commit hash of the branch being
 removed. Assuming you've still got the message on screen, the quickest way to
 restore the branch is to create a new branch using the commit hash as a
 reference:</p>
-
 <pre><code>$ git checkout -b dev 5a2a844
 Switched to a new branch 'dev'
 </code></pre>
-
 <p>This is great if you still know the commit hash, but what happens if you don't?
 This is where <a href="https://git-scm.com/docs/git-reflog">git reflog</a> can be very helpful. Git keeps a
 reference log which records when the tip of branches or other references are
 updated:</p>
-
 <pre><code>$ git reflog
 b55c4f7 HEAD@{0}: commit: Update readme file
 5a2a844 HEAD@{1}: checkout: moving from dev to master
@@ -114,15 +99,12 @@ ef873d8 HEAD@{4}: commit: Add __future__ import
 5a2a844 HEAD@{6}: checkout: moving from master to dev
 5a2a844 HEAD@{7}: commit (initial): First commit
 </code></pre>
-
 <p>The log above shows the last time <code>HEAD</code> was on the <code>dev</code> branch, <code>HEAD</code>
 pointed to <code>5a2a844</code> (<code>HEAD@{1}</code>). This is the commit hash needed to restore
 the <code>dev</code> branch.</p>
-
 <p>Alternatively another way to find the commit hash is to use <a href="https://git-scm.com/docs/git-fsck">git
 fsck</a>. The <code>--unreachable</code> and <code>--no-reflogs</code> options can be used
 to find all orphaned commits:</p>
-
 <pre><code>$ git fsck --unreachable --no-reflogs
 Checking object directories: 100% (256/256), done.
 unreachable blob 44159b3954c15250affceed3e0a6cfb2e39f8bc8
@@ -134,9 +116,7 @@ unreachable commit ef873d8cd4eb33a33d5139b4ae7a1aa8bcbb8fda
 unreachable blob 2fa275f9c5ee8d13f550e7aa602bf2310dc80639
 unreachable commit 3edbcb28f2a8e6b40aa22915043f4652345b92e0
 </code></pre>
-
 <p><a href="https://git-scm.com/docs/git-show">git show</a> can then be used to find the correct commit:</p>
-
 <pre><code>$ git show 48263c7aa495e1a4af59b72c618157aae0488b5f
 commit 48263c7aa495e1a4af59b72c618157aae0488b5f
 Author: Floatingoctothorpe &lt;FloatingOctothorpe@users.noreply.github.com&gt;
@@ -160,9 +140,9 @@ index 2fa275f..e1cae43 100644
     <footer class="footer pure-u-1 pure-u-md-3-4">
       <hr />
       <small>
-        Copyright &copy; 2018 Floating Octothorpe. Except where otherwise
+        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
         noted, content on this site is licensed under a <a rel="license"
-          href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
       </small>
     </footer>
