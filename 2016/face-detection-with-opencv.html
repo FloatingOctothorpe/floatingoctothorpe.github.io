@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Face detection with OpenCV</h1>
 
 <time datetime="2016-12-16">16 December 2016</time>
@@ -73,8 +61,7 @@ until a key is pressed. <a href="http://docs.opencv.org/2.4/modules/highgui/doc/
 then used to remove the window.</p>
 <p>Assuming you have a suitable cat image in place, the output should look
 something like this:</p>
-<p><img class="pure-img" src="/2016/opencv-load-image.jpg"
-  alt="Cat image opened with OpenCV" /></p>
+<p><img alt="Cat image opened with OpenCV" src="/2016/opencv-load-image.jpg"></p>
 <p><small>Photograph by and copyright &copy; of David Corby. This image is
 licensed under the Creative Commons <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">Attribution-Share Alike 3.0
 Unported</a> license and can be found on <a href="https://commons.wikimedia.org/wiki/File:Kittyply_edit1.jpg">Wikimedia
@@ -114,23 +101,22 @@ cv2.destroyAllWindows()
 </code></pre>
 <p>If everything goes well, running the <a href="/2016/detect_faces.py">final script</a> should now
 highlight faces:</p>
-<p><img class="pure-img" src="/2016/opencv-detect-face.jpg"
-  alt="Photograph of Kinga Philipps, with face detection rectangle drawn by OpenCV." /></p>
+<p><img alt="Photograph of Kinga Philipps, with face detection rectangle drawn by
+OpenCV." src="/2016/opencv-detect-face.jpg"></p>
 <p><small>Photograph by and copyright &copy; of Kinga Philipps. This image is
 licensed under the Creative Commons <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">Attribution-Share Alike 3.0
 Unported</a> license and can be found on <a href="https://commons.wikimedia.org/wiki/File:Kingaphilipps.jpg">Wikimedia
 Commons</a>.</small></p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

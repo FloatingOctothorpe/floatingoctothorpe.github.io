@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Using CSS custom properties</h1>
 
 <time datetime="2017-12-22">22 December 2017</time>
@@ -95,9 +83,8 @@ document.documentElement.style.setProperty("--accent-hue", new_hue);
 </code></pre>
 <p>The screenshot below shows a <a href="/2017/css-custom-properties-demo.html">demo page</a> using JavaScript to do
 this:</p>
-<p><img class="pure-img" src="/2017/css-custom-property-example.png"
-  alt="Example web page using CSS custom properties to dynamically control
-  colours" /></p>
+<p><img alt="Example web page using CSS custom properties to dynamically control
+colours" src="/2017/css-custom-property-example.png"></p>
 <h2>What about CSS preprocessors?</h2>
 <p>At the time of writing CSS preprocessors such as <a href="http://lesscss.org/">less</a> or
 <a href="http://sass-lang.com/">Sass</a> are commonly used when working with large style sheets. While
@@ -117,17 +104,16 @@ a look at the following:</p>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables">The MDN documentation</a> on using CSS custom properties</li>
 <li><a href="https://philipwalton.com/articles/why-im-excited-about-native-css-variables/">Why I'm Excited About Native CSS Variables</a> by Philip Walton</li>
 </ul>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

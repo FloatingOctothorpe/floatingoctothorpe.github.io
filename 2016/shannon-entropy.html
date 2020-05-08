@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Shannon entropy</h1>
 
 <time datetime="2016-10-28">28 October 2016</time>
@@ -126,7 +114,8 @@ $ xxd --cols 1 input.dat | awk '{split($2, a, ""); print a[1]; print a[2]}' | so
 entropy. In <a href="https://en.wikipedia.org/wiki/Entropy_(information_theory)">information theory</a>, entropy is a measure of
 unpredictability in information content. Shannon entropy can be calculated with
 the following formula:</p>
-<p><img class="pure-img" src="/2016/shannon-entropy-equation.png" alt="H(X) = - sum from{i=1} to{n} p(x_{i})log_{2}p(x_{i})" /></p>
+<p><img alt="H(X) = - sum from{i=1} to{n}
+p(x_{i})log_{2}p(x_{i})" src="/2016/shannon-entropy-equation.png"></p>
 <p>Implementing the equation above involves the following steps:</p>
 <ol>
 <li>Count the number of times each byte appears in a file.</li>
@@ -172,17 +161,16 @@ bytes        : 27958
 entropy      : 222870
 entropy/byte : 7.971627
 </code></pre>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

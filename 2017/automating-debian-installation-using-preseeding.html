@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Automating Debian installation using preseeding</h1>
 
 <time datetime="2017-11-03">03 November 2017</time>
@@ -143,22 +131,21 @@ the following:</p>
 url=http://192.168.56.1/preseed.cfg
 </code></pre>
 <p>The Grub menu should now look similar to the following:</p>
-<p><img class="pure-img" src="/2017/virtual-box-debian-boot.png"
-  alt="A Debian VM showing the grub boot menu during installation." /></p>
+<p><img alt="A Debian VM showing the grub boot menu during
+installation." src="/2017/virtual-box-debian-boot.png"></p>
 <p>From here you should be able to hit <kbd>Enter</kbd> to start the installation.
 If everything goes well you should be able to make a cup of tea can come back
 to a completed Debian installation.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

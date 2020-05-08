@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Getting started with Radicale</h1>
 
 <time datetime="2017-05-05">05 May 2017</time>
@@ -99,8 +87,8 @@ different calendar applications. This post is going to go over setting up the
 <li>
 <p>Start by creating a new calendar. This can be done by right clicking and
     selecting new calender:</p>
-<p><img class="pure-img" src="/2017/thunderbird-new-calendar.png"
- alt="Screenshot showing the New Calendar context menu option. "/></p>
+<p><img alt="Screenshot showing the New Calendar context menu
+option." src="/2017/thunderbird-new-calendar.png"></p>
 </li>
 <li>
 <p>Select "On the Network".</p>
@@ -108,9 +96,8 @@ different calendar applications. This post is going to go over setting up the
 <li>
 <p>Select "CalDAV" and enter the URL of the Radicale server. The path
     (<code>/user/calendar.ics/</code>) will be created if it does not exist:</p>
-<p><img class="pure-img" src="/2017/thunderbird-new-calendar-location.png"
- alt="Screenshot showing a new CalDAV calendar being configured to use
- http://raspberrypi:5232/user/calendar.ics/" /></p>
+<p><img alt="Screenshot showing a new CalDAV calendar being configured to use
+http://raspberrypi:5232/user/calendar.ics/&quot;" src="/2017/thunderbird-new-calendar-location.png"></p>
 <p><strong>Note</strong>: the trailing <code>/</code> in the URL is required!</p>
 </li>
 <li>
@@ -128,17 +115,16 @@ It should have entries similar to the following:</p>
 <p>Although the default configuration does work out of the box, the Calendar
 traffic is neither encrypted or authenticated. The <a href="/2017/securing-radicale.html">next post</a> is
 going to look at correcting this.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

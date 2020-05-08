@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Using chntpw to reset Windows accounts</h1>
 
 <time datetime="2017-09-08">08 September 2017</time>
@@ -51,12 +39,11 @@ being used.</p>
 familiar with the process there is a step by step guide on
 <a href="https://tutorials.ubuntu.com/tutorial/tutorial-create-a-usb-stick-on-windows#0">tutorials.ubuntu.com</a>. Once you've created a live USB and
 booted from it you should get a menu similar to the following:</p>
-<p><img class="pure-img" src="/2017/ubuntu-boot-menu.png"
-  alt="Ubuntu grub menu showing boot options."/></p>
+<p><img alt="Ubuntu grub menu showing boot options." src="/2017/ubuntu-boot-menu.png"></p>
 <p>From here you should be able to select the <code>Try Ubuntu without installing</code>
 option and boot into a desktop environment:</p>
-<p><img class="pure-img" src="/2017/ubuntu-desktop.png"
-  alt="Ubuntu desktop environment with a terminal emulator running."/></p>
+<p><img alt="Ubuntu desktop environment with a terminal emulator
+running." src="/2017/ubuntu-desktop.png"></p>
 <h3>Booting in text only mode</h3>
 <p>Unfortunately the Netbook I was working with was struggling to boot the full
 graphical environment. To get around this I did the following:</p>
@@ -146,21 +133,20 @@ Write hive files? (y/n) [n] : y
 <h2>Booting back into Windows</h2>
 <p>You should now be able to restart the system. Once it's booted you should be
 able to login using the <code>Administrator</code> account:</p>
-<p><img class="pure-img" src="/2017/windows-7-login.png"
-  alt="Windows 7 login prompt with the Administrator account enabled."/></p>
+<p><img alt="Windows 7 login prompt with the Administrator account
+enabled." src="/2017/windows-7-login.png"></p>
 <p><strong>Note</strong>: once you're in, make sure you update the Administrator account
 password to something that isn't blank!</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

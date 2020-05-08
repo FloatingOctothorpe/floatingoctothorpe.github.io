@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Bash config and where it lives</h1>
 
 <time datetime="2018-02-16">16 February 2018</time>
@@ -73,8 +61,8 @@ exceptions, refer to the <a href="https://www.gnu.org/software/bash/manual/html_
 <h3>Bashrc and profile config</h3>
 <p>Once bash has checked to see if it's being run as a login or interactive shell,
 it decides which config files to load as follows:</p>
-<p><img class="pure-img" src="/2018/bash-config-flow-diagram.svg"
-  alt="Flow diagram showing which config bash reads at startup" /></p>
+<p><img alt="Flow diagram showing which config bash reads at
+startup" src="/2018/bash-config-flow-diagram.svg"></p>
 <p>Profile configuration is loaded from <code>/etc/profile</code>, if the file exists.  And
 then from one of the following files:</p>
 <ol>
@@ -92,8 +80,8 @@ exists.</p>
 <code>~/.bashrc</code>. However in reality bash configuration normally sources other
 configuration. The diagrams below show which files are normally read on CentOS
 for a user with default bash configuration:</p>
-<p><img class="pure-img" src="/2018/bash-config-default-source-order-diagram.svg"
-  alt="Flow diagram showing the order bash config is loaded on CentOS" /></p>
+<p><img alt="Flow diagram showing the order bash config is loaded on
+CentOS" src="/2018/bash-config-default-source-order-diagram.svg"></p>
 <p><strong>Note</strong>: the files in <code>/etc/</code> are global and will be read by all users
 including <code>root</code>; whereas the files in <code>~/</code> are obviously user specific.</p>
 <h3>Logout config</h3>
@@ -114,17 +102,16 @@ profile configuration you cannot force bash to read the configuration with the
 </ul>
 <p>Full details on the points above can be found in the <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html#Bash-Startup-Files">Bash
 docs</a>.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

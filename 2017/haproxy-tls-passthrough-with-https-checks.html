@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>HAProxy: TLS passthrough with HTTPS checks</h1>
 
 <time datetime="2017-06-09">09 June 2017</time>
@@ -43,8 +31,7 @@
 traffic. This post is going to look at adding HTTPS health checks to ensure a
 service is up, while keeping HAProxy in <a href="https://cbonte.github.io/haproxy-dconv/1.6/configuration.html#4-mode">tcp mode</a>. The
 diagram below gives an outline of the setup:</p>
-<p><img class="pure-img" src="/2017/haproxy-tls-passthrough.svg"
-  alt="HAProxy performing TCP passthrough."/></p>
+<p><img alt="HAProxy performing TCP passthrough." src="/2017/haproxy-tls-passthrough.svg"></p>
 <p><strong>Note</strong>: two TCP connections are made during a request, one between the client
 and HAProxy and one from HAProxy to a back end. Although two TCP connections
 are made, the SSL/TLS connection passes straight though HAProxy
@@ -110,8 +97,8 @@ additional configuration:</p>
 <p><strong>Note</strong>: to add authentication, use the <a href="https://cbonte.github.io/haproxy-dconv/1.6/configuration.html#stats%20auth">stats auth</a>
 option.</p>
 <h2>HTTPS health checks</h2>
-<p><img class="pure-img" src="/2017/haproxy-tls-passthrough-with-health-check.svg"
-  alt="HAProxy performing TCP passthrough with HTTP checks."/></p>
+<p><img alt="HAProxy performing TCP passthrough with HTTP
+checks." src="/2017/haproxy-tls-passthrough-with-health-check.svg"></p>
 <p>TCP health checks are better than nothing, however back end applications often
 provide a health check API which gives a better indication of the status of the
 service.</p>
@@ -138,17 +125,16 @@ backend2.example.com UP L7OK
 <p><strong>Note</strong>: in the example above <code>backend1.example.com</code> is responding to
 requests, however the status API is not returning <code>200</code>, so it's marked as
 down. This would not be picked up by a standard TCP check.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

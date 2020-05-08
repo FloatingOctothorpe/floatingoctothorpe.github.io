@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Kickstarting a CentOS VM</h1>
 
 <time datetime="2016-09-09">09 September 2016</time>
@@ -137,7 +125,8 @@ Serving HTTP on 0.0.0.0 port 8000 ...
 <p>Boot the virtual machine from the CentOS iso
 (<code>CentOS-7-x86_64-Everything-1511.iso</code>). After a few seconds you should see a
 grub menu similar to the following:</p>
-<p><img class="pure-img" src="/2016/virtual-box-centos-boot.png" alt="A CentOS virtual machine showing the grub boot menu during installation." /></p>
+<p><img alt="A CentOS virtual machine showing the grub boot menu during
+installation." src="/2016/virtual-box-centos-boot.png"></p>
 <p>Select the <code>Install CentOS 7</code> option and press <kbd>tab</kbd>. Add
 <code>inst.ks=&lt;kickstart url&gt;</code> to the end of the kernel parameters. The full line
 should look something like this:</p>
@@ -147,17 +136,16 @@ should look something like this:</p>
 network config. If you're unsure check the URL in a web browser.</p>
 <p>Finally hit <kbd>enter</kbd> and wait for the system to build. If everything
 goes well you should have a new CentOS VM after five minutes or so.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

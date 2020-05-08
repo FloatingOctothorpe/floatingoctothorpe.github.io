@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Bitwise operators in C</h1>
 
 <time datetime="2018-04-06">06 April 2018</time>
@@ -59,7 +47,7 @@ you're already familiar with bitwise operators, feel free to skip this post.</p>
 <p>In C numeric types such as integers are stored using binary. For example 18 is
 <code>10010</code> in binary, and would therefore be stored with bits similar to the
 following:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>0</td>
     <td>0</td>
@@ -106,7 +94,7 @@ following can be used:</p>
 <p>In C the logical AND operator (<code>&amp;&amp;</code>) will return 1 if both operands are true,
 otherwise it will return 0. The table below shows possible outcomes for
 <code>a &amp;&amp; b</code>, where <code>a</code> and <code>b</code> are either 0 or 1:</p>
-<table class="pure-table pure-table-bordered">
+<table>
   <tr><td class=""></td><th class="highlight">b = 0</th><th class="highlight">b = 1</th></tr>
   <tr><th class="highlight">a = 0</th><td>0</td><td>0</td></tr>
   <tr><th class="highlight">a = 1</th><td>0</td><td>1</td></tr>
@@ -121,7 +109,7 @@ unsigned char c;
 c = a &amp; b;
 </code></pre>
 <p>In the example above, <code>a</code> would be represented by the following bits:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>1</td>
     <td>0</td>
@@ -135,7 +123,7 @@ c = a &amp; b;
 </table>
 
 <p>And <code>b</code> would be:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>1</td>
     <td>0</td>
@@ -151,7 +139,7 @@ c = a &amp; b;
 <p>The <code>&amp;</code> operator will go through each bit in <code>a</code> and <code>b</code> and perform a logical
 AND. The leftmost bit in both <code>a</code> and <code>b</code> is 1, therefore the first bit will be
 1:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td class="highlight">1</td>
     <td></td>
@@ -165,7 +153,7 @@ AND. The leftmost bit in both <code>a</code> and <code>b</code> is 1, therefore 
 </table>
 
 <p>The next bit will be 0, because it's 0 in both <code>a</code> and  <code>b</code>:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>1</td>
     <td class="highlight">0</td>
@@ -179,7 +167,7 @@ AND. The leftmost bit in both <code>a</code> and <code>b</code> is 1, therefore 
 </table>
 
 <p>Once each bit is evaluated, the following value will be assigned to <code>c</code>:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>1</td>
     <td>0</td>
@@ -195,7 +183,7 @@ AND. The leftmost bit in both <code>a</code> and <code>b</code> is 1, therefore 
 <h2>Bitwise OR</h2>
 <p>The logical OR operator (<code>||</code>) also has a bitwise equivalent. The following
 table shows potential outcomes when bit <code>a</code> is compared to bit <code>b</code>:</p>
-<table class="pure-table pure-table-bordered">
+<table>
   <tr><td class=""></td><th class="highlight">b = 0</th><th class="highlight">b = 1</th></tr>
   <tr><th class="highlight">a = 0</th><td>0</td><td>1</td></tr>
   <tr><th class="highlight">a = 1</th><td>1</td><td>1</td></tr>
@@ -209,7 +197,7 @@ unsigned char c;
 c = a | b;
 </code></pre>
 <p>In the example above, <code>a</code> would be represented by the following bits:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>1</td>
     <td>0</td>
@@ -223,7 +211,7 @@ c = a | b;
 </table>
 
 <p>And <code>b</code> would be:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>1</td>
     <td>0</td>
@@ -237,7 +225,7 @@ c = a | b;
 </table>
 
 <p>And the resulting value assigned to <code>c</code> would be 187:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>1</td>
     <td>0</td>
@@ -255,7 +243,7 @@ c = a | b;
 result will be 1. C also has an exclusive bitwise OR (<code>^</code>). Unlike the
 inclusive bitwise OR, if both bits at a given position are 1 the resulting bit
 will be set to zero:</p>
-<table class="pure-table pure-table-bordered">
+<table>
   <tr><td class=""></td><th class="highlight">b = 0</th><th class="highlight">b = 1</th></tr>
   <tr><th class="highlight">a = 0</th><td>0</td><td>1</td></tr>
   <tr><th class="highlight">a = 1</th><td>1</td><td>0</td></tr>
@@ -269,7 +257,7 @@ unsigned char c;
 c = a ^ b;
 </code></pre>
 <p>The resulting value of <code>c</code> will be 48, instead of 187:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>0</td>
     <td>0</td>
@@ -297,7 +285,7 @@ x = x &gt;&gt; 2;
 printf("%d\n", x); /* print 7 again" */
 </code></pre>
 <p>In the example above <code>x</code> starts of as the following:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>0</td>
     <td>0</td>
@@ -312,7 +300,7 @@ printf("%d\n", x); /* print 7 again" */
 
 <p>The bits in <code>x</code> are then shifted to the left twice, the blank bits on the far
 right are filled in with zeros:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>0</td>
     <td>0</td>
@@ -329,7 +317,7 @@ right are filled in with zeros:</p>
 is 28 (<code>7 * 2 * 2</code>).</p>
 <p>Finally the value is shifted back two places by the right shift operator, and
 the two bits on the far left are replaced with zeros:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td class="highlight">0</td>
     <td class="highlight">0</td>
@@ -357,7 +345,7 @@ so 1 becomes 0 and zero becomes 1. For example:</p>
 x = ~x;
 </code></pre>
 <p>In the code above <code>x</code> starts as 142:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>1</td>
     <td>0</td>
@@ -371,7 +359,7 @@ x = ~x;
 </table>
 
 <p>Each bit is then flipped and 113 is assigned to <code>x</code>:</p>
-<table class="pure-table bits">
+<table class="bits">
   <tr>
     <td>0</td>
     <td>1</td>
@@ -390,17 +378,16 @@ will always have a 1 and a 0, so adding the two together will result in each
 bit being set to 1. This is useful if you want to quickly work out an unsigned
 numbers compliment, to do this you can just subtract the number from the
 maximum possible value for that data type.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

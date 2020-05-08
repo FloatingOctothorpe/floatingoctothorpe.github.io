@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Decrypting HTTPS traffic with Wireshark</h1>
 
 <time datetime="2017-03-31">31 March 2017</time>
@@ -48,7 +36,7 @@ HTTPS traffic with Wireshark.</p>
 <h2>Example setup</h2>
 <p>The example in this post is going to go over capturing and decrypting an HTTP
 request made with <a href="https://curl.haxx.se/">curl</a>:</p>
-<p><img class="pure-img" src="/2017/https-diagram.svg" alt="HTTPS diagram"/></p>
+<p><img alt="HTTPS diagram" src="/2017/https-diagram.svg"></p>
 <p>To decrypt the request, the following info will be required:</p>
 <ul>
 <li>The private key from the web server.</li>
@@ -86,32 +74,31 @@ decrypted traffic in the packet capture with the server's private key.</p>
 <h2>Decrypting traffic</h2>
 <p>Initially opening up the packet capture in Wireshark will look something like
 this:</p>
-<p><img class="pure-img" src="/2017/wireshark-https-traffic.png"
-  alt="HTTPS packet capture opened in Wireshark with the data encrypted." /></p>
+<p><img alt="HTTPS packet capture opened in Wireshark with the data
+encrypted." src="/2017/wireshark-https-traffic.png"></p>
 <p>To decrypt the traffic go to <code>Edit -&gt; Preferences</code>, find <code>SSL</code> under
 <code>Protocols</code> and add a new RSA key. The key should be the private key from the
 web server, the protocol should be <code>http</code>, the port should be <code>443</code> and the IP
 address should match the IP address of the web server in the packet capture:</p>
-<p><img class="pure-img" src="/2017/wireshark-decrypt-settings.png"
-  alt="Settings to decrypt HTTPS traffic in Wireshark." /></p>
+<p><img alt="Settings to decrypt HTTPS traffic in
+Wireshark." src="/2017/wireshark-decrypt-settings.png"></p>
 <p>If everything works as expected, after clicking <code>Apply</code> the HTTP requests
 should now be decrypted and visible in Wireshark:</p>
-<p><img class="pure-img" src="/2017/wireshark-decrypted-https-traffic.png"
-  alt="HTTPS packet capture opened in Wireshark with the data decrypted." /></p>
+<p><img alt="HTTPS packet capture opened in Wireshark with the data
+decrypted." src="/2017/wireshark-decrypted-https-traffic.png"></p>
 <p><strong>Note</strong>: if the steps above don't work double check the client key exchange
 protocol being used is RSA or try setting <code>SSL debug file</code> to collect debug
 information from Wireshark.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

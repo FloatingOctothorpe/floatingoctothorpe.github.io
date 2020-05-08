@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Intercepting HTTP traffic with Squid</h1>
 
 <time datetime="2017-07-28">28 July 2017</time>
@@ -72,8 +60,8 @@ persistent.</p>
 <h2>Replacing images</h2>
 <p>Once Squid is intercepting connections, it's possible to manipulate HTTP
 traffic. For example you could replace all JPG images with a cat:</p>
-<p><img class="pure-img" src="/2017/webmd-with-cats.png"
-  alt="WebMD before and after images are replaced with a cat." /></p>
+<p><img alt="WebMD before and after images are replaced with a
+cat." src="/2017/webmd-with-cats.png"></p>
 <p><small>Cat photograph by and copyright &copy; of <a href="https://en.wikipedia.org/wiki/User:DrL">DrL</a>. This
 image is licensed under the Creative Commons <a href="https://creativecommons.org/licenses/by-sa/2.5/deed.en">Attribution-Share Alike 2.5
 Generic</a> license and can be found on <a href="https://commons.wikimedia.org/wiki/File:Blackcat-Lilith.jpg">Wikimedia
@@ -141,17 +129,16 @@ more than 50% of page loads were encrypted with HTTPS.
 <p>If you don't already use it, I would highly recommend <a href="https://www.eff.org/https-everywhere">HTTPS
 Everywhere</a>. Finally if you do manage a website, consider
 enabling HTTPS if you haven't already!</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Embedding Ace in Gitit</h1>
 
 <time datetime="2017-09-29">29 September 2017</time>
@@ -111,8 +99,7 @@ up a function to sync the Ace editor with the old <code>textarea</code>.</p>
 therefore the dollar in front of <code>$blockScrolling</code> is escaped.</p>
 <p>Finally restart Gitit (<code>systemctl restart gitit.service</code>) to reload the page
 template. If everything goes well you should now see Ace in the edit tab:</p>
-<p><img class="pure-img" src="/2017/gitit-with-ace.png"
-  alt="Screenshot of Gitit with the Ace editor embeded"/></p>
+<p><img alt="Screenshot of Gitit with the Ace editor embeded" src="/2017/gitit-with-ace.png"></p>
 <h2>Customising Ace</h2>
 <p>From here it's fairly easy to customise Ace, below are the additional settings
 I ended up using:</p>
@@ -165,17 +152,16 @@ editor.commands.addCommand({
 <p><strong>Note</strong>: if you are using  <a href="https://httpd.apache.org/docs/current/mod/mod_proxy_html.html">mod_proxy_html</a> to
 rewrite pages, make sure you update the quit function to use the correct URL
 (e.g. <code>/wiki$pageUrl$</code>).</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

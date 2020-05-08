@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Android backups with adb</h1>
 
 <time datetime="2017-08-18">18 August 2017</time>
@@ -59,8 +47,8 @@ install <a href="https://developer.android.com/studio/releases/platform-tools.ht
 <p>Before connecting to an Android device USB debugging needs to be enabled. To do
 this select <strong>Developer options</strong> from the device system settings and enable
 the <strong>USB debugging</strong> option:</p>
-<p><img class="pure-img" src="/2017/android-developer-options.png"
-  alt="Screenshot showing the Android developer options"/></p>
+<p><img alt="Screenshot showing the Android developer
+options" src="/2017/android-developer-options.png"></p>
 <p><strong>Note</strong>: on Android 4.2 and up the <strong>Developer options</strong> menu is hidden. To
 enable it select <strong>About phone</strong> from the device system settings and tap the
 <strong>Build number</strong> seven times. The developer options should now be available on
@@ -76,8 +64,8 @@ FB21AA891M             offline usb:1-2
 </code></pre>
 <p>This will start up the <code>adb</code> daemon and should list the connected device. On
 the device you also need to allow the connection:</p>
-<p><img class="pure-img" src="/2017/android-usb-confirmation.png"
-  alt="Screenshot showing the Android adb USB confirmation dialog"/></p>
+<p><img alt="Screenshot showing the Android adb USB confirmation
+dialog" src="/2017/android-usb-confirmation.png"></p>
 <p>Once this is done the device should be online:</p>
 <pre><code>$ sudo adb devices -l
 List of devices attached
@@ -92,8 +80,8 @@ command:</p>
 Now unlock your device and confirm the backup operation.
 </code></pre>
 <p>As suggested you will then need to confirm the backup on the device:</p>
-<p><img class="pure-img" src="/2017/android-backup-confirmation.png"
-  alt="Screenshot showing the Android backup confirmation dialog"/></p>
+<p><img alt="Screenshot showing the Android backup confirmation
+dialog" src="/2017/android-backup-confirmation.png"></p>
 <p>The command above will create a backup file called <code>portknocker.ab</code> with the
 data from the <code>com.xargsgrep.portknocker</code> application. You can get a list of
 installed applications using <code>adb shell</code>:</p>
@@ -130,17 +118,16 @@ Now unlock your device and confirm the restore operation.
 </code></pre>
 <p><strong>Note</strong>: backups which were created without the <code>-apk</code> option failed to
 restore silently. Unfortunately I'm not quite sure why this happens...</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

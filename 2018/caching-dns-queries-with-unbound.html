@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Caching DNS queries with Unbound</h1>
 
 <time datetime="2018-05-11">11 May 2018</time>
@@ -50,17 +38,16 @@ cache.</p>
 <h2>Caching requests</h2>
 <p>When a process calls a function like <a href="http://man7.org/linux/man-pages/man3/getaddrinfo.3.html">getaddrinfo</a>, a query
 is sent via the network:</p>
-<p><img class="pure-img" src="/2018/dns-query-diagram.svg"
-  alt="A diagram showing a standard DNS query"/></p>
+<p><img alt="A diagram showing a standard DNS query" src="/2018/dns-query-diagram.svg"></p>
 <p>Instead of the process making the call directly to the remote name server,
 traffic can initially be sent to Unbound. Unbound will then forward the request
 on to a remote server:</p>
-<p><img class="pure-img" src="/2018/unbound-forwarding-dns-query-diagram.svg"
-  alt="A diagram showing Unbound forwarding a DNS query"/></p>
+<p><img alt="A diagram showing Unbound forwarding a DNS
+query" src="/2018/unbound-forwarding-dns-query-diagram.svg"></p>
 <p>However once Unbound received a reply it can cache the response. Subsequent
 requests can then be answered using the cached answer:</p>
-<p><img class="pure-img" src="/2018/unbound-cached-dns-query-diagram.svg"
-  alt="A diagram showing Unbound using a cached DNS query"/></p>
+<p><img alt="A diagram showing Unbound using a cached DNS
+query" src="/2018/unbound-cached-dns-query-diagram.svg"></p>
 <p>This does add some additional complexity, however the cached responses will
 avoid network latency and should therefore be quicker:</p>
 <pre><code>$ time host example.com 1.1.1.1
@@ -153,17 +140,16 @@ the following configuration:</p>
 </code></pre>
 <p>This will tell Unbound to listen on any IPv4 interface, and allow remote
 queries from the <code>10.0.0.0/8</code> subnet.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

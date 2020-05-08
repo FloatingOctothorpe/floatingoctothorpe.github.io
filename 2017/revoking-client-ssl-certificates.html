@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Revoking client SSL certificates</h1>
 
 <time datetime="2017-10-13">13 October 2017</time>
@@ -46,15 +34,14 @@ at revoking client SSL certificates to invalidate them.</p>
 on the users device to decrypt messages and the public key is sent to the
 server. So if Alice wants to connect to Bob's server she will send her X.509
 certificate as part of the <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security#TLS_handshake">TLS handshake</a>:</p>
-<p><img class="pure-img" src="/2017/client-x509-auth-diagram.svg"
-  alt="Diagram showing a user, Alice, talking to a server run by Bob with a
-  certificate." /></p>
+<p><img alt="Diagram showing a user, Alice, talking to a server run by Bob with a
+certificate." src="/2017/client-x509-auth-diagram.svg"></p>
 <p>It is important that the private key remains confidential. If the key is
 compromised, the third party will be able to use the key to impersonate the
 user. For example if Mallory made a copy of Alice's private key she could use
 this to authenticate with Bob's server:</p>
-<p><img class="pure-img" src="/2017/client-x509-compromised-auth-diagram.svg"
-  alt="Diagram showing an attacker, Mallory using Alice's key." /></p>
+<p><img alt="Diagram showing an attacker, Mallory using Alice's
+key." src="/2017/client-x509-compromised-auth-diagram.svg"></p>
 <p>Once a private key is compromised any certificates associated with that key
 should be revoked to ensure they can no longer be used to authenticate. In the
 example above Bob could revoke Alice's original certificate, and then issue a
@@ -149,17 +136,16 @@ points you should consider when using client certificate authentication:</p>
    Nguyen.</p>
 </li>
 </ul>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

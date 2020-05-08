@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Setting up Syncthing on Raspbian</h1>
 
 <time datetime="2017-06-02">02 June 2017</time>
@@ -103,8 +91,7 @@ local port with an SSH command similar to the following:</p>
 <p>Once the port had been forwarded, you should be able to point a web browser at
 <a href="http://localhost:8384/">http://localhost:8384/</a> and get a web interface
 similar to the following:</p>
-<p><img class="pure-img" src="/2017/syncthing-web-ui.png"
-  alt="Screenshot of the Syncthing web UI" /></p>
+<p><img alt="Screenshot of the Syncthing web UI" src="/2017/syncthing-web-ui.png"></p>
 <p>From here you can go ahead and setup shares, and any additional Syncthing
 configuration. For more information refer to the <a href="https://docs.syncthing.net/intro/gui.html">Syncthing
 docs</a>.</p>
@@ -138,17 +125,16 @@ to make the rules persistent.</p>
 <p>If you want more information on Syncthing, the <a href="https://docs.syncthing.net/">official docs</a>
 are a good place to start. You can also view the entire code base, along with
 open issues, etc, on <a href="https://github.com/syncthing">Github</a>.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>

@@ -7,34 +7,22 @@
   <meta name="Author" content="Floating Octothorpe" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/css/pure-min.css">
-  <link rel="stylesheet" href="/css/grids-responsive-min.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" type="image/png" href="/img/favicon.png" />
 </head>
 <body>
-  <div class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-      <header>
-        <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
-        <h1 class="site-title">Floating Octothorpe</h1>
-        <nav class="pure-menu">
-          <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/">Latest</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/archive.html">Archive</a>
-            </li>
-            <li class="pure-menu-item">
-              <a class="pure-menu-link" href="/about.html">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-    <div class="content pure-u-1 pure-u-md-3-4">
-      <article>
+  <header>
+    <a href="/"><img class="logo" src="/img/logo.png" alt="Floating Octothorpe logo"/></a>
+    <h1 class="site-title">Floating Octothorpe</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Latest</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <article>
 <h1>Getting started with PixiJS</h1>
 
 <time datetime="2018-01-19">19 January 2018</time>
@@ -88,8 +76,7 @@ message.y = (app.screen.height / 2) - (message.height / 2);
 app.stage.addChild(message);
 </code></pre>
 <p>This should render a simple hello world message:</p>
-<p><img class="pure-img" src="/2018/pixijs-hello-world.png"
-  alt="Hello world message rendered using PixiJS." /></p>
+<p><img alt="Hello world message rendered using PixiJS." src="/2018/pixijs-hello-world.png"></p>
 <h2>Using sprites</h2>
 <p>In PixiJS <a href="https://en.wikipedia.org/wiki/Sprite_(computer_graphics)">sprites</a> are handled with the <code>PIXI.Sprite</code> class.
 However before using the class, you need to load in textures. This can be done
@@ -115,16 +102,15 @@ the image is available. A new sprite can then be created from the image in the
 }
 </code></pre>
 <p>The end result should look something like this:</p>
-<p><img class="pure-img" src="/2018/pixijs-with-a-rendered-sprite.png"
-  alt="Sprite rendered using PixiJS." /></p>
+<p><img alt="Sprite rendered using PixiJS." src="/2018/pixijs-with-a-rendered-sprite.png"></p>
 <p><small><strong>Note</strong>: the sprites used in this post were created by <a href="https://sethbyrd.com">Seth
 Bryd</a>, and are licensed under the <a href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons Zero
 (CC0)</a> license.</small></p>
 <h3>Animated sprites</h3>
 <p>Instead of using single images, it's often useful to use a sprite sheet similar
 to the following:</p>
-<p><img class="pure-img" src="/2018/pixijs-sprite-sheet-64x64.png"
-  alt="Sprite sheet with a character from four different perspectives" /></p>
+<p><img alt="Sprite sheet with a character from four different
+perspectives" src="/2018/pixijs-sprite-sheet-64x64.png"></p>
 <p>Code similar to the following can then be used to create an animated sprite
 using the <code>PIXI.extras.AnimatedSprite</code> class:</p>
 <pre><code>let frames = [];
@@ -197,17 +183,16 @@ keyboard input.</p>
 want to go further with PixiJS I would recommend having a look at the <a href="http://pixijs.download/release/docs/index.html">PixiJS
 API documentation</a> and some of the <a href="http://pixijs.io/examples/">examples on
 PixiJS.io</a>.</p>
-      </article>
-    </div>
-    <footer class="footer pure-u-1 pure-u-md-3-4">
-      <hr />
-      <small>
-        Copyright &copy; 2020 Floating Octothorpe. Except where otherwise
-        noted, content on this site is licensed under a <a rel="license"
-          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+  </article>
+  <footer class="footer pure-u-1 pure-u-md-3-4">
+    <hr />
+    <small>
+      Copyright &copy; 2020 Floating Octothorpe. Except where
+      otherwise noted, content on this site is licensed under a
+      <a rel="license"
+         href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
           Attribution 4.0 License</a>.
-      </small>
-    </footer>
-  </div>
+    </small>
+  </footer>
 </body>
 </html>
