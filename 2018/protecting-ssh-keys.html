@@ -104,7 +104,7 @@ million guesses per second:</p>
 </code></pre>
 <p>If you want to make an attacker's life difficult you should consider using the
 new private key format which was introduced in <a href="https://www.openssh.com/txt/release-6.5">OpenSSH
-6.4</a>. This key format uses a <a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>
+6.5</a>. This key format uses a <a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>
 KDF to protect the key which is significantly slower to brute force. Using
 <code>john</code> on the same CPU I was only able to make just over 7 guesses per second:</p>
 <pre><code>0g 0:00:00:07  1/3 0g/s 7.627p/s 7.627c/s 7.627C/s rsaid
@@ -149,7 +149,7 @@ mv ~/.ssh/id_rsa_new.pub ~/.ssh/id_rsa.pub
   <footer class="footer pure-u-1 pure-u-md-3-4">
     <hr />
     <small>
-      Copyright &copy; 2020 Floating Octothorpe. Except where
+      Copyright &copy; 2021 Floating Octothorpe. Except where
       otherwise noted, content on this site is licensed under a
       <a rel="license"
          href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
