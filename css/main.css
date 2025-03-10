@@ -5,6 +5,7 @@
   --theme-title-color: #464646;
   --theme-link-color: #324777;
   --theme-footer-color: #9EABB3;
+  --theme-shadow-color: #464646;
 }
 
 body {
@@ -20,6 +21,7 @@ header, header a, h1, h2, h3, h4, h5, h6, kbd {
 }
 header {
   background: var(--theme-background-color);
+  box-shadow: 0 0 8px var(--theme-shadow-color);
 }
 
 nav ul {
